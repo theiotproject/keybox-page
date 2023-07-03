@@ -1,34 +1,40 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import CssBaseline from "@mui/material/CssBaseline";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import Link from "@mui/material/Link";
+import Footer from "./components/Footer";
+import { Link as RouterLink } from "react-router-dom";
 
+const defaultTheme = createTheme();
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <ThemeProvider theme={defaultTheme}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+        }}
+      >
+        <CssBaseline />
+        <Container component="main" sx={{ mt: 8, mb: 2 }} maxWidth="sm">
+          <Typography variant="h2" component="h1" gutterBottom>
+            Witaj na stronie testowej
+          </Typography>
+          <Link to={`/auth/SignUp`} variant="body2" component={RouterLink}>
+            zaloguj się
+          </Link>{" "}
+          albo{" "}
+          <Link to={`/auth/SignUp`} variant="body2" component={RouterLink}>
+            zarejestruj
+          </Link>
+          !
+        </Container>
+        <Footer />
+      </Box>
+    </ThemeProvider>
   );
 }
 
