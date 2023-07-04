@@ -13,7 +13,6 @@ function Copyright(props) {
         IOT Project
       </Link>{" "}
       {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
 }
