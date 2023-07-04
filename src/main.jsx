@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./pages/ErrorPage.jsx";
+import MainPage from "./pages/MainPage";
 import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
@@ -16,18 +17,24 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     errorElement: <ErrorPage />,
-  },
-  {
-    path: "auth/signin/",
-    element: <SignIn />,
-  },
-  {
-    path: "auth/signup/",
-    element: <SignUp />,
-  },
-  {
-    path: "dashboard/",
-    element: <Dashboard />,
+    children: [
+      {
+        path: "/",
+        element: <MainPage />,
+      },
+      {
+        path: "signin/",
+        element: <SignIn />,
+      },
+      {
+        path: "signup/",
+        element: <SignUp />,
+      },
+      {
+        path: "dashboard/",
+        element: <Dashboard />,
+      },
+    ],
   },
 ]);
 

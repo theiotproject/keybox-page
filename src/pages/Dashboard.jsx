@@ -1,7 +1,17 @@
+import { useEffect } from "react";
 import { auth } from "../backend/db";
+import SignOutBtn from "../components/SignOutBtn";
 
 function Dashboard() {
-  return <div>Hello user: {auth.email}</div>;
+  useEffect(() => {
+    console.log(auth.email, auth);
+  });
+  return (
+    <div>
+      Hello user: {auth}
+      <SignOutBtn />
+    </div>
+  );
 }
 
 export default Dashboard;
