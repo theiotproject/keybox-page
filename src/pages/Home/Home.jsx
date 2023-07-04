@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
 import { Link as RouterLink } from "react-router-dom";
 
-function MainPage() {
+function Home() {
   return (
     <Box
       sx={{
@@ -33,4 +33,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default Home;

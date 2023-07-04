@@ -1,26 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
+import Layout from "./components/Layout/Layout.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import ErrorPage from "./pages/ErrorPage.jsx";
-import MainPage from "./pages/MainPage";
-import SignIn from "./pages/SignIn.jsx";
-import SignUp from "./pages/SignUp.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
+import SignIn from "./pages/SignIn/SignIn.jsx";
+import SignUp from "./pages/SignUp/SignUp.jsx";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import Error from "./pages/Error/Error.jsx";
+import Dashboard from "./pages/Dashboard/Dashboard.jsx";
+import Home from "./pages/Home/Home.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-    errorElement: <ErrorPage />,
+    element: <Layout />,
+    errorElement: <Error />,
     children: [
       {
         path: "/",
-        element: <MainPage />,
+        element: <Home />,
       },
       {
         path: "signin/",
