@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "env-cmd -f .env vite",
+    "build": "env-cmd -f .env vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "env-cmd -f .env vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

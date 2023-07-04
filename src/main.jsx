@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./pages/ErrorPage.jsx";
 import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -17,12 +18,16 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "auth/SignIn/",
+    path: "auth/signin/",
     element: <SignIn />,
   },
   {
-    path: "auth/SignUp/",
+    path: "auth/signup/",
     element: <SignUp />,
+  },
+  {
+    path: "dashboard/",
+    element: <Dashboard />,
   },
 ]);
 

@@ -12,15 +12,30 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Copyright from "../components/Copyright";
 import { Link as RouterLink } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../backend/db";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
+    try {
+      // Sign Up user
+      await createUserWithEmailAndPassword(
+        auth,
+        data.get("email"),
+        data.get("password")
+      );
+      navigate("/dashboard");
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error(`Error: ${errorCode} - ${errorMessage}`);
+    }
   };
 
   return (
