@@ -10,7 +10,6 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Copyright from "../components/Copyright";
 import { Link as RouterLink } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../backend/db";
@@ -19,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 export default function SignUp() {
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
+  const handleSignUpOnSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
@@ -47,6 +46,7 @@ export default function SignUp() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          minHeight: "100vh",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -55,7 +55,12 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSignUpOnSubmit}
+          sx={{ mt: 3 }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -116,14 +121,13 @@ export default function SignUp() {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link to={`/auth/SignIn`} variant="body2" component={RouterLink}>
+              <Link to={`/signin`} variant="body2" component={RouterLink}>
                 Already have an account? Sign in
               </Link>
             </Grid>
           </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 5 }} />
     </Container>
   );
 }
