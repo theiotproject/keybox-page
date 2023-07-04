@@ -10,31 +10,19 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Copyright from "../components/Copyright";
 import { Link as RouterLink } from "react-router-dom";
-import { auth } from "../backend/db";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+
+// TODO remove, this demo shouldn't need to reset the theme.
 
 export default function SignIn() {
-  const navigate = useNavigate();
-
-  const handleSignInOnSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
-    try {
-      // Sign Up user
-      await signInWithEmailAndPassword(
-        auth,
-        data.get("email"),
-        data.get("password")
-      );
-      navigate("/dashboard");
-    } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error(`Error: ${errorCode} - ${errorMessage}`);
-    }
+    console.log({
+      email: data.get("email"),
+      password: data.get("password"),
+    });
   };
 
   return (
@@ -46,7 +34,6 @@ export default function SignIn() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          minHeight: "100vh",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -55,12 +42,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSignInOnSubmit}
-          noValidate
-          sx={{ mt: 1 }}
-        >
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -100,13 +82,14 @@ export default function SignIn() {
               </Link>
             </Grid>
             <Grid item>
-              <Link to={`/signup`} variant="body2" component={RouterLink}>
+              <Link to={`/auth/SignUp`} variant="body2" component={RouterLink}>
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
           </Grid>
         </Box>
       </Box>
+      <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   );
 }
