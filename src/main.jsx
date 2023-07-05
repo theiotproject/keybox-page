@@ -11,6 +11,7 @@ import "@fontsource/roboto/700.css";
 import Error from "./pages/Error/Error.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import Home from "./pages/Home/Home.jsx";
+import Unverified from "./pages/Unverified/Unverified.jsx";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "dashboard/",
         element: <Dashboard />,
+      },
+      {
+        path: "unverified/",
+        element: <Unverified />,
       },
     ],
   },

@@ -7,20 +7,19 @@ import { Link as RouterLink } from "react-router-dom";
 import { auth } from "../../backend/db";
 import { useAuthState } from "react-firebase-hooks/auth";
 import SignOutBtn from "../../components/SignOutBtn";
-import { CircularProgress } from "@mui/material";
 import ErrorMsg from "../../components/ErrorMsg";
+import LoadingScreen from "../../components/LoadingScreen";
 
 function Home() {
   const [user, loading, error] = useAuthState(auth);
 
   if (loading) {
-    return <CircularProgress />;
+    return <LoadingScreen />;
   }
 
   if (error) {
     <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
   }
-
   return (
     <Box
       sx={{

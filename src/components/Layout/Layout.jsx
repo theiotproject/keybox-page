@@ -6,7 +6,7 @@ const defaultTheme = createTheme();
 function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
-      <main>
+      <main style={{ minHeight: "100vh" }}>
         <Outlet />
       </main>
       <Footer />

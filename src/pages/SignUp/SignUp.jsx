@@ -11,18 +11,17 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Link as RouterLink } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../backend/db";
 import { useNavigate } from "react-router-dom";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { CircularProgress } from "@mui/material";
 import ErrorMsg from "../../components/ErrorMsg";
-
 export default function SignUp() {
   const navigate = useNavigate();
+  // const usersRef = firestore.collection("users");
 
   const [createUserWithEmailAndPassword, user, loading, error] =
-    useCreateUserWithEmailAndPassword(auth);
+    useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
 
   const handleSignUpOnSubmit = (event) => {
     event.preventDefault();
@@ -39,7 +38,6 @@ export default function SignUp() {
     <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
   }
 
-  // If user was created successfully
   if (user) {
     navigate("/dashboard");
   }

@@ -14,8 +14,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { auth } from "../../backend/db";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
 import ErrorMsg from "../../components/ErrorMsg";
+import LoadingScreen from "../../components/LoadingScreen";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export default function SignIn() {
   };
 
   if (loading) {
-    return <CircularProgress />;
+    return <LoadingScreen />;
   }
 
   if (error) {
