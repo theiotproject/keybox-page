@@ -12,30 +12,35 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Link as RouterLink } from "react-router-dom";
 import { auth } from "../../backend/db";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
+import ErrorMsg from "../../components/ErrorMsg";
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
 
   const handleSignInOnSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    try {
-      // Sign Up user
-      await signInWithEmailAndPassword(
-        auth,
-        data.get("email"),
-        data.get("password")
-      );
-      navigate("/dashboard");
-    } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error(`Error: ${errorCode} - ${errorMessage}`);
-    }
+    signInWithEmailAndPassword(data.get("email"), data.get("password"));
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
+  }
+
+  // If user was signed in successfully
+  if (user) {
+    navigate("/dashboard");
+  }
 
   return (
     <Container component="main" maxWidth="xs">

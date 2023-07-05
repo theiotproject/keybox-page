@@ -14,28 +14,35 @@ import { Link as RouterLink } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../backend/db";
 import { useNavigate } from "react-router-dom";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { CircularProgress } from "@mui/material";
+import ErrorMsg from "../../components/ErrorMsg";
 
 export default function SignUp() {
   const navigate = useNavigate();
 
-  const handleSignUpOnSubmit = async (event) => {
+  const [createUserWithEmailAndPassword, user, loading, error] =
+    useCreateUserWithEmailAndPassword(auth);
+
+  const handleSignUpOnSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    try {
-      // Sign Up user
-      await createUserWithEmailAndPassword(
-        auth,
-        data.get("email"),
-        data.get("password")
-      );
-      navigate("/dashboard");
-    } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error(`Error: ${errorCode} - ${errorMessage}`);
-    }
+    createUserWithEmailAndPassword(data.get("email"), data.get("password"));
   };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
+  }
+
+  // If user was created successfully
+  if (user) {
+    navigate("/dashboard");
+  }
 
   return (
     <Container component="main" maxWidth="xs">
