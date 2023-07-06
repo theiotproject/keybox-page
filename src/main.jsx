@@ -12,7 +12,8 @@ import Error from "./pages/Error/Error.jsx";
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
 import Home from "./pages/Home/Home.jsx";
 import Unverified from "./pages/Unverified/Unverified.jsx";
-
+//TODO: ogarnij troche wyglad na demo, prezentacja na demo
+//TODO: ogarnij te importy bo syf straszny (wszędzie)
 const router = createBrowserRouter([
   {
     path: "/",

@@ -20,6 +20,7 @@ function Home() {
   if (error) {
     <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
   }
+
   return (
     <Box
       sx={{
@@ -32,8 +33,17 @@ function Home() {
       <CssBaseline enableColorScheme />
       <Container component="main" sx={{ mt: 8, mb: 2 }} maxWidth="sm">
         <Typography variant="h2" component="h1" gutterBottom>
-          Witaj <b>{user && auth.currentUser.email}</b> na stronie testowej
+          Witaj <b>{user && auth.currentUser.displayName}</b> na stronie
+          testowej
         </Typography>
+        {user && (
+          <img
+            src={`${auth.currentUser.photoURL}?w=164&h=164&fit=crop&auto=format`}
+            srcSet={`${auth.currentUser.photoURL}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+            alt={`${auth.currentUser.displayName}'s pfp`}
+            loading="lazy"
+          />
+        )}
         {!user ? (
           <>
             <Link to={`/signin`} variant="body2" component={RouterLink}>
