@@ -18,3 +18,11 @@
 <li>🛑 NEVER: do something like <code>const env = import.meta.env</code> in a component as now anyone can access all the values attached to <code>env</code>.</li>
 <li>🛑 NEVER: access your private environment variables in React components or routes (e.g. DON'T do this in a component: <code>console.log(import.meta.env.VITE_DATABASE_URL)</code>).</li>
 </ul>
+
+# Used technologies, api, hooks
+
+- firebase
+- react-firebase-hooks
+- react-hook-form
+- yup schema resolver for validation
+- react router
