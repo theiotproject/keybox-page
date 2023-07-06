@@ -20,21 +20,42 @@ import {
   sendEmailVerification,
   updateProfile,
 } from "firebase/auth";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 export default function SignUp() {
+  const schema = yup
+    .object({
+      firstName: yup.string().required("First Name field is required"),
+      lastName: yup.string().required("Last Name field is required"),
+      email: yup.string().required("Email field is required"),
+      password: yup
+        .string()
+        .required("Password field is required")
+        .min(8, "Password length should be at least 8 characters")
+        .max(32, "Password cannot exceed more than 32 characters"),
+      validatePassword: yup
+        .string()
+        .required("Confirm Password field is required")
+        .min(8, "Password length should be at least 8 characters")
+        .max(32, "Password cannot exceed more than 32 characters")
+        .oneOf([yup.ref("password")], "Passwords do not match"),
+    })
+    .required();
+
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const [loading, setLoading] = useState(false);
   const [firebaseErros, setFirebaseErrors] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
-  let password = watch("password");
 
   const onSubmit = async (data) => {
     //TODO: walidacja formularza rejestracji i logowania (ux)
@@ -124,11 +145,9 @@ export default function SignUp() {
                 id="firstName"
                 label="First Name"
                 autoFocus
-                {...register("firstName", {
-                  required: "First Name is required",
-                })}
-                error={!!errors.lastName}
-                helperText={errors.lastName?.message}
+                {...register("firstName")}
+                error={!!errors.firstName}
+                helperText={errors.firstName?.message}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -139,7 +158,7 @@ export default function SignUp() {
                 label="Last Name"
                 name="lastName"
                 autoComplete="family-name"
-                {...register("lastName", { required: "Last Name is required" })}
+                {...register("lastName")}
                 error={!!errors.lastName}
                 helperText={errors.lastName?.message}
               />
@@ -152,10 +171,7 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
-                })}
+                {...register("email")}
                 error={!!errors.email}
                 helperText={errors.email?.message}
               />
@@ -165,13 +181,13 @@ export default function SignUp() {
                 required
                 fullWidth
                 name="password"
+                id="password"
                 label="Password"
                 type="password"
-                id="password"
                 autoComplete="new-password"
-                {...register("password", { required: "Password is required" })}
                 error={!!errors.password}
                 helperText={errors.password?.message}
+                {...register("password")}
               />
             </Grid>
             <Grid item xs={12}>
@@ -179,18 +195,13 @@ export default function SignUp() {
                 required
                 fullWidth
                 name="validatePassword"
+                id="validatePassword"
                 label="Confirm Password"
                 type="password"
-                id="validatePassword"
                 autoComplete="off"
-                {...register("validatePassword", {
-                  required: "Please enter your password to confirm",
-                  validate: (match) => {
-                    match === password || "Passwords do not match";
-                  },
-                })}
                 error={!!errors.validatePassword}
                 helperText={errors.validatePassword?.message}
+                {...register("validatePassword")}
               />
             </Grid>
             <Grid item xs={12}>
