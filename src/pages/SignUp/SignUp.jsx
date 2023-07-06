@@ -1,35 +1,46 @@
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { Link as RouterLink } from "react-router-dom";
 import { auth } from "../../backend/db";
-import { useNavigate } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
 import ErrorMsg from "../../components/ErrorMsg";
+import { yupResolver } from "@hookform/resolvers/yup";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { CircularProgress } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   updateProfile,
 } from "firebase/auth";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import { useSignInWithGoogle } from "react-firebase-hooks/auth";
+import { Google } from "@mui/icons-material";
+
 export default function SignUp() {
+  //TODO: PASSWORD STRENGHT METTER https://upmostly.com/tutorials/build-a-password-strength-meter-react
+
   const schema = yup
     .object({
       firstName: yup.string().required("First Name field is required"),
       lastName: yup.string().required("Last Name field is required"),
-      email: yup.string().required("Email field is required"),
+      email: yup
+        .string()
+        .required("Email field is required")
+        .matches(
+          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+          "Your Email is incorrect"
+        ),
       password: yup
         .string()
         .required("Password field is required")
@@ -57,11 +68,10 @@ export default function SignUp() {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
-  const onSubmit = async (data) => {
-    //TODO: walidacja formularza rejestracji i logowania (ux)
-    console.log("Validation result: " + JSON.stringify(errors));
-    console.log(data);
+  const [signInWithGoogle, userGoogle, loadingGoogle, errorGoogle] =
+    useSignInWithGoogle(auth);
 
+  const onSubmit = async (data) => {
     setLoading(true);
     const user = await createUserWithEmailAndPassword(
       auth,
@@ -96,18 +106,17 @@ export default function SignUp() {
     }
   };
 
-  if (loading) {
+  if (loading || loadingGoogle) {
     return <CircularProgress />;
   }
 
-  if (firebaseErros) {
+  if (firebaseErros || errorGoogle) {
     return (
       <ErrorMsg errorMessage="Wystąpił nieznany błąd z bazą danych, sprawdź konsolę po więcej informacji" />
     );
   }
 
-  if (success) {
-    console.log("zaladowalem");
+  if (success || userGoogle) {
     navigate("/dashboard");
   }
 
@@ -218,6 +227,15 @@ export default function SignUp() {
             sx={{ mt: 3, mb: 2 }}
           >
             Sign Up
+          </Button>
+          <Button
+            startIcon={<Google />}
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={() => signInWithGoogle()}
+          >
+            Sign With Google
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>

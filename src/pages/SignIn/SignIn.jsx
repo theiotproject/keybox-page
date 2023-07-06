@@ -12,15 +12,28 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Link as RouterLink } from "react-router-dom";
 import { auth } from "../../backend/db";
-import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import {
+  useSignInWithEmailAndPassword,
+  useSignInWithGoogle,
+} from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import ErrorMsg from "../../components/ErrorMsg";
 import LoadingScreen from "../../components/LoadingScreen";
+import {
+  GoogleAuthProvider,
+  getRedirectResult,
+  signInWithRedirect,
+} from "firebase/auth";
+import { CircularProgress } from "@mui/material";
+import { Google } from "@mui/icons-material";
 
 export default function SignIn() {
   const navigate = useNavigate();
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
+
+  const [signInWithGoogle, userGoogle, loadingGoogle, errorGoogle] =
+    useSignInWithGoogle(auth);
 
   const handleSignInOnSubmit = async (event) => {
     event.preventDefault();
@@ -29,16 +42,17 @@ export default function SignIn() {
     signInWithEmailAndPassword(data.get("email"), data.get("password"));
   };
 
-  if (loading) {
-    return <LoadingScreen />;
+  if (loading || loadingGoogle) {
+    return <CircularProgress />;
   }
 
-  if (error) {
-    <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
+  if (error || errorGoogle) {
+    return (
+      <ErrorMsg errorMessage="Wystąpił nieznany błąd z bazą danych, sprawdź konsolę po więcej informacji" />
+    );
   }
 
-  // If user was signed in successfully
-  if (user) {
+  if (user || userGoogle) {
     navigate("/dashboard");
   }
 
@@ -97,6 +111,15 @@ export default function SignIn() {
             sx={{ mt: 3, mb: 2 }}
           >
             Sign In
+          </Button>
+          <Button
+            startIcon={<Google />}
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={() => signInWithGoogle()}
+          >
+            Sign With Google
           </Button>
           <Grid container>
             <Grid item xs>

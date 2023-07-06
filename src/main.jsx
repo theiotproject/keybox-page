@@ -14,6 +14,7 @@ import Home from "./pages/Home/Home.jsx";
 import Unverified from "./pages/Unverified/Unverified.jsx";
 //TODO: ogarnij troche wyglad na demo, prezentacja na demo
 //TODO: ogarnij te importy bo syf straszny (wszędzie)
+//TODO: formatowanie (sortowanie importów) https://levelup.gitconnected.com/how-to-sort-imports-in-react-project-550f5ce70cbf
 const router = createBrowserRouter([
   {
     path: "/",
