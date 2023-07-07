@@ -5,8 +5,6 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
-    'airbnb',
-    ["airbnb", "airbnb/hooks"]
   ],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   settings: { react: { version: '18.2' } },
@@ -19,9 +17,8 @@ module.exports = {
     "simple-import-sort/imports": "error",
     "simple-import-sort/imports": ["error", {
       groups: [
-        ["^react(.*)",],
-        ["@mui/(.*)",],
-        ["components/*"],
+        ["^react"],
+        ["^antd"],
         ["^@?\\w"],
         ["@/(.*)"],
         ["^[./]"]
