@@ -7,11 +7,11 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
-import ErrorMsg from "../../components/ErrorMsg";
-import LoadingScreen from "../../components/LoadingScreen";
-import SignOutBtn from "../../components/SignOutBtn";
+import ErrorMsg from "components/ErrorMsg";
+import LoadingScreen from "components/LoadingScreen";
 
-import { auth } from "../../backend/db";
+import { auth } from "backend/db";
+import SignOutBtn from "components/SignOutBtn";
 
 function Home() {
   const [user, loading, error] = useAuthState(auth);

@@ -20,8 +20,8 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-import ErrorMsg from "../../components/ErrorMsg";
-import LoadingScreen from "../../components/LoadingScreen";
+import ErrorMsg from "components/ErrorMsg";
+import LoadingScreen from "components/LoadingScreen";
 
 import {
   GoogleAuthProvider,
@@ -29,7 +29,7 @@ import {
   signInWithRedirect,
 } from "firebase/auth";
 
-import { auth } from "../../backend/db";
+import { auth } from "backend/db";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -120,7 +120,7 @@ export default function SignIn() {
             startIcon={<Google />}
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 3}}
             onClick={() => signInWithGoogle()}
           >
             Sign With Google

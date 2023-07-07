@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-import Footer from "./components/Footer";
+import Footer from "components/Layout/components/Footer";
 
 const defaultTheme = createTheme();
 
