@@ -1,10 +1,13 @@
-import { Typography } from "@mui/material";
-import SignOutBtn from "../../components/SignOutBtn";
-import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../../backend/db";
+import { useNavigate } from "react-router-dom";
+
+import { Typography } from "@mui/material";
+
 import ErrorMsg from "../../components/ErrorMsg";
 import LoadingScreen from "../../components/LoadingScreen";
+import SignOutBtn from "../../components/SignOutBtn";
+
+import { auth } from "../../backend/db";
 
 function Dashboard() {
   const [user, loading, error] = useAuthState(auth);

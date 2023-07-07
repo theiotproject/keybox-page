@@ -1,8 +1,10 @@
-import { Button, CircularProgress } from "@mui/material";
-import { auth } from "../backend/db";
-import { useNavigate } from "react-router-dom";
-import ErrorMsg from "./ErrorMsg";
 import { useSignOut } from "react-firebase-hooks/auth";
+import { useNavigate } from "react-router-dom";
+
+import { Button, CircularProgress } from "@mui/material";
+
+import { auth } from "../backend/db";
+import ErrorMsg from "./ErrorMsg";
 
 function SignOutBtn() {
   const navigate = useNavigate();

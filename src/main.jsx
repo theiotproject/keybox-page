@@ -1,20 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+
 import Layout from "./components/Layout/Layout.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import SignIn from "./pages/SignIn/SignIn.jsx";
-import SignUp from "./pages/SignUp/SignUp.jsx";
+
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import Error from "./pages/Error/Error.jsx";
+
 import Dashboard from "./pages/Dashboard/Dashboard.jsx";
+import Error from "./pages/Error/Error.jsx";
 import Home from "./pages/Home/Home.jsx";
+import SignIn from "./pages/SignIn/SignIn.jsx";
+import SignUp from "./pages/SignUp/SignUp.jsx";
 import Unverified from "./pages/Unverified/Unverified.jsx";
-//TODO: ogarnij troche wyglad na demo, prezentacja na demo
-//TODO: ogarnij te importy bo syf straszny (wszędzie)
-//TODO: formatowanie (sortowanie importów) https://levelup.gitconnected.com/how-to-sort-imports-in-react-project-550f5ce70cbf
+
 const router = createBrowserRouter([
   {
     path: "/",

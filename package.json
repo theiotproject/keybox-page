@@ -29,6 +29,7 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.0.0",
@@ -37,5 +38,10 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
     "vite": "^4.3.9"
+  },
+  "prettier": {
+    "importOrder": ["^react(.*)", "@mui/(.*)", "components/*", "<THIRD_PARTY_MODULES>", "@/(.*)", "^[./]"],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true
   }
 }

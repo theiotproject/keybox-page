@@ -1,5 +1,3 @@
-//TODO: dokumentacja
-
 # How to run project in dev mode
 
 1. Change name of .env.example to .env

@@ -1,8 +1,11 @@
-import { auth } from "../../backend/db";
-import ErrorMsg from "../../components/ErrorMsg";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
+import { useSignInWithGoogle } from "react-firebase-hooks/auth";
+import { useForm } from "react-hook-form";
+import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+import { Google } from "@mui/icons-material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { CircularProgress } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -14,18 +17,19 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+
+import ErrorMsg from "../../components/ErrorMsg";
+import LoadingScreen from "../../components/LoadingScreen";
+
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   updateProfile,
 } from "firebase/auth";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { Link as RouterLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import { useSignInWithGoogle } from "react-firebase-hooks/auth";
-import { Google } from "@mui/icons-material";
+
+import { auth } from "../../backend/db";
 
 export default function SignUp() {
   //TODO: PASSWORD STRENGHT METTER https://upmostly.com/tutorials/build-a-password-strength-meter-react
@@ -107,7 +111,7 @@ export default function SignUp() {
   };
 
   if (loading || loadingGoogle) {
-    return <CircularProgress />;
+    return <LoadingScreen />;
   }
 
   if (firebaseErros || errorGoogle) {
