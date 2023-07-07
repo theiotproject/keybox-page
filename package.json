@@ -7,6 +7,7 @@
     "dev": "env-cmd -f .env vite",
     "build": "env-cmd -f .env vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0 --fix",
     "preview": "env-cmd -f .env vite preview"
   },
   "dependencies": {
@@ -40,7 +41,14 @@
     "vite": "^4.3.9"
   },
   "prettier": {
-    "importOrder": ["^react(.*)", "@mui/(.*)", "components/*", "<THIRD_PARTY_MODULES>", "@/(.*)", "^[./]"],
+    "importOrder": [
+      "^react(.*)",
+      "@mui/(.*)",
+      "components/*",
+      "<THIRD_PARTY_MODULES>",
+      "@/(.*)",
+      "^[./]"
+    ],
     "importOrderSeparation": true,
     "importOrderSortSpecifiers": true
   }
