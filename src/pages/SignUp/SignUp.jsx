@@ -18,8 +18,8 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-import ErrorMsg from "components/ErrorMsg";
-import LoadingScreen from "components/LoadingScreen";
+import ErrorMsg from "../../components/ErrorMsg";
+import LoadingScreen from "../../components/LoadingScreen";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -29,7 +29,7 @@ import {
 } from "firebase/auth";
 import * as yup from "yup";
 
-import { auth } from "backend/db";
+import { auth } from "../../backend/db";
 
 export default function SignUp() {
   //TODO: PASSWORD STRENGHT METTER https://upmostly.com/tutorials/build-a-password-strength-meter-react
@@ -228,7 +228,7 @@ export default function SignUp() {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3 }}
+            sx={{ mt: 3, mb: 2 }}
           >
             Sign Up
           </Button>

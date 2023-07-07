@@ -3,8 +3,8 @@ import {
   useAuthState,
   useSendEmailVerification,
 } from "react-firebase-hooks/auth";
-import { auth } from "backend/db";
-import SignOutBtn from "components/SignOutBtn";
+import { auth } from "../../backend/db";
+import SignOutBtn from "../../components/SignOutBtn";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 

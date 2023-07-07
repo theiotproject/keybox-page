@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import { Button, CircularProgress } from "@mui/material";
 
-import { auth } from "backend/db";
-import ErrorMsg from "components/ErrorMsg";
+import { auth } from "../backend/db";
+import ErrorMsg from "./ErrorMsg";
 
 function SignOutBtn() {
   const navigate = useNavigate();
