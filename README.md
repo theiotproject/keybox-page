@@ -2,6 +2,7 @@
 
 1. Change name of .env.example to .env
 2. Fill all fields with values from firebase project
+3. Install node packages with `npm i` command in terminal while beeing inside of project directory
 
 # Disclaimers for developers
 
@@ -19,8 +20,9 @@
 
 # Used technologies, api, hooks
 
+- project created using `$ npm create vite@latest`
+- react router
 - firebase
 - react-firebase-hooks
 - react-hook-form
 - yup schema resolver for validation
-- react router
