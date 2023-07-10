@@ -30,10 +30,22 @@ import {
 import * as yup from "yup";
 
 import { auth } from "../../backend/db";
+import { useAuthProvider } from "../../contexts/AuthContext";
 
 export default function SignUp() {
   //TODO: PASSWORD STRENGHT METTER https://upmostly.com/tutorials/build-a-password-strength-meter-react
 
+  const { currentUser } = useAuthProvider();
+
+  const [loading, setLoading] = useState(false);
+  const [firebaseErros, setFirebaseErrors] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
+
+  const [signInWithGoogle, userGoogle, loadingGoogle, errorGoogle] =
+    useSignInWithGoogle(auth);
+
+  // Form yup validation schema
   const schema = yup
     .object({
       firstName: yup.string().required("First Name field is required"),
@@ -66,14 +78,6 @@ export default function SignUp() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-
-  const [loading, setLoading] = useState(false);
-  const [firebaseErros, setFirebaseErrors] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const navigate = useNavigate();
-
-  const [signInWithGoogle, userGoogle, loadingGoogle, errorGoogle] =
-    useSignInWithGoogle(auth);
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -120,7 +124,7 @@ export default function SignUp() {
     );
   }
 
-  if (success || userGoogle) {
+  if (success || userGoogle || currentUser) {
     navigate("/dashboard");
   }
 

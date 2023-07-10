@@ -6,7 +6,7 @@ import Footer from "./components/Footer";
 
 const defaultTheme = createTheme();
 
-function App() {
+function Layout() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <main style={{ minHeight: "100vh" }}>
@@ -17,4 +17,4 @@ function App() {
   );
 }
 
-export default App;
+export default Layout;

@@ -1,4 +1,3 @@
-import { useAuthState } from "react-firebase-hooks/auth";
 import { Link as RouterLink } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -7,22 +6,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
-import ErrorMsg from "../../components/ErrorMsg";
-import LoadingScreen from "../../components/LoadingScreen";
 import SignOutBtn from "../../components/SignOutBtn";
 
 import { auth } from "../../backend/db";
+import { useAuthProvider } from "../../contexts/AuthContext";
 
 function Home() {
-  const [user, loading, error] = useAuthState(auth);
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-  if (error) {
-    <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
-  }
+  const { currentUser } = useAuthProvider();
 
   return (
     <Box
@@ -50,11 +40,11 @@ function Home() {
             gutterBottom
             sx={{ textAlign: "center" }}
           >
-            Witaj <b>{user && auth.currentUser.displayName}</b> na stronie
-            testowej
+            Witaj <b>{currentUser && auth.currentUser.displayName}</b> na
+            stronie testowej
           </Typography>
 
-          {user && (
+          {currentUser && (
             <img
               src={`${auth.currentUser.photoURL}?w=164&h=164&fit=crop&auto=format`}
               srcSet={`${auth.currentUser.photoURL}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
@@ -65,7 +55,7 @@ function Home() {
             />
           )}
 
-          {!user ? (
+          {!currentUser ? (
             <Box>
               <Link to={`/signin`} variant="body2" component={RouterLink}>
                 zaloguj się

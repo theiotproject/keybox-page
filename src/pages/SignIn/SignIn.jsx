@@ -23,16 +23,14 @@ import Typography from "@mui/material/Typography";
 import ErrorMsg from "../../components/ErrorMsg";
 import LoadingScreen from "../../components/LoadingScreen";
 
-import {
-  GoogleAuthProvider,
-  getRedirectResult,
-  signInWithRedirect,
-} from "firebase/auth";
-
 import { auth } from "../../backend/db";
+import { useAuthProvider } from "../../contexts/AuthContext";
 
 export default function SignIn() {
   const navigate = useNavigate();
+
+  const { currentUser } = useAuthProvider();
+
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
 
@@ -56,7 +54,7 @@ export default function SignIn() {
     );
   }
 
-  if (user || userGoogle) {
+  if (currentUser || user || userGoogle) {
     navigate("/dashboard");
   }
 

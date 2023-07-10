@@ -1,43 +1,45 @@
-import { Button, Typography } from "@mui/material";
+import { useEffect } from "react";
 import {
   useAuthState,
   useSendEmailVerification,
 } from "react-firebase-hooks/auth";
-import { auth } from "../../backend/db";
-import SignOutBtn from "../../components/SignOutBtn";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+
+import { Button, Typography } from "@mui/material";
+
+import SignOutBtn from "../../components/SignOutBtn";
+
+import { auth } from "../../backend/db";
+import { useAuthProvider } from "../../contexts/AuthContext";
 
 function Unverified() {
-  const [user, loading] = useAuthState(auth);
+  const { currentUser } = useAuthProvider();
   const navigate = useNavigate();
 
   // Once every 10 seconds site refreshes to check if user verified email
   useEffect(() => {
     // Check before interval if user is still unverified
-    if (!loading) {
-      if (user.emailVerified) {
-        navigate("/dashboard");
-      }
+    if (currentUser?.emailVerified) {
+      navigate("/dashboard");
     }
 
-    const interval = setInterval(() => {
-      if (user.emailVerified) {
+    const isUserVerifiedInterval = setInterval(() => {
+      if (currentUser.emailVerified) {
         navigate("/dashboard");
       } else {
         window.location.reload();
       }
     }, 10000);
-    return () => clearInterval(interval);
-  }, [user, loading]);
+    return () => clearInterval(isUserVerifiedInterval);
+  }, [currentUser]);
 
-  const [sendEmailVerification, sending, errorSend] =
+  const [sendEmailVerification, sending, error] =
     useSendEmailVerification(auth);
 
-  if (errorSend) {
+  if (error) {
     return (
       <div>
-        <p>Error: {errorSend.message}</p>
+        <p>Error: {error.message}</p>
       </div>
     );
   }
