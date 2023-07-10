@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import CssBaseline from "@mui/material/CssBaseline";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import ErrorPage from "./pages/ErrorPage.jsx";
 import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
