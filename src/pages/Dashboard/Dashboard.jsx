@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 import { Typography } from "@mui/material";
 
-import ErrorMsg from "../../components/ErrorMsg";
-import LoadingScreen from "../../components/LoadingScreen";
-import SignOutBtn from "../../components/SignOutBtn";
+import ErrorMsg from "src/components/ErrorMsg";
+import LoadingScreen from "src/components/LoadingScreen";
+import SignOutBtn from "src/components/SignOutBtn";
 
-import { auth } from "../../backend/db";
+import { auth } from "src/backend/db";
 
 function Dashboard() {
   const [user, loading, error] = useAuthState(auth);

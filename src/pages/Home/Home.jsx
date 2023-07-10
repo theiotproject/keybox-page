@@ -6,10 +6,10 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
-import SignOutBtn from "../../components/SignOutBtn";
+import SignOutBtn from "src/components/SignOutBtn";
 
-import { auth } from "../../backend/db";
-import { useAuthProvider } from "../../contexts/AuthContext";
+import { auth } from "src/backend/db";
+import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Home() {
   const { currentUser } = useAuthProvider();

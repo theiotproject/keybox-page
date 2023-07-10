@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 
 import { Button, Typography } from "@mui/material";
 
-import SignOutBtn from "../../components/SignOutBtn";
+import SignOutBtn from "src/components/SignOutBtn";
 
-import { auth } from "../../backend/db";
-import { useAuthProvider } from "../../contexts/AuthContext";
+import { auth } from "src/backend/db";
+import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Unverified() {
   const { currentUser } = useAuthProvider();

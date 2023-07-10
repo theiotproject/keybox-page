@@ -20,11 +20,11 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-import ErrorMsg from "../../components/ErrorMsg";
-import LoadingScreen from "../../components/LoadingScreen";
+import ErrorMsg from "src/components/ErrorMsg";
+import LoadingScreen from "src/components/LoadingScreen";
 
-import { auth } from "../../backend/db";
-import { useAuthProvider } from "../../contexts/AuthContext";
+import { auth } from "src/backend/db";
+import { useAuthProvider } from "src/contexts/AuthContext";
 
 export default function SignIn() {
   const navigate = useNavigate();

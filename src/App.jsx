@@ -1,28 +1,20 @@
 import React, { useEffect, useState } from "react";
-import {
-  BrowserRouter,
-  Route,
-  RouterProvider,
-  Routes,
-  createBrowserRouter,
-  createRoutesFromElements,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { CircularProgress } from "@mui/material";
 
-import Layout from "./components/Layout/Layout";
-import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "src/components/Layout/Layout";
+import ProtectedRoute from "src/components/ProtectedRoute";
 
 import { onAuthStateChanged } from "firebase/auth";
-
-import { auth } from "./backend/db";
-import { AuthProvider } from "./contexts/AuthContext";
-import Dashboard from "./pages/Dashboard/Dashboard";
-import Error from "./pages/Error/Error";
-import Home from "./pages/Home/Home";
-import SignIn from "./pages/SignIn/SignIn";
-import SignUp from "./pages/SignUp/SignUp";
-import Unverified from "./pages/Unverified/Unverified";
+import { auth } from "src/backend/db";
+import { AuthProvider } from "src/contexts/AuthContext";
+import Dashboard from "src/pages/Dashboard/Dashboard";
+import Error from "src/pages/Error/Error";
+import Home from "src/pages/Home/Home";
+import SignIn from "src/pages/SignIn/SignIn";
+import SignUp from "src/pages/SignUp/SignUp";
+import Unverified from "src/pages/Unverified/Unverified";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);

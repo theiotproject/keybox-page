@@ -18,8 +18,8 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-import ErrorMsg from "../../components/ErrorMsg";
-import LoadingScreen from "../../components/LoadingScreen";
+import ErrorMsg from "src/components/ErrorMsg";
+import LoadingScreen from "src/components/LoadingScreen";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -27,10 +27,9 @@ import {
   sendEmailVerification,
   updateProfile,
 } from "firebase/auth";
+import { auth } from "src/backend/db";
+import { useAuthProvider } from "src/contexts/AuthContext";
 import * as yup from "yup";
-
-import { auth } from "../../backend/db";
-import { useAuthProvider } from "../../contexts/AuthContext";
 
 export default function SignUp() {
   //TODO: PASSWORD STRENGHT METTER https://upmostly.com/tutorials/build-a-password-strength-meter-react
