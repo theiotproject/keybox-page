@@ -7,11 +7,14 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Copyright from "../components/Copyright";
 import { Link as RouterLink } from "react-router-dom";
+import bgimage from "../assets/bg.jpg";
+import logo from "../assets/logo.png";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -26,70 +29,115 @@ export default function SignIn() {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth='xl' sx={{alignItems: "center"}}>
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
           display: "flex",
-          flexDirection: "column",
+          flexDirection: {xs:'column', md:'column', xl:'row'},
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
+      {/* logo for mobile */}
+      <Box  sx={{backgroundImage: `url(${bgimage})`,  backgroundRepeat: "no-repeat", backgroundSize: 'cover', 
+      width:{ xs:1, md: 1, xl: 1/2 }, height: '11rem', alignItems: "center", justifyContent:'center', display:{xs:'flex', md: 'flex', xl:'none'}, flexDirection: "column"}}>
+      <Box
+        component="img"
+        sx={{height: '7rem', width: '7rem', mt: 1}}
+        alt="logo"
+        src={logo}
+      />
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+      <Typography component="body2" variant="body2" alignContent='left'>
+        storing your keys has never been easier!
+      </Typography>
+      </Grid>
+      </Box>
+      {/* left side of pc and laptops */}
+      <Box  sx={{backgroundImage: `url(${bgimage})`,  backgroundRepeat: "no-repeat", backgroundSize: 'cover', width:{ xs:1, md: 1, xl: 1/2 }, height: '93vh', alignItems: "center", display: {xs:'none', md:'none', xl:"flex"}, flexDirection: "column"}}>
+      <Box
+        alignContent='center'
+        component="img"
+        sx={{height: '30rem', width: '30rem', mt: 5}}
+        alt="logo"
+        src={logo}
+      />
+      <Grid container direction="column" justifyContent="center" alignItems="flex-start" sx={{p: 5}}>
+      <Typography component="h3" variant="h3" alignContent='left'>
+        Key Box
+      </Typography>
+      <Typography component="body2" variant="body2" alignContent='left'>
+        storing your keys has never been easier!
+      </Typography>
+      <Button
+            type="button"
+            width='30%'
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 3, mb: 2, borderRadius: 30, backgroundColor: '#3AA090'}}
           >
-            Sign In
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link to={`/auth/SignUp`} variant="body2" component={RouterLink}>
-                {"Don't have an account? Sign Up"}
-              </Link>
+            Visit our website
+      </Button>
+      </Grid>
+      </Box>
+      {/* the form */}
+      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ p:{ xs:1, md: 1, xl: 10 }, width: { xs:1, md:1, xl: 1/2 }, display: "flex", flexDirection: 'column'}}>
+      <Box sx={{alignContent: 'flex-start'}}>
+      <Typography component="h1" variant="h1">
+        Hello Again!
+      </Typography>
+      <Typography component="h2" variant="h2">
+        Sign in
+      </Typography>
+      </Box>
+      <Grid sx={{mt: 5}}>
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          id="email"
+          label="Email Address"
+          name="email"
+          autoComplete="email"
+          autoFocus
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+        />
+        <FormControlLabel
+          control={<Checkbox value="remember" color="primary" />}
+          label="Remember me"
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Sign In
+        </Button>
+        <Grid container>
+          <Grid item xs>
+            <Link href="#" variant="body2" underline="hover">
+              Forgot password?
+            </Link>
+          </Grid>
+          <Grid item sx={{mb:5}}>
+            <Link to={`/auth/SignUp`} variant="body2" component={RouterLink} underline="hover">
+              {"Don't have an account? Sign Up"}
+            </Link>
             </Grid>
           </Grid>
-        </Box>
+        </Grid>
       </Box>
-      <Copyright sx={{ mt: 8, mb: 4 }} />
-    </Container>
-  );
+    </Box>
+    <Copyright />
+  </Container>
+);
 }
