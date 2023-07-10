@@ -1,38 +1,49 @@
-import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
-import Footer from "./components/Footer";
+import Copyright from "./components/Copyright";
 import { Link as RouterLink } from "react-router-dom";
-
+import LeftSide from "./components/LeftSide";
+import { Container, CssBaseline } from "@mui/material";
+import LeftSideMobile from "./components/LeftSideMobile";
 
 function App() {
   return (
+    <Box>
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
+          flexDirection: { xs: "column", md: "column", xl: "row" },
+          alignItems: "center",
         }}
       >
         <CssBaseline />
-        <Container component="main" sx={{ mt: 8, mb: 2 }} maxWidth="sm">
-          <Typography gutterBottom variant='h1'>
-            Witaj na stronie testowej
+        <LeftSide />
+        <LeftSideMobile />
+        <Box
+          sx={{
+            p: { xs: 1, md: 1, xl: 10 },
+            width: { xs: 1, md: 1, xl: 1 / 2 },
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Typography gutterBottom variant="h1">
+            Welcome to Key Box
           </Typography>
-          
-          <Link to={`/auth/SignUp`} component={RouterLink} variant="body2">
-            zaloguj się
-          </Link>{" "}
-          albo{" "}
-          <Link to={`/auth/SignUp`} component={RouterLink} variant="body2">
-            zarejestruj
-          </Link>
-          !
-        </Container>
-        <Footer />
+          <Typography variant="h2">
+            <Link to={`/auth/SignUp`} component={RouterLink} underline="hover">
+              Sign Up
+            </Link>{" "}
+            or{" "}
+            <Link to={`/auth/SignUp`} component={RouterLink} underline="hover">
+              Sign In
+            </Link>
+          </Typography>
+        </Box>
       </Box>
+      <Copyright />
+    </Box>
   );
 }
 
