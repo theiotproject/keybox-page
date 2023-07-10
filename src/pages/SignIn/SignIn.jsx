@@ -120,7 +120,7 @@ export default function SignIn() {
             startIcon={<Google />}
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 1, mb: 2 }}
             onClick={() => signInWithGoogle()}
           >
             Sign With Google
