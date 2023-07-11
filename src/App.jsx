@@ -1,33 +1,59 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import { CircularProgress } from "@mui/material";
+
+import Layout from "src/components/Layout/Layout";
+import ProtectedRoute from "src/components/ProtectedRoute";
+
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "src/backend/db";
+import { AuthProvider } from "src/contexts/AuthContext";
+import Dashboard from "src/pages/Dashboard/Dashboard";
+import Error from "src/pages/Error/Error";
+import Home from "src/pages/Home/Home";
+import SignIn from "src/pages/SignIn/SignIn";
+import SignUp from "src/pages/SignUp/SignUp";
+import Unverified from "src/pages/Unverified/Unverified";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+  }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <AuthProvider value={{ currentUser }}>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              element={<Layout />}
+              errorElement={<Error />}
+              loader={<CircularProgress />}
+            >
+              <Route path="/" element={<Home />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute
+                    isSignedIn={currentUser}
+                    isEmailVerified={currentUser?.emailVerified}
+                  >
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+            <Route path="/unverified" element={<Unverified />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </>
   );
 }
