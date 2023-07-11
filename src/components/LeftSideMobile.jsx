@@ -32,7 +32,7 @@ function LeftSideMobile() {
         justifyContent="center"
         alignItems="center"
       >
-        <Typography component="body2" variant="body2" alignContent="left">
+        <Typography variant="body2" alignContent="left">
           storing your keys has never been easier!
         </Typography>
       </Grid>

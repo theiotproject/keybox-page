@@ -6,6 +6,7 @@ import { Typography } from "@mui/material";
 import ErrorMsg from "src/components/ErrorMsg";
 import LoadingScreen from "src/components/LoadingScreen";
 import SignOutBtn from "src/components/SignOutBtn";
+import AddNewDevice from "src/components/AddNewDevice";
 
 import { auth } from "src/backend/db";
 
@@ -35,6 +36,7 @@ function Dashboard() {
       <Typography component="h1" variant="h2">
         Cześć: {auth.currentUser.email}
       </Typography>
+      <AddNewDevice />
       <SignOutBtn />
     </div>
   );

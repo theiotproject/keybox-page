@@ -39,7 +39,7 @@ function LeftSide() {
         <Typography component="h3" variant="h3" alignContent="left">
           Key Box
         </Typography>
-        <Typography component="body2" variant="body2" alignContent="left">
+        <Typography variant="body2" alignContent="left">
           storing your keys has never been easier!
         </Typography>
         <Button

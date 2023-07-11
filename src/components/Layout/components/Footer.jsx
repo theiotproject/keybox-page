@@ -6,7 +6,7 @@ import Copyright from "../../Copyright";
 function Footer() {
   return (
     <footer>
-      <Copyright />;
+
     </footer>
   );
 }

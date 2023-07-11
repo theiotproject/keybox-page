@@ -148,13 +148,13 @@ export default function SignUp() {
           noValidate
           onSubmit={handleSubmit(signUpOnSubmit)}
           sx={{
-            p: { xs: 1, md: 1, xl: 10 },
+            p: { xs: 3, md: 3, xl: 10 },
             width: { xs: 1, md: 1, xl: 1 / 2 },
             display: "flex",
             flexDirection: "column",
           }}
         >
-          <Box sx={{ alignContent: "flex-start" }}>
+          <Box sx={{ alignContent: "flex-start"}}>
             <Typography component="h1" variant="h1">
               Hello!
             </Typography>
@@ -258,7 +258,7 @@ export default function SignUp() {
               startIcon={<Google />}
               fullWidth
               variant="contained"
-              sx={{ m: 1, width: "30%" }}
+              sx={{ m: 1, width: "30%", p:1 }}
               onClick={() => signInWithGoogle()}
             >
               {" "}
@@ -266,9 +266,9 @@ export default function SignUp() {
             </Button>
           </Box>
           <Grid container justifyContent="center">
-            <Grid item sx={{ mb: 5 }}>
+            <Grid item sx={{ mb: 3 }}>
               <Link
-                to={`/auth/SignIn`}
+                to={`/signin`}
                 variant="body2"
                 component={RouterLink}
                 underline="hover"
