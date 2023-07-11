@@ -8,10 +8,8 @@ function Copyright(props) {
       fullWidth
       sx={{
         backgroundColor: "primary.main",
-        height: "7vh",
         alignItems: "center",
         p: 2,
-        position: "fixed",
         bottom: 0,
         width: "100%",
       }}

@@ -1,8 +1,8 @@
-import { createTheme } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
     typography: {
-      fontFamily: ["Geometria", "Poppins"].join(","),
+      fontFamily: ["Poppins"].join(","),
       h1: {
         color: "#333",
         fontSize: 70,
@@ -16,7 +16,7 @@ const theme = createTheme({
       h2: {
         color: "#333",
         fontSize: 30,
-        fontFamily: "Geometria",
+        fontFamily: "Poppins",
         fontStyle: "normal",
         fontWeight: 400,
         lineHeight: "normal",
@@ -35,7 +35,7 @@ const theme = createTheme({
       body2: {
         color: "#FFF",
         fontSize: 20,
-        fontFamily: "Geometria",
+        fontFamily: "Poppins",
         fontStyle: "normal",
         fontWeight: 500,
         lineHeight: "normal",
@@ -72,4 +72,4 @@ const theme = createTheme({
     },
   });
 
-  export { theme }
+  export default theme;

@@ -19,6 +19,7 @@ function LeftSide() {
         alignItems: "center",
         display: { xs: "none", md: "none", xl: "flex" },
         flexDirection: "column",
+        justifyContent: "center",
       }}
     >
       <Box

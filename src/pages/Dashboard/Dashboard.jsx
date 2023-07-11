@@ -32,7 +32,7 @@ function Dashboard() {
 
   return (
     <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
-      <Typography component="h1" variant="h3">
+      <Typography component="h1" variant="h2">
         Cześć: {auth.currentUser.email}
       </Typography>
       <SignOutBtn />

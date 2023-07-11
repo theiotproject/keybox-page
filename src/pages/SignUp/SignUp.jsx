@@ -19,6 +19,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import ErrorMsg from "src/components/ErrorMsg";
+import LeftSide from "src/components/LeftSide";
+import LeftSideMobile from "src/components/LeftSideMobile";
 import LoadingScreen from "src/components/LoadingScreen";
 
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -131,7 +133,6 @@ export default function SignUp() {
     //
 
     <Box>
-      <CssBaseline />
       <Box
         sx={{
           display: "flex",
@@ -278,7 +279,6 @@ export default function SignUp() {
           </Grid>
         </Box>
       </Box>
-      <Copyright />
     </Box>
   );
 }

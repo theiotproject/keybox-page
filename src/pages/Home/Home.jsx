@@ -25,7 +25,6 @@ function Home() {
           alignItems: "center",
         }}
       >
-        <CssBaseline />
         <LeftSide />
         <LeftSideMobile />
         <Box
@@ -41,21 +40,11 @@ function Home() {
           </Typography>
           {!currentUser ? (
             <Typography variant="h2">
-              <Link
-                to={`/signin`}
-                variant="body2"
-                component={RouterLink}
-                underline="hover"
-              >
+              <Link to={`/signin`} component={RouterLink} underline="hover">
                 Sign In
               </Link>{" "}
               or{" "}
-              <Link
-                to={`/signup`}
-                variant="body2"
-                component={RouterLink}
-                underline="hover"
-              >
+              <Link to={`/signup`} component={RouterLink} underline="hover">
                 Sign Up
               </Link>
               !
@@ -65,7 +54,6 @@ function Home() {
           )}
         </Box>
       </Box>
-      <Copyright />
     </Box>
   );
 }
