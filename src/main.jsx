@@ -1,14 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import CssBaseline from "@mui/material/CssBaseline";
+
+import { CssBaseline } from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
 import App from "./App.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Button from "@mui/material/Button";
-import ErrorPage from "./pages/ErrorPage.jsx";
-import SignIn from "./pages/SignIn.jsx";
-import SignUp from "./pages/SignUp.jsx";
-import { ThemeProvider, createTheme } from "@mui/material";
-import { Copyright } from "@mui/icons-material";
 
 const theme = createTheme({
   typography: {
@@ -82,27 +78,11 @@ const theme = createTheme({
   },
 });
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "auth/SignIn/",
-    element: <SignIn />,
-  },
-  {
-    path: "auth/SignUp/",
-    element: <SignUp />,
-  },
-]);
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <RouterProvider router={router} />
+      <App />
     </ThemeProvider>
   </React.StrictMode>
 );

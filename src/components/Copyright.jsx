@@ -1,6 +1,6 @@
 import { Link } from "@mui/material";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 function Copyright(props) {
   return (
