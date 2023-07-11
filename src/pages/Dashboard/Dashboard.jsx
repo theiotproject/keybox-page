@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -8,10 +9,14 @@ import LoadingScreen from "src/components/LoadingScreen";
 import SignOutBtn from "src/components/SignOutBtn";
 
 import { auth } from "src/backend/db";
+import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Dashboard() {
-  const [user, loading, error] = useAuthState(auth);
+  const { currentUser, error, loading } = useAuthProvider();
   const navigate = useNavigate();
+  useEffect(() => {
+    console.log(currentUser);
+  });
 
   if (loading) {
     return <LoadingScreen />;
@@ -22,11 +27,11 @@ function Dashboard() {
   }
 
   // If user tries to access this page without beeing signed, they are redirected to sign in page
-  if (!user) {
+  if (!currentUser) {
     navigate("/signin");
   }
 
-  if (!user.emailVerified) {
+  if (!currentUser.emailVerified) {
     navigate("/unverified");
   }
 

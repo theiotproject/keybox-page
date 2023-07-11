@@ -154,7 +154,7 @@ export default function SignIn() {
               </Grid>
               <Grid item sx={{ mb: 5 }}>
                 <Link
-                  to={`/auth/SignUp`}
+                  to={`/signup`}
                   variant="body2"
                   component={RouterLink}
                   underline="hover"
