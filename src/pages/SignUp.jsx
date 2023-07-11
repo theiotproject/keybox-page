@@ -11,6 +11,7 @@ import Copyright from "../components/Copyright";
 import { Link as RouterLink } from "react-router-dom";
 import LeftSide from "../components/LeftSide";
 import LeftSideMobile from "../components/LeftSideMobile";
+import { Google } from "@mui/icons-material"
 
 export default function SignUp() {
   const handleSubmit = (event) => {
@@ -115,14 +116,23 @@ export default function SignUp() {
               />
             </Grid>
           </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign Up
-          </Button>
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ m:1, width: '30%' }}
+            >
+              Sign Up
+            </Button>
+            or
+            <Button
+              startIcon={<Google />}
+              fullWidth
+              variant="contained"
+              sx={{ m:1,  width: '30%' }}
+            > use Gmail
+            </Button>
+            </Box>
           <Grid container justifyContent="center">
             <Grid item sx={{ mb: 5 }}>
               <Link

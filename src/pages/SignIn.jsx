@@ -7,6 +7,7 @@ import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 
+import { Google } from "@mui/icons-material";
 import Typography from "@mui/material/Typography";
 import Copyright from "../components/Copyright";
 import { Link as RouterLink } from "react-router-dom";
@@ -78,18 +79,30 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
+            <Grid container>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
+            </Grid>
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <Button
               type="submit"
-              fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ m:1, width: '30%' }}
             >
               Sign In
             </Button>
+            or
+            <Button
+              startIcon={<Google />}
+              fullWidth
+              variant="contained"
+              sx={{ m:1,  width: '30%' }}
+            > use Gmail
+            </Button>
+            </Box>
+            
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2" underline="hover">
