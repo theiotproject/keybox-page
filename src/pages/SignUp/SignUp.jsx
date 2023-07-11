@@ -19,6 +19,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import ErrorMsg from "src/components/ErrorMsg";
+import LeftSide from "src/components/LeftSide";
+import LeftSideMobile from "src/components/LeftSideMobile";
 import LoadingScreen from "src/components/LoadingScreen";
 
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -61,7 +63,7 @@ export default function SignUp() {
         .required("Password field is required")
         .min(8, "Password length should be at least 8 characters")
         .max(32, "Password cannot exceed more than 32 characters"),
-      validatePassword: yup
+      confirmPassword: yup
         .string()
         .required("Confirm Password field is required")
         .min(8, "Password length should be at least 8 characters")
@@ -78,7 +80,7 @@ export default function SignUp() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data) => {
+  const signUpOnSubmit = async (data) => {
     setLoading(true);
     const user = await createUserWithEmailAndPassword(
       auth,
@@ -128,30 +130,39 @@ export default function SignUp() {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
+    //
+
+    <Box>
       <Box
         sx={{
-          marginTop: 8,
           display: "flex",
-          flexDirection: "column",
+          flexDirection: { xs: "column", md: "column", xl: "row" },
           alignItems: "center",
-          minHeight: "100vh",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolorh: "secondary.main" }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
+        <LeftSide />
+        <LeftSideMobile />
+        {/* the form */}
         <Box
           component="form"
           noValidate
-          onSubmit={handleSubmit(onSubmit)}
-          sx={{ mt: 3 }}
+          onSubmit={handleSubmit(signUpOnSubmit)}
+          sx={{
+            p: { xs: 1, md: 1, xl: 10 },
+            width: { xs: 1, md: 1, xl: 1 / 2 },
+            display: "flex",
+            flexDirection: "column",
+          }}
         >
-          <Grid container spacing={2}>
+          <Box sx={{ alignContent: "flex-start" }}>
+            <Typography component="h1" variant="h1">
+              Hello!
+            </Typography>
+            <Typography component="h2" variant="h2">
+              Sign up to get started
+            </Typography>
+          </Box>
+          <Grid container spacing={2} sx={{ mt: 5 }}>
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="given-name"
@@ -197,27 +208,27 @@ export default function SignUp() {
                 required
                 fullWidth
                 name="password"
-                id="password"
                 label="Password"
                 type="password"
+                id="password"
                 autoComplete="new-password"
-                error={!!errors.password}
-                helperText={errors.password?.message}
                 {...register("password")}
+                error={!!errors.password}
+                helperText={errors.passowrd?.message}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 required
                 fullWidth
-                name="validatePassword"
-                id="validatePassword"
+                name="c-password"
                 label="Confirm Password"
-                type="password"
-                autoComplete="off"
-                error={!!errors.validatePassword}
-                helperText={errors.validatePassword?.message}
-                {...register("validatePassword")}
+                type="c-password"
+                id="c-password"
+                autoComplete="new-password"
+                {...register("confirmPassword")}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword?.message}
               />
             </Grid>
             <Grid item xs={12}>
@@ -227,32 +238,47 @@ export default function SignUp() {
               />
             </Grid>
           </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 1, mb: 2 }}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            Sign Up
-          </Button>
-          <Button
-            startIcon={<Google />}
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-            onClick={() => signInWithGoogle()}
-          >
-            Sign With Google
-          </Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link to={`/signin`} variant="body2" component={RouterLink}>
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{ m: 1, width: "30%" }}
+            >
+              Sign Up
+            </Button>
+            or
+            <Button
+              startIcon={<Google />}
+              fullWidth
+              variant="contained"
+              sx={{ m: 1, width: "30%" }}
+              onClick={() => signInWithGoogle()}
+            >
+              {" "}
+              use Google
+            </Button>
+          </Box>
+          <Grid container justifyContent="center">
+            <Grid item sx={{ mb: 5 }}>
+              <Link
+                to={`/auth/SignIn`}
+                variant="body2"
+                component={RouterLink}
+                underline="hover"
+              >
                 Already have an account? Sign in
               </Link>
             </Grid>
           </Grid>
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 }

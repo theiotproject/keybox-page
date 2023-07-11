@@ -21,6 +21,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import ErrorMsg from "src/components/ErrorMsg";
+import LeftSide from "src/components/LeftSide";
+import LeftSideMobile from "src/components/LeftSideMobile";
 import LoadingScreen from "src/components/LoadingScreen";
 
 import { auth } from "src/backend/db";
@@ -59,84 +61,111 @@ export default function SignIn() {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
+    <Box>
       <Box
         sx={{
-          marginTop: 8,
           display: "flex",
-          flexDirection: "column",
+          flexDirection: { xs: "column", md: "column", xl: "row" },
           alignItems: "center",
-          minHeight: "100vh",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
+        <LeftSide />
+        <LeftSideMobile />
+        {/* the form */}
         <Box
           component="form"
-          onSubmit={handleSignInOnSubmit}
           noValidate
-          sx={{ mt: 1 }}
+          onSubmit={handleSignInOnSubmit}
+          sx={{
+            p: { xs: 1, md: 1, xl: 10 },
+            width: { xs: 1, md: 1, xl: 1 / 2 },
+            display: "flex",
+            flexDirection: "column",
+          }}
         >
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign In
-          </Button>
-          <Button
-            startIcon={<Google />}
-            fullWidth
-            variant="contained"
-            sx={{ mt: 1, mb: 2 }}
-            onClick={() => signInWithGoogle()}
-          >
-            Sign With Google
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
+          <Box sx={{ alignContent: "flex-start" }}>
+            <Typography component="h1" variant="h1">
+              Hello Again!
+            </Typography>
+            <Typography component="h2" variant="h2">
+              Sign in
+            </Typography>
+          </Box>
+          <Grid sx={{ mt: 5 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <Grid container>
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
+              />
             </Grid>
-            <Grid item>
-              <Link to={`/signup`} variant="body2" component={RouterLink}>
-                {"Don't have an account? Sign Up"}
-              </Link>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{ m: 1, width: "30%" }}
+              >
+                Sign In
+              </Button>
+              or
+              <Button
+                startIcon={<Google />}
+                fullWidth
+                variant="contained"
+                sx={{ m: 1, width: "30%" }}
+                onClick={() => signInWithGoogle()}
+              >
+                {" "}
+                use Google
+              </Button>
+            </Box>
+
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2" underline="hover">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item sx={{ mb: 5 }}>
+                <Link
+                  to={`/auth/SignUp`}
+                  variant="body2"
+                  component={RouterLink}
+                  underline="hover"
+                >
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
             </Grid>
           </Grid>
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 }

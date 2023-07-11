@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, CssBaseline } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
 
 import Layout from "src/components/Layout/Layout";
 import ProtectedRoute from "src/components/ProtectedRoute";
@@ -16,6 +17,8 @@ import SignIn from "src/pages/SignIn/SignIn";
 import SignUp from "src/pages/SignUp/SignUp";
 import Unverified from "src/pages/Unverified/Unverified";
 
+import theme from "./theme";
+
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -26,7 +29,8 @@ function App() {
   }, []);
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <AuthProvider value={{ currentUser }}>
         <BrowserRouter>
           <Routes>
@@ -54,7 +58,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </AuthProvider>
-    </>
+    </ThemeProvider>
   );
 }
 

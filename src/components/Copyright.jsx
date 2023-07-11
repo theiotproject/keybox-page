@@ -1,19 +1,28 @@
-import { Link, Typography } from "@mui/material";
+import { Link } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 function Copyright(props) {
   return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
+    <Box
+      fullWidth
+      sx={{
+        backgroundColor: "primary.main",
+        alignItems: "center",
+        p: 2,
+        bottom: 0,
+        width: "100%",
+      }}
     >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        IOT Project
-      </Link>{" "}
-      {new Date().getFullYear()}
-    </Typography>
+      <Typography variant="body2" color="white" align="center" {...props}>
+        {"Copyright © "}
+        <Link color="inherit" href="https://theiotproject.com/">
+          IoT Project
+        </Link>{" "}
+        {new Date().getFullYear()}
+        {"."}
+      </Typography>
+    </Box>
   );
 }
 
