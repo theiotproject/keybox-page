@@ -5,13 +5,9 @@ import { Link as RouterLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { Google } from "@mui/icons-material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
-import Container from "@mui/material/Container";
-import CssBaseline from "@mui/material/CssBaseline";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
@@ -33,6 +29,26 @@ import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 import * as yup from "yup";
 
+// Form yup validation schema
+const schema = yup
+  .object({
+    firstName: yup.string().required("First Name field is required"),
+    lastName: yup.string().required("Last Name field is required"),
+    email: yup.string().required("Email field is required").email(),
+    password: yup
+      .string()
+      .required("Password field is required")
+      .min(8, "Password length should be at least 8 characters")
+      .max(32, "Password cannot exceed more than 32 characters"),
+    confirmPassword: yup
+      .string()
+      .required("Confirm Password field is required")
+      .min(8, "Password length should be at least 8 characters")
+      .max(32, "Password cannot exceed more than 32 characters")
+      .oneOf([yup.ref("password")], "Passwords do not match"),
+  })
+  .required();
+
 export default function SignUp() {
   //TODO: PASSWORD STRENGHT METTER https://upmostly.com/tutorials/build-a-password-strength-meter-react
 
@@ -45,26 +61,6 @@ export default function SignUp() {
 
   const [signInWithGoogle, userGoogle, loadingGoogle, errorGoogle] =
     useSignInWithGoogle(auth);
-
-  // Form yup validation schema
-  const schema = yup
-    .object({
-      firstName: yup.string().required("First Name field is required"),
-      lastName: yup.string().required("Last Name field is required"),
-      email: yup.string().required("Email field is required").email(),
-      password: yup
-        .string()
-        .required("Password field is required")
-        .min(8, "Password length should be at least 8 characters")
-        .max(32, "Password cannot exceed more than 32 characters"),
-      confirmPassword: yup
-        .string()
-        .required("Confirm Password field is required")
-        .min(8, "Password length should be at least 8 characters")
-        .max(32, "Password cannot exceed more than 32 characters")
-        .oneOf([yup.ref("password")], "Passwords do not match"),
-    })
-    .required();
 
   const {
     register,
