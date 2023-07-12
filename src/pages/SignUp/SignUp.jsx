@@ -29,7 +29,7 @@ import {
   sendEmailVerification,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "src/backend/db";
+import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 import * as yup from "yup";
 
@@ -51,13 +51,7 @@ export default function SignUp() {
     .object({
       firstName: yup.string().required("First Name field is required"),
       lastName: yup.string().required("Last Name field is required"),
-      email: yup
-        .string()
-        .required("Email field is required")
-        .matches(
-          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-          "Your Email is incorrect"
-        ),
+      email: yup.string().required("Email field is required").email(),
       password: yup
         .string()
         .required("Password field is required")
@@ -154,7 +148,7 @@ export default function SignUp() {
             flexDirection: "column",
           }}
         >
-          <Box sx={{ alignContent: "flex-start"}}>
+          <Box sx={{ alignContent: "flex-start" }}>
             <Typography component="h1" variant="h1">
               Hello!
             </Typography>
@@ -258,7 +252,7 @@ export default function SignUp() {
               startIcon={<Google />}
               fullWidth
               variant="contained"
-              sx={{ m: 1, width: "30%", p:1 }}
+              sx={{ m: 1, width: "30%", p: 1 }}
               onClick={() => signInWithGoogle()}
             >
               {" "}
