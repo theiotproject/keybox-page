@@ -1,13 +1,11 @@
-import { useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 
 import { Typography } from "@mui/material";
 
+import AddNewDevice from "src/components/AddNewDevice";
 import ErrorMsg from "src/components/ErrorMsg";
 import LoadingScreen from "src/components/LoadingScreen";
 import SignOutBtn from "src/components/SignOutBtn";
-import AddNewDevice from "src/components/AddNewDevice";
 
 import { auth } from "src/backend/db";
 import { useAuthProvider } from "src/contexts/AuthContext";
@@ -15,9 +13,6 @@ import { useAuthProvider } from "src/contexts/AuthContext";
 function Dashboard() {
   const { currentUser, error, loading } = useAuthProvider();
   const navigate = useNavigate();
-  useEffect(() => {
-    console.log(currentUser);
-  });
 
   if (loading) {
     return <LoadingScreen />;
