@@ -7,7 +7,7 @@ import ErrorMsg from "src/components/ErrorMsg";
 import LoadingScreen from "src/components/LoadingScreen";
 import SignOutBtn from "src/components/SignOutBtn";
 
-import { auth } from "src/backend/db";
+import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Dashboard() {

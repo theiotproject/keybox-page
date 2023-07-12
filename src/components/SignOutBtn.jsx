@@ -5,7 +5,7 @@ import { Button, CircularProgress } from "@mui/material";
 
 import ErrorMsg from "src/components/ErrorMsg";
 
-import { auth } from "src/backend/db";
+import { auth } from "src/backend/db_config";
 
 function SignOutBtn() {
   const navigate = useNavigate();

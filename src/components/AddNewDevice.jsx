@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 
 import AddBox from "@mui/icons-material/AddBox";
-import { Button, IconButton, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -12,11 +12,38 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 
+import { addDoc, collection, doc } from "firebase/firestore";
+import { db } from "src/backend/db_config";
+import { useAuthProvider } from "src/contexts/AuthContext";
+
 function AddNewDevice() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [deviceId, setDeviceId] = useState("");
+  const [deviceName, setDeviceName] = useState("");
+  const { currentUser } = useAuthProvider();
 
   const handleDialogToggle = () => {
     setOpen(!open);
+  };
+
+  const handleDialogSubmit = async (event) => {
+    event.preventDefault();
+    // const formData = new FormData(event.currentTarget);
+    // console.log(data.get("deviceId"), data.get("deviceName"), currentUser.uid);
+    console.log(deviceId, deviceName);
+    try {
+      console.log("hej1");
+      await addDoc(collection(db, "keyboxes"), {
+        boxId: deviceId,
+        ownerId: "test",
+        boxName: deviceName,
+        boxStatus: "offline",
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      console.log("hej2");
+    }
   };
 
   return (
@@ -40,25 +67,29 @@ function AddNewDevice() {
           <TextField
             autoFocus
             margin="dense"
-            id="device_id"
+            id="deviceId"
+            name="deviceId"
             label="Device ID"
             type="email"
             fullWidth
+            onChange={(e) => setDeviceId(e.currentTarget.value)}
             variant="standard"
           />
           <TextField
             autoFocus
             margin="dense"
-            id="device_name"
+            id="deviceName"
+            name="deviceName"
             label="Device Name"
             type="email"
             fullWidth
+            onChange={(e) => setDeviceName(e.currentTarget.value)}
             variant="standard"
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogToggle}>Cancel</Button>
-          <Button onClick={handleDialogToggle}>Submit</Button>
+          <Button onClick={handleDialogSubmit}>Submit</Button>
         </DialogActions>
       </Dialog>
     </div>

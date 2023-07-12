@@ -25,7 +25,7 @@ import LeftSide from "src/components/LeftSide";
 import LeftSideMobile from "src/components/LeftSideMobile";
 import LoadingScreen from "src/components/LoadingScreen";
 
-import { auth } from "src/backend/db";
+import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
 export default function SignIn() {
@@ -83,7 +83,7 @@ export default function SignIn() {
             flexDirection: "column",
           }}
         >
-          <Box sx={{ alignContent: "flex-start"}}>
+          <Box sx={{ alignContent: "flex-start" }}>
             <Typography component="h1" variant="h1">
               Hello Again!
             </Typography>
@@ -138,7 +138,7 @@ export default function SignIn() {
                 startIcon={<Google />}
                 fullWidth
                 variant="contained"
-                sx={{ m: 1, width: "30%", p:1}}
+                sx={{ m: 1, width: "30%", p: 1 }}
                 onClick={() => signInWithGoogle()}
               >
                 {" "}

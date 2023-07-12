@@ -8,7 +8,7 @@ import Layout from "src/components/Layout/Layout";
 import ProtectedRoute from "src/components/ProtectedRoute";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "src/backend/db";
+import { auth } from "src/backend/db_config";
 import { AuthProvider } from "src/contexts/AuthContext";
 import Dashboard from "src/pages/Dashboard/Dashboard";
 import Error from "src/pages/Error/Error";
@@ -32,8 +32,6 @@ function App() {
 
       setCurrentUser(user);
     });
-
-    return unsubscribeFromAuthStatuChanged;
   }, []);
 
   return (
