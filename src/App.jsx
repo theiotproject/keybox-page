@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CircularProgress, CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 
+import LayoutSignedIn from "./components/Layout/LayoutSignedIn";
 import Layout from "src/components/Layout/Layout";
 import ProtectedRoute from "src/components/ProtectedRoute";
 
@@ -48,6 +49,12 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
+            </Route>
+            <Route
+              element={<LayoutSignedIn />}
+              errorElement={<Error />}
+              loader={<CircularProgress />}
+            >
               <Route
                 path="/dashboard"
                 element={

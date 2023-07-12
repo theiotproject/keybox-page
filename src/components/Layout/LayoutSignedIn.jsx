@@ -6,6 +6,7 @@ import Footer from "src/components/Layout/components/Footer";
 function Layout() {
   return (
     <>
+      <MiniDrawer />
       <main>
         <Outlet />
       </main>
