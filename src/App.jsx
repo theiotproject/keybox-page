@@ -33,6 +33,8 @@ function App() {
 
       setCurrentUser(user);
     });
+
+    return unsubscribeFromAuthStatuChanged();
   }, []);
 
   return (
