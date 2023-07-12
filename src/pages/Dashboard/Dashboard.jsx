@@ -46,7 +46,7 @@ function Dashboard() {
         placeItems: "center"
       }}
     >
-      <Typography component="h1" variant="h1" sx={{ fontSize: 50 }}>
+      <Typography component="h1" variant="h1" sx={{ fontSize: 50, mt:10}}>
         Your Key Boxes
       </Typography>
       <div style={{ display: "flex", flexWrap: 'wrap', width: '100%', justifyContent: 'center'}}>

@@ -12,6 +12,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 function SignOutBtn() {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ function SignOutBtn() {
     return (
        <Box>
         <Button variant="contained" onClick={handlePopUp}>
-          Log Out
+          <LogoutOutlinedIcon />
         </Button>
 
         <Dialog open={open} onClose={handlePopUp}>
