@@ -17,12 +17,8 @@ import Switch from "@mui/material/Switch";
 function DeviceCard() {
   const [open, setOpen] = React.useState(false);
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handle = () => {
-    setOpen(false);
+  const handleEditDevice = () => {
+    setOpen(!open);
   };
 
   return (
@@ -70,13 +66,13 @@ function DeviceCard() {
               offline
             </Typography>
           </Card>
-          <Button variant="outlined" onClick={handleClick} sx={{ mt: 3, border: 1.5 }}>
+          <Button variant="outlined" onClick={handleEditDevice} sx={{ mt: 3, border: 1.5 }}>
             Edit device
           </Button>
         </Box>
       </CardContent>
     </Card>
-    <Dialog open={open} onClose={handle}>
+    <Dialog open={open} onClose={handleEditDevice}>
     <DialogTitle>Edit device</DialogTitle>
     <DialogContent>
       <DialogContentText>
@@ -94,8 +90,8 @@ function DeviceCard() {
       <FormControlLabel control={<Switch />} label="Switch your Key Box on" sx={{mt: 2}}/>
     </DialogContent>
     <DialogActions>
-      <Button variant="outlined" onClick={handle}>Cancel</Button>
-      <Button variant="contained" onClick={handle}>Submit</Button>
+      <Button variant="outlined" onClick={handleEditDevice}>Cancel</Button>
+      <Button variant="contained" onClick={handleEditDevice}>Submit</Button>
     </DialogActions>
   </Dialog>
   </div>

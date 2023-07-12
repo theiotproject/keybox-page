@@ -16,12 +16,8 @@ import TextField from "@mui/material/TextField";
 function AddNewDevice() {
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleAddNewDevice = () => {
+    setOpen(!open);
   };
 
   return (
@@ -51,7 +47,7 @@ function AddNewDevice() {
               mt: 6,
             }}
           >
-            <IconButton onClick={handleClickOpen}>
+            <IconButton onClick={handleAddNewDevice}>
               <AddBox
                 sx={{ height: "40px", width: "40px" }}
               />
@@ -59,7 +55,7 @@ function AddNewDevice() {
           </Box>
         </CardActions>
       </Card>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleAddNewDevice}>
         <DialogTitle>Add new device</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -87,8 +83,8 @@ function AddNewDevice() {
           />
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleClose}>Submit</Button>
+          <Button variant="outlined" onClick={handleAddNewDevice}>Cancel</Button>
+          <Button variant="contained" onClick={handleAddNewDevice}>Submit</Button>
         </DialogActions>
       </Dialog>
     </div>
