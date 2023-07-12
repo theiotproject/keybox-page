@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import AddBox from "@mui/icons-material/AddBox";
@@ -39,6 +39,12 @@ function AddNewDevice() {
   const [isAddBoxLoading, setIsAddBoxLoading] = useState(false);
   const { currentUser } = useAuthProvider();
 
+  useEffect(() => {
+    reset({
+      data: "",
+    });
+  }, [isAddBoxLoading]);
+
   const handleDialogToggle = () => {
     setOpen(!open);
   };
@@ -46,6 +52,7 @@ function AddNewDevice() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -74,16 +81,35 @@ function AddNewDevice() {
 
   return (
     <div>
-      <Card sx={{ minWidth: 275, backgroundColor: "#E9E9EF", height: "10rem" }}>
+      <Card
+        sx={{
+          minWidth: 275,
+          backgroundColor: "#E9E9EF",
+          height: "18rem",
+          border: "1px solid #B6B6BB",
+          m: 2,
+        }}
+      >
         <CardContent>
-          <Typography variant="h1" sx={{ fontSize: 14 }}>
+          <Typography variant="h1" sx={{ fontSize: 20 }}>
             Add new device
           </Typography>
         </CardContent>
         <CardActions>
-          <IconButton onClick={handleDialogToggle}>
-            <AddBox />
-          </IconButton>
+          <Box
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              mt: 6,
+            }}
+          >
+            <IconButton onClick={handleDialogToggle}>
+              <AddBox sx={{ height: "40px", width: "40px" }} />
+            </IconButton>
+          </Box>
         </CardActions>
       </Card>
       {/* dialog is also a form component */}
@@ -98,7 +124,10 @@ function AddNewDevice() {
         <Dialog open={open} onClose={handleDialogToggle}>
           <DialogTitle>Add new device</DialogTitle>
           <DialogContent>
-            <DialogContentText>This works !!!!</DialogContentText>
+            <DialogContentText>
+              Please, input the device id number <br />
+              and choose a name for your new Key Box.
+            </DialogContentText>
             <Box
               component="form"
               noValidate
