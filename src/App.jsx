@@ -16,6 +16,7 @@ import Home from "src/pages/Home/Home";
 import SignIn from "src/pages/SignIn/SignIn";
 import SignUp from "src/pages/SignUp/SignUp";
 import Unverified from "src/pages/Unverified/Unverified";
+import 'src/index.css';
 
 import theme from "./theme";
 

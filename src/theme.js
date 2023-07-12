@@ -48,8 +48,7 @@ const theme = createTheme({
           root: ({ ownerState }) => ({
             ...(ownerState.variant === "contained" &&
               ownerState.color === "primary" && {
-                backgroundColor: "#3AA090",
-                borderRadius: 30,
+                backgroundColor: "#00618A",
                 color: "#fff",
               }),
           }),
@@ -58,13 +57,13 @@ const theme = createTheme({
     },
     palette: {
       primary: {
-        main: "#3AA090",
-        light: "#61b3a6",
-        dark: "#226056",
+        main: "#00618A",
+        light: "#3280a1",
+        dark: "#003a52",
         contrastText: "white",
       },
       secondary: {
-        main: "#FF7900",
+        main: "#E56C00",
         light: "#FF9332",
         dark: "#994800",
         contrastText: "black",

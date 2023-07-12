@@ -47,7 +47,8 @@ function LeftSide() {
           width="30%"
           variant="contained"
           href={`/`}
-          sx={{ mt: 3, mb: 2, borderRadius: 30, backgroundColor: "#3AA090" }}
+          color="secondary"
+          sx={{ mt: 3, mb: 2, borderRadius: 30, color: 'white'}}
         >
           Visit our website
         </Button>

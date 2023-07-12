@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 import { Typography } from "@mui/material";
 
+import AddNewDevice from "src/components/AddNewDevice";
+import DeviceCard from "src/components/DeviceCard";
 import ErrorMsg from "src/components/ErrorMsg";
 import LoadingScreen from "src/components/LoadingScreen";
 import SignOutBtn from "src/components/SignOutBtn";
-import AddNewDevice from "src/components/AddNewDevice";
+import Container from "@mui/material/Container";
 
 import { auth } from "src/backend/db";
 import { useAuthProvider } from "src/contexts/AuthContext";
@@ -37,13 +39,23 @@ function Dashboard() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
-      <Typography component="h1" variant="h2">
-        Cześć: {auth.currentUser.email}
+    <Container
+      sx={{
+        minHeight: "100vh",
+        display: "grid",
+        placeItems: "center"
+      }}
+    >
+      <Typography component="h1" variant="h1" sx={{ fontSize: 50 }}>
+        Your Key Boxes
       </Typography>
-      <AddNewDevice />
+      <div style={{ display: "flex", flexWrap: 'wrap', width: '100%', justifyContent: 'center'}}>
+        <AddNewDevice />
+        <DeviceCard />
+        <DeviceCard />
+      </div>
       <SignOutBtn />
-    </div>
+    </Container>
   );
 }
 
