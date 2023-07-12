@@ -1,12 +1,12 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-import { CircularProgress } from "@mui/material";
+import LoadingScreen from "./LoadingScreen";
 
 function Protected({ isSignedIn, isEmailVerified, children }) {
   // Check if user is still beeing fetched
   if (isSignedIn === null) {
-    return <CircularProgress />;
+    return <LoadingScreen />;
   }
 
   if (!isSignedIn) {
