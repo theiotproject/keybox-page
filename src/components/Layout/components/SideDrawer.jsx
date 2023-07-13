@@ -1,9 +1,9 @@
 import * as React from "react";
 
+import { LogoutOutlined } from "@mui/icons-material";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import DashboardCustomizeOutlinedIcon from "@mui/icons-material/DashboardCustomizeOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import { Button } from "@mui/material";
@@ -89,45 +89,50 @@ export default function MiniDrawer() {
     <AccountCircleOutlinedIcon />,
     <SettingsOutlinedIcon />,
     <HelpOutlineOutlinedIcon />,
-    <LogoutOutlinedIcon />,
+    <LogoutOutlined />,
   ];
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open} />
-      <Drawer variant="permanent" open={open}>
-        <Button onClick={handleDrawerOpen} sx={{ width: "5%" }}>
-          <MenuIcon />
-        </Button>
-        <Divider />
-        <List>
-          {["Dashboard", "Profile", "Settings", "FAQ", "Log Out"].map(
-            (text, index) => (
-              <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
+      <Box>
+        <CssBaseline />
+        <AppBar position="relative" open={open} sx={{ width: "100%" }} />
+        <Drawer variant="permanent" open={open}>
+          <Button onClick={handleDrawerOpen} sx={{ width: "5%" }}>
+            <MenuIcon />
+          </Button>
+          <Divider />
+          <List>
+            {["Dashboard", "Profile", "Settings", "FAQ", "Log Out"].map(
+              (text, index) => (
+                <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
                     }}
                   >
-                    {icons[index]}
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            )
-          )}
-        </List>
-      </Drawer>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {icons[index]}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              )
+            )}
+          </List>
+        </Drawer>
+      </Box>
     </Box>
   );
 }

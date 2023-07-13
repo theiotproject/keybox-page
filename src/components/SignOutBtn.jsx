@@ -8,6 +8,10 @@ import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 
 import ErrorMsg from "src/components/ErrorMsg";
 
@@ -40,36 +44,61 @@ function SignOutBtn() {
   }
 
   return (
-    <Box>
-      <Button variant="contained" onClick={handleTogglePopUp}>
-        <LogoutOutlinedIcon />
-      </Button>
+    <ListItem
+      key={"Log Out"}
+      disablePadding
+      sx={{
+        display: "block",
+        backgroundColor: "primary.main",
+      }}
+    >
+      <ListItemButton
+        onClick={handleTogglePopUp}
+        sx={{
+          justifyContent: open ? "initial" : "center",
+          px: 2.5,
+        }}
+      >
+        <ListItemIcon
+          sx={{
+            minWidth: 0,
+            mr: open ? 3 : "auto",
+            justifyContent: "center",
+          }}
+        >
+          {<LogoutOutlinedIcon sx={{ color: "white" }} />}
+        </ListItemIcon>
+        <ListItemText
+          primary="Log Out"
+          sx={{ opacity: open ? 1 : 0, color: "white" }}
+        />
 
-      <Dialog open={open} onClose={handleTogglePopUp}>
-        <DialogTitle>Are you sure you want to log out?</DialogTitle>
-        <DialogActions>
-          <Box
-            sx={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Button
-              variant="outlined"
-              onClick={handleTogglePopUp}
-              sx={{ m: 1 }}
+        <Dialog open={open} onClose={handleTogglePopUp}>
+          <DialogTitle>Are you sure you want to log out?</DialogTitle>
+          <DialogActions>
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              Cancel
-            </Button>
-            <Button variant="contained" onClick={handleSignOut} sx={{ m: 1 }}>
-              Log Out
-            </Button>
-          </Box>
-        </DialogActions>
-      </Dialog>
-    </Box>
+              <Button
+                variant="outlined"
+                onClick={handleTogglePopUp}
+                sx={{ m: 1 }}
+              >
+                Cancel
+              </Button>
+              <Button variant="contained" onClick={handleSignOut} sx={{ m: 1 }}>
+                Log Out
+              </Button>
+            </Box>
+          </DialogActions>
+        </Dialog>
+      </ListItemButton>
+    </ListItem>
   );
 }
 

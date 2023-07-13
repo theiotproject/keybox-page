@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import Container from "@mui/material/Container";
 
 import AddNewDevice from "src/components/AddNewDevice";
 import DeviceCard from "src/components/DeviceCard";
-import ErrorMsg from "src/components/ErrorMsg";
-import LoadingScreen from "src/components/LoadingScreen";
-import SignOutBtn from "src/components/SignOutBtn";
 
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Dashboard() {
-  const { currentUser } = useAuthProvider();
+  // const { currentUser } = useAuthProvider();
 
   const [data, setData] = useState([]);
 
@@ -41,20 +38,23 @@ function Dashboard() {
   return (
     <Container
       sx={{
-        minHeight: "100vh",
-        display: "grid",
-        placeItems: "center",
+        minHeight: "90vh",
+        display: "flex",
+        justifyContent: "flex-start",
+        alignContent: "center",
+        flexDirection: "column",
       }}
     >
-      <Typography component="h1" variant="h1" sx={{ fontSize: 50, mt: 10 }}>
-        Your Key devicees
+      <Typography component="h1" variant="h1" sx={{ fontSize: 50, m: 5 }}>
+        Your Key Boxes
       </Typography>
-      <div
-        style={{
+      <Box
+        sx={{
           display: "flex",
+          flexDirection: "row",
           flexWrap: "wrap",
-          width: "100%",
           justifyContent: "center",
+          alignContent: "center",
         }}
       >
         <AddNewDevice />
@@ -69,8 +69,7 @@ function Dashboard() {
               deviceStatus={item.deviceStatus}
             />
           ))}
-      </div>
-      <SignOutBtn />
+      </Box>
     </Container>
   );
 }
