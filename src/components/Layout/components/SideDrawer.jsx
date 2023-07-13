@@ -92,6 +92,8 @@ export default function MiniDrawer() {
     <LogoutOutlined />,
   ];
 
+  const links = ["/dashboard", "/profile", "/settings", "/faq", "/signout"];
+
   return (
     <Box sx={{ display: "flex" }}>
       <Box>
@@ -107,6 +109,7 @@ export default function MiniDrawer() {
               (text, index) => (
                 <ListItem key={text} disablePadding sx={{ display: "block" }}>
                   <ListItemButton
+                    href={links[index]}
                     sx={{
                       minHeight: 48,
                       justifyContent: open ? "initial" : "center",

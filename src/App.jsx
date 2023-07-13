@@ -15,9 +15,11 @@ import Dashboard from "src/pages/Dashboard/Dashboard";
 import Error from "src/pages/Error/Error";
 import Home from "src/pages/Home/Home";
 import SignIn from "src/pages/SignIn/SignIn";
+import SignOut from "src/pages/SignOut";
 import SignUp from "src/pages/SignUp/SignUp";
 import Unverified from "src/pages/Unverified/Unverified";
 
+import NotFound from "./pages/NotFound/NotFound";
 import theme from "./theme";
 
 function App() {
@@ -46,6 +48,8 @@ function App() {
               errorElement={<Error />}
               loader={<CircularProgress />}
             >
+              <Route path="*" element={<NotFound />} />
+              <Route path="/signout" element={<SignOut />} />
               <Route path="/" element={<Home />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
