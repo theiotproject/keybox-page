@@ -31,7 +31,7 @@ const schema = yup
 function DeviceCard({ ...props }) {
   const [open, setOpen] = React.useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [deviceStatus, setDeviceStatus] = useState(props.deviceStatus);
+  const [deviceStatus, setDeviceStatus] = useState(null);
 
   useEffect(() => {
     setDeviceStatus(props.deviceStatus);
@@ -190,13 +190,15 @@ function DeviceCard({ ...props }) {
                 sx={{ mt: 2 }}
               />
               <FormControlLabel
-                control={<Switch />}
+                control={
+                  <Switch
+                    onChange={(event) => {
+                      setDeviceStatus(!deviceStatus);
+                    }}
+                    checked={deviceStatus}
+                  />
+                }
                 label={`Your keybox is ${deviceStatus ? "on" : "off"}`}
-                onChange={() => {
-                  setDeviceStatus(!deviceStatus);
-                  console.log(deviceStatus);
-                }}
-                defaultChecked={deviceStatus}
                 {...register("deviceStatus")}
                 sx={{ mt: 2 }}
               />
