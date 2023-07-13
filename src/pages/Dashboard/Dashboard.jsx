@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Typography } from "@mui/material";
@@ -9,7 +10,8 @@ import ErrorMsg from "src/components/ErrorMsg";
 import LoadingScreen from "src/components/LoadingScreen";
 import SignOutBtn from "src/components/SignOutBtn";
 
-import { auth } from "src/backend/db_config";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Dashboard() {
@@ -24,7 +26,8 @@ function Dashboard() {
     <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
   }
 
-  // If user tries to access this page without beeing signed, they are redirected to sign in page
+  // If user tries to access this page without beeing signed,
+  // they are redirected to sign in page
   if (!currentUser) {
     navigate("/signin");
   }
@@ -32,6 +35,25 @@ function Dashboard() {
   if (!currentUser.emailVerified) {
     navigate("/unverified");
   }
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "keyboxes"), (snapshot) => {
+      // Clear data to prevent data duplication of data,
+      // which appears because onSnapshot runs every time user activates window
+      // or does any action connected with data
+      setData([]);
+      snapshot.docs.forEach((doc) => {
+        setData((prevData) => [...prevData, doc.data()]);
+      });
+    });
+
+    return () => {
+      // Unsubscribe from the listener when the component unmounts
+      unsubscribe();
+    };
+  }, []);
 
   return (
     <Container
@@ -42,7 +64,7 @@ function Dashboard() {
       }}
     >
       <Typography component="h1" variant="h1" sx={{ fontSize: 50, mt: 10 }}>
-        Your Key Boxes
+        Your Key devicees
       </Typography>
       <div
         style={{
@@ -53,8 +75,15 @@ function Dashboard() {
         }}
       >
         <AddNewDevice />
-        <DeviceCard />
-        <DeviceCard />
+        {data &&
+          data.map((item) => (
+            <DeviceCard
+              key={item.deviceId}
+              deviceId={item.deviceId}
+              deviceName={item.deviceName}
+              deviceStatus={item.deviceStatus}
+            />
+          ))}
       </div>
       <SignOutBtn />
     </Container>

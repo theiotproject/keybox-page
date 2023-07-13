@@ -10,11 +10,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import TextField from "@mui/material/TextField";
 
-function DeviceCard() {
+function DeviceCard({ deviceName, deviceId, deviceStatus }) {
   const [open, setOpen] = React.useState(false);
 
   const handleEditDevice = () => {
@@ -23,78 +23,111 @@ function DeviceCard() {
 
   return (
     <div>
-    <Card
-      sx={{
-        minWidth: 275,
-        backgroundColor: "#FFF",
-        height: "18rem",
-        border: "1px solid #B6B6BB",
-        alignContent: "center",
-        m: 2,
-      }}
-    >
-      <CardContent>
-        <Typography variant="h1" sx={{ fontSize: 20 }}>
-          Office#1
-        </Typography>
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-          }}
-        >
-          <Card sx={{ width: "100%", p: 0.5, pl: 1.5, mt: 1,boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.20)'}}>
-            <Typography sx={{ color: "#5A5A5F", fontSize: "1rem" }}>
-              id number
-            </Typography>
-            <Typography sx={{ color: "primary.main", fontSize: "1.7rem" }}>
-              12345
-            </Typography>
-          </Card>
-
-          <Card sx={{ width: "100%", p: 0.5, pl: 1.5, mt: 1, boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.20)'}}>
-            <Typography
-              variant="body1"
-              sx={{ color: "#5A5A5F", fontSize: "1rem" }}
+      <Card
+        sx={{
+          minWidth: 275,
+          backgroundColor: "#FFF",
+          height: "18rem",
+          border: "1px solid #B6B6BB",
+          alignContent: "center",
+          m: 2,
+        }}
+      >
+        <CardContent>
+          <Typography variant="h1" sx={{ fontSize: 20 }}>
+            {deviceName}
+          </Typography>
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Card
+              sx={{
+                width: "100%",
+                p: 0.5,
+                pl: 1.5,
+                mt: 1,
+                boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.20)",
+              }}
             >
-              status
-            </Typography>
-            <Typography sx={{ color: "#CA1414", fontSize: "1.7rem" }}>
-              offline
-            </Typography>
-          </Card>
-          <Button variant="outlined" onClick={handleEditDevice} sx={{ mt: 3, border: 1.5 }}>
-            Edit device
+              <Typography sx={{ color: "#5A5A5F", fontSize: "1rem" }}>
+                id number
+              </Typography>
+              <Typography sx={{ color: "primary.main", fontSize: "1.7rem" }}>
+                {deviceId}
+              </Typography>
+            </Card>
+
+            <Card
+              sx={{
+                width: "100%",
+                p: 0.5,
+                pl: 1.5,
+                mt: 1,
+                boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.20)",
+              }}
+            >
+              <Typography
+                variant="body1"
+                sx={{ color: "#5A5A5F", fontSize: "1rem" }}
+              >
+                status
+              </Typography>
+              <Typography
+                sx={{
+                  color: deviceStatus === "offline" ? "#CA1414" : "green",
+                  fontSize: "1.7rem",
+                }}
+              >
+                {deviceStatus}
+              </Typography>
+            </Card>
+            <Button
+              variant="outlined"
+              onClick={handleEditDevice}
+              sx={{ mt: 3, border: 1.5 }}
+            >
+              Edit device
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+      <Dialog open={open} onClose={handleEditDevice}>
+        <DialogTitle>Edit device</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Here you can change the device name or switch it on.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="deviceName"
+            label="Device Name"
+            fullWidth
+            variant="standard"
+            sx={{ mt: 2 }}
+          />
+          <FormControlLabel
+            control={<Switch />}
+            label="Switch your Key Box on"
+            sx={{ mt: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleEditDevice}>
+            Cancel
           </Button>
-        </Box>
-      </CardContent>
-    </Card>
-    <Dialog open={open} onClose={handleEditDevice}>
-    <DialogTitle>Edit device</DialogTitle>
-    <DialogContent>
-      <DialogContentText>
-        Here you can change the device name or switch it on.
-      </DialogContentText>
-      <TextField
-        autoFocus
-        margin="dense"
-        id="deviceName"
-        label="Device Name"
-        fullWidth
-        variant="standard"
-        sx={{mt: 2}}
-      />
-      <FormControlLabel control={<Switch />} label="Switch your Key Box on" sx={{mt: 2}}/>
-    </DialogContent>
-    <DialogActions>
-      <Button variant="outlined" onClick={handleEditDevice}>Cancel</Button>
-      <Button variant="contained" onClick={handleEditDevice}>Submit</Button>
-    </DialogActions>
-  </Dialog>
-  </div>
+          <Button variant="contained" onClick={handleEditDevice}>
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 }
 

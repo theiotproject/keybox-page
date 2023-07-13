@@ -20,7 +20,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 import * as yup from "yup";
@@ -62,11 +62,25 @@ function AddNewDevice() {
     setIsAddBoxLoading(true);
     const keyboxesRef = collection(db, "keyboxes");
 
+    const isDeviceUniqueQuery = query(
+      keyboxesRef,
+      where("deviceId", "==", data.deviceId)
+    );
+
+    const isDeviceUnique = await getDocs(isDeviceUniqueQuery);
+
+    // Check if isDeviceUnique has any docs (if yes device already exists)
+    if (isDeviceUnique.docs[0]) {
+      alert("Wystąpił błąd: Jest już taki keybox!");
+      setIsAddBoxLoading(false);
+      return;
+    }
+
     const addKeyboxQuery = {
-      boxId: data.deviceId,
+      deviceId: data.deviceId,
       ownerId: currentUser.uid,
-      boxName: data.deviceName,
-      boxStatus: "offline",
+      deviceName: data.deviceName,
+      deviceStatus: "offline",
     };
 
     addDoc(keyboxesRef, addKeyboxQuery)
