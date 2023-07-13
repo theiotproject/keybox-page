@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
-import { Copyright } from "@mui/icons-material";
 import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
 
@@ -16,10 +14,7 @@ import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Home() {
   const { currentUser } = useAuthProvider();
-
-  useEffect(() => {
-    console.log(currentUser);
-  });
+  useEffect(() => console.log(currentUser));
 
   return (
     <Box>
@@ -41,7 +36,7 @@ function Home() {
           }}
         >
           <Typography gutterBottom variant="h1">
-            {currentUser && auth.currentUser.displayName} Welcome to Key Box
+            {currentUser?.displayName} Welcome to Key Box
           </Typography>
           {!currentUser ? (
             <Typography variant="h2">

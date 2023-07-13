@@ -15,26 +15,7 @@ import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Dashboard() {
-  const { currentUser, error, loading } = useAuthProvider();
-  const navigate = useNavigate();
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-  if (error) {
-    <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
-  }
-
-  // If user tries to access this page without beeing signed,
-  // they are redirected to sign in page
-  if (!currentUser) {
-    navigate("/signin");
-  }
-
-  if (!currentUser.emailVerified) {
-    navigate("/unverified");
-  }
+  const { currentUser } = useAuthProvider();
 
   const [data, setData] = useState([]);
 
@@ -45,9 +26,11 @@ function Dashboard() {
       // or does any action connected with data
       setData([]);
       snapshot.docs.forEach((doc) => {
-        setData((prevData) => [...prevData, doc.data()]);
+        setData((prevData) => [...prevData, { docId: doc.id, ...doc.data() }]);
       });
     });
+
+    console.log(data);
 
     return () => {
       // Unsubscribe from the listener when the component unmounts
@@ -79,7 +62,9 @@ function Dashboard() {
           data.map((item) => (
             <DeviceCard
               key={item.deviceId}
+              docId={item.docId}
               deviceId={item.deviceId}
+              ownerId={item.ownerId}
               deviceName={item.deviceName}
               deviceStatus={item.deviceStatus}
             />

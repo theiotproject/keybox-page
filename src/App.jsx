@@ -60,10 +60,7 @@ function App() {
               <Route
                 path="/dashboard"
                 element={
-                  <ProtectedRoute
-                    isSignedIn={currentUser}
-                    isEmailVerified={currentUser?.emailVerified}
-                  >
+                  <ProtectedRoute isEmailVerified={currentUser?.emailVerified}>
                     <Dashboard />
                   </ProtectedRoute>
                 }

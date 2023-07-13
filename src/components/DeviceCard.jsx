@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 import AddBox from "@mui/icons-material/AddBox";
-import { Button, Typography } from "@mui/material";
+import { Button, CircularProgress, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -14,11 +15,69 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 
-function DeviceCard({ deviceName, deviceId, deviceStatus }) {
-  const [open, setOpen] = React.useState(false);
+import { yupResolver } from "@hookform/resolvers/yup";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "src/backend/db_config";
+import * as yup from "yup";
 
-  const handleEditDevice = () => {
+import ErrorMsg from "./ErrorMsg";
+
+const schema = yup
+  .object({
+    deviceName: yup.string().required("Device Name field is required"),
+  })
+  .required();
+
+function DeviceCard({ ...props }) {
+  const [open, setOpen] = React.useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [deviceStatus, setDeviceStatus] = useState(props.deviceStatus);
+
+  useEffect(() => {
+    setDeviceStatus(props.deviceStatus);
+  }, [props.deviceStatus]);
+
+  const handleDialogToggle = () => {
     setOpen(!open);
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const handleEditDevice = async (data) => {
+    setLoading(true);
+    const keyboxRef = doc(db, "keyboxes", props.docId);
+
+    // Back off from sending reqeuest if user haven't changed anything
+    if (
+      data.deviceName == props.deviceName &&
+      data.deviceStatus == props.deviceStatus
+    ) {
+      setLoading(false);
+      handleDialogToggle(false);
+      return;
+    }
+
+    const editKeyboxQuery = {
+      deviceId: props.deviceId,
+      ownerId: props.ownerId,
+      deviceName: data.deviceName,
+      deviceStatus: data.deviceStatus,
+    };
+
+    setDoc(keyboxRef, editKeyboxQuery)
+      .catch((error) => {
+        return <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
+      })
+      .finally(() => {
+        setLoading(false);
+        handleDialogToggle();
+      });
   };
 
   return (
@@ -35,7 +94,7 @@ function DeviceCard({ deviceName, deviceId, deviceStatus }) {
       >
         <CardContent>
           <Typography variant="h1" sx={{ fontSize: 20 }}>
-            {deviceName}
+            {props.deviceName}
           </Typography>
           <Box
             sx={{
@@ -59,7 +118,7 @@ function DeviceCard({ deviceName, deviceId, deviceStatus }) {
                 id number
               </Typography>
               <Typography sx={{ color: "primary.main", fontSize: "1.7rem" }}>
-                {deviceId}
+                {props.deviceId}
               </Typography>
             </Card>
 
@@ -80,16 +139,16 @@ function DeviceCard({ deviceName, deviceId, deviceStatus }) {
               </Typography>
               <Typography
                 sx={{
-                  color: deviceStatus === "offline" ? "#CA1414" : "green",
+                  color: props.deviceStatus ? "green" : "#CA1414",
                   fontSize: "1.7rem",
                 }}
               >
-                {deviceStatus}
+                {props.deviceStatus ? "online" : "offline"}
               </Typography>
             </Card>
             <Button
               variant="outlined"
-              onClick={handleEditDevice}
+              onClick={handleDialogToggle}
               sx={{ mt: 3, border: 1.5 }}
             >
               Edit device
@@ -97,36 +156,62 @@ function DeviceCard({ deviceName, deviceId, deviceStatus }) {
           </Box>
         </CardContent>
       </Card>
-      <Dialog open={open} onClose={handleEditDevice}>
-        <DialogTitle>Edit device</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Here you can change the device name or switch it on.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="deviceName"
-            label="Device Name"
-            fullWidth
-            variant="standard"
-            sx={{ mt: 2 }}
-          />
-          <FormControlLabel
-            control={<Switch />}
-            label="Switch your Key Box on"
-            sx={{ mt: 2 }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button variant="outlined" onClick={handleEditDevice}>
-            Cancel
-          </Button>
-          <Button variant="contained" onClick={handleEditDevice}>
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {isLoading ? (
+        <Dialog open={isLoading}>
+          <DialogTitle>Edit device</DialogTitle>
+          <DialogContent sx={{ display: "grid", placeItems: "center" }}>
+            <CircularProgress />
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Dialog open={open} onClose={handleDialogToggle}>
+          <DialogTitle>Edit device</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Here you can change the device name or switch it on.
+            </DialogContentText>
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit(handleEditDevice)}
+            >
+              <TextField
+                autoFocus
+                margin="dense"
+                id="deviceName"
+                name="deviceName"
+                label="Device Name"
+                defaultValue={props.deviceName}
+                {...register("deviceName")}
+                error={!!errors.deviceName}
+                helperText={errors.deviceName?.message}
+                fullWidth
+                variant="standard"
+                sx={{ mt: 2 }}
+              />
+              <FormControlLabel
+                control={<Switch />}
+                label={`Your keybox is ${deviceStatus ? "on" : "off"}`}
+                onChange={() => {
+                  setDeviceStatus(!deviceStatus);
+                  console.log(deviceStatus);
+                }}
+                defaultChecked={deviceStatus}
+                {...register("deviceStatus")}
+                sx={{ mt: 2 }}
+              />
+              <DialogActions>
+                <Button variant="outlined" onClick={handleDialogToggle}>
+                  Cancel
+                </Button>
+                <Button variant="contained" type="submit">
+                  Submit
+                </Button>
+              </DialogActions>
+            </Box>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

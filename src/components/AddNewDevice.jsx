@@ -36,14 +36,14 @@ const schema = yup
 
 function AddNewDevice() {
   const [open, setOpen] = useState(false);
-  const [isAddBoxLoading, setIsAddBoxLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const { currentUser } = useAuthProvider();
 
   useEffect(() => {
     reset({
       data: "",
     });
-  }, [isAddBoxLoading]);
+  }, [isLoading]);
 
   const handleDialogToggle = () => {
     setOpen(!open);
@@ -58,8 +58,8 @@ function AddNewDevice() {
     resolver: yupResolver(schema),
   });
 
-  const handleAddNewBox = async (data) => {
-    setIsAddBoxLoading(true);
+  const handleAddNewDevice = async (data) => {
+    setLoading(true);
     const keyboxesRef = collection(db, "keyboxes");
 
     const isDeviceUniqueQuery = query(
@@ -72,7 +72,7 @@ function AddNewDevice() {
     // Check if isDeviceUnique has any docs (if yes device already exists)
     if (isDeviceUnique.docs[0]) {
       alert("Wystąpił błąd: Jest już taki keybox!");
-      setIsAddBoxLoading(false);
+      setLoading(false);
       return;
     }
 
@@ -80,7 +80,7 @@ function AddNewDevice() {
       deviceId: data.deviceId,
       ownerId: currentUser.uid,
       deviceName: data.deviceName,
-      deviceStatus: "offline",
+      deviceStatus: false,
     };
 
     addDoc(keyboxesRef, addKeyboxQuery)
@@ -88,7 +88,7 @@ function AddNewDevice() {
         return <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
       })
       .finally(() => {
-        setIsAddBoxLoading(false);
+        setLoading(false);
         handleDialogToggle();
       });
   };
@@ -127,8 +127,8 @@ function AddNewDevice() {
         </CardActions>
       </Card>
       {/* dialog is also a form component */}
-      {isAddBoxLoading ? (
-        <Dialog open={isAddBoxLoading}>
+      {isLoading ? (
+        <Dialog open={isLoading}>
           <DialogTitle>Add new device</DialogTitle>
           <DialogContent sx={{ display: "grid", placeItems: "center" }}>
             <CircularProgress />
@@ -145,7 +145,7 @@ function AddNewDevice() {
             <Box
               component="form"
               noValidate
-              onSubmit={handleSubmit(handleAddNewBox)}
+              onSubmit={handleSubmit(handleAddNewDevice)}
             >
               <TextField
                 autoFocus
