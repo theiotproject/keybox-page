@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 
 import { Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import Container from "@mui/material/Container";
 
 import AddNewDevice from "src/components/AddNewDevice";
 import DeviceCard from "src/components/DeviceCard";
 import ErrorMsg from "src/components/ErrorMsg";
 import LoadingScreen from "src/components/LoadingScreen";
-import SignOutBtn from "src/components/SignOutBtn";
 
 import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
@@ -36,27 +36,29 @@ function Dashboard() {
   return (
     <Container
       sx={{
-        minHeight: "100vh",
-        display: "grid",
-        placeItems: "center",
+        minHeight: "90vh",
+        display: "flex",
+        justifyContent: "flex-start",
+        alignContent: "center",
+        flexDirection: "column",
       }}
     >
-      <Typography component="h1" variant="h1" sx={{ fontSize: 50, mt: 10 }}>
+      <Typography component="h1" variant="h1" sx={{ fontSize: 50, m: 5 }}>
         Your Key Boxes
       </Typography>
-      <div
-        style={{
+      <Box
+        sx={{
           display: "flex",
+          flexDirection: "row",
           flexWrap: "wrap",
-          width: "100%",
           justifyContent: "center",
+          alignContent: "center",
         }}
       >
         <AddNewDevice />
         <DeviceCard />
         <DeviceCard />
-      </div>
-      <SignOutBtn />
+      </Box>
     </Container>
   );
 }
