@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSignOut } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +16,7 @@ import { auth } from "src/backend/db_config";
 function SignOutBtn() {
   const navigate = useNavigate();
   const [signOut, loading, error] = useSignOut(auth);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleTogglePopUp = () => {
     setOpen(!open);

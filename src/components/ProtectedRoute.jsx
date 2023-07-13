@@ -6,14 +6,14 @@ import { auth } from "src/backend/db_config";
 
 import LoadingScreen from "./LoadingScreen";
 
-function Protected({ isEmailVerified, children }) {
+function Protected({ isSignedIn, isEmailVerified, children }) {
   const [user, loading] = useAuthState(auth);
   // Check if user is still beeing fetched
   if (loading) {
     return <LoadingScreen />;
   }
 
-  if (!user) {
+  if (!user || !isSignedIn) {
     return <Navigate to="/" replace />;
   }
 

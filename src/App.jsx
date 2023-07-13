@@ -33,8 +33,6 @@ function App() {
 
       setCurrentUser(user);
     });
-
-    return unsubscribeFromAuthStatuChanged();
   }, []);
 
   return (
@@ -60,7 +58,10 @@ function App() {
               <Route
                 path="/dashboard"
                 element={
-                  <ProtectedRoute isEmailVerified={currentUser?.emailVerified}>
+                  <ProtectedRoute
+                    isSignedIn={currentUser}
+                    isEmailVerified={currentUser?.emailVerified}
+                  >
                     <Dashboard />
                   </ProtectedRoute>
                 }

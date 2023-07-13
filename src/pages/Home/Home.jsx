@@ -9,7 +9,6 @@ import LeftSide from "src/components/LeftSide";
 import LeftSideMobile from "src/components/LeftSideMobile";
 import SignOutBtn from "src/components/SignOutBtn";
 
-import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Home() {
