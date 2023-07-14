@@ -15,26 +15,42 @@ function LeftSide() {
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         width: { xs: 1, md: 1 / 2 },
-        height: "100vh",
         alignItems: "center",
         display: { xs: "none", md: "flex" },
         flexDirection: "column",
         justifyContent: "center",
+        height: "100vh",
       }}
     >
-      <Box
+      {/* <Box
         alignContent="center"
         component="img"
-        sx={{ height: "30rem", width: "30rem", mt: 5 }}
+        sx={{ maxHeight: "0", maxWidth: "100%", mt: 5 }}
         alt="logo"
         src={logo}
-      />
+      /> */}
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "cetner",
+          alignItems: "center",
+          maxHeight: "65vh",
+        }}
+      >
+        <img
+          src={logo}
+          alt="logo"
+          style={{ mt: 5, height: "auto", maxWidth: "100%" }}
+        />
+      </Box>
+
       <Grid
         container
         direction="column"
         justifyContent="center"
         alignItems="flex-start"
-        sx={{ p: 5 }}
+        sx={{ px: 5, flex: 1 }}
       >
         <Typography component="h3" variant="h3" alignContent="left">
           Key Box
@@ -48,7 +64,7 @@ function LeftSide() {
           variant="contained"
           href={`/`}
           color="secondary"
-          sx={{ mt: 3, mb: 2, borderRadius: 30, color: "white" }}
+          sx={{ mt: 3, borderRadius: 30, color: "white" }}
         >
           Visit our website
         </Button>
