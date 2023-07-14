@@ -1,19 +1,15 @@
 import React from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { Navigate } from "react-router-dom";
-
-import { auth } from "src/backend/db_config";
 
 import LoadingScreen from "./LoadingScreen";
 
 function Protected({ isSignedIn, isEmailVerified, children }) {
-  const [user, loading] = useAuthState(auth);
   // Check if user is still beeing fetched
-  if (loading) {
+  if (isSignedIn === null) {
     return <LoadingScreen />;
   }
 
-  if (!user || !isSignedIn) {
+  if (!isSignedIn) {
     return <Navigate to="/" replace />;
   }
 
