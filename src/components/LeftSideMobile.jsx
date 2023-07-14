@@ -22,7 +22,7 @@ function LeftSideMobile() {
     >
       <Box
         component="img"
-        sx={{ height: "7rem", width: "7rem", mt: 1 }}
+        sx={{ maxHeight: "6rem", width: "auto", mt: 1 }}
         alt="logo"
         src={logo}
       />

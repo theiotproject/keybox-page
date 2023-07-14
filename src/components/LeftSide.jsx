@@ -35,13 +35,14 @@ function LeftSide() {
           display: "flex",
           justifyContent: "cetner",
           alignItems: "center",
-          maxHeight: "65vh",
+          maxHeight: "60vh",
+          mt: 3,
         }}
       >
         <img
           src={logo}
           alt="logo"
-          style={{ mt: 5, height: "auto", maxWidth: "100%" }}
+          style={{ maxHeight: "100%", width: "auto" }}
         />
       </Box>
 
