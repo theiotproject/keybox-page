@@ -65,7 +65,7 @@ export default function SignIn() {
       <Box
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "column", xl: "row" },
+          flexDirection: { xs: "column", md: "row" },
           alignItems: "center",
         }}
       >
@@ -77,8 +77,8 @@ export default function SignIn() {
           noValidate
           onSubmit={handleSignInOnSubmit}
           sx={{
-            p: { xs: 3, md: 3, xl: 10 },
-            width: { xs: 1, md: 1, xl: 1 / 2 },
+            p: { xs: 3, md: 10 },
+            width: { xs: 1, md: 1 / 2 },
             display: "flex",
             flexDirection: "column",
           }}

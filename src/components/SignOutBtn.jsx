@@ -50,6 +50,8 @@ function SignOutBtn() {
       sx={{
         display: "block",
         backgroundColor: "primary.main",
+        width: "10rem",
+        borderRadius: 30,
       }}
     >
       <ListItemButton
@@ -70,8 +72,10 @@ function SignOutBtn() {
         </ListItemIcon>
         <ListItemText
           primary="Log Out"
-          sx={{ opacity: open ? 1 : 0, color: "white" }}
-        />
+          sx={{ opacity: open ? 1 : 1, color: "white", ml: 2 }}
+        >
+          Log out
+        </ListItemText>
 
         <Dialog open={open} onClose={handleTogglePopUp}>
           <DialogTitle>Are you sure you want to log out?</DialogTitle>
