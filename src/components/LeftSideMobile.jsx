@@ -12,11 +12,11 @@ function LeftSideMobile() {
         backgroundImage: `url(${bgimage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
-        width: { xs: 1, md: 1, xl: 1 / 2 },
+        width: { xs: 1, md: 1 / 2 },
         height: "11rem",
         alignItems: "center",
         justifyContent: "center",
-        display: { xs: "flex", md: "flex", xl: "none" },
+        display: { xs: "flex", md: "none" },
         flexDirection: "column",
       }}
     >
@@ -32,7 +32,7 @@ function LeftSideMobile() {
         justifyContent="center"
         alignItems="center"
       >
-        <Typography variant="body2" alignContent="left">
+        <Typography variant="body2" alignContent="left" sx={{ m: 2 }}>
           storing your keys has never been easier!
         </Typography>
       </Grid>

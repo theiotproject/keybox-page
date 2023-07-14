@@ -14,10 +14,10 @@ function LeftSide() {
         backgroundImage: `url(${bgimage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
-        width: { xs: 1, md: 1, xl: 1 / 2 },
+        width: { xs: 1, md: 1 / 2 },
         height: "100vh",
         alignItems: "center",
-        display: { xs: "none", md: "none", xl: "flex" },
+        display: { xs: "none", md: "flex" },
         flexDirection: "column",
         justifyContent: "center",
       }}
@@ -48,7 +48,7 @@ function LeftSide() {
           variant="contained"
           href={`/`}
           color="secondary"
-          sx={{ mt: 3, mb: 2, borderRadius: 30, color: 'white'}}
+          sx={{ mt: 3, mb: 2, borderRadius: 30, color: "white" }}
         >
           Visit our website
         </Button>

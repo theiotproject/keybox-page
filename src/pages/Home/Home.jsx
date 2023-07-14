@@ -20,7 +20,7 @@ function Home() {
       <Box
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "column", xl: "row" },
+          flexDirection: { xs: "column", md: "row" },
           alignItems: "center",
         }}
       >
@@ -28,14 +28,20 @@ function Home() {
         <LeftSideMobile />
         <Box
           sx={{
-            p: { xs: 1, md: 1, xl: 10 },
-            width: { xs: 1, md: 1, xl: 1 / 2 },
+            p: { xs: 5, md: 10 },
+            width: { xs: 1, md: 1 / 2 },
             display: "flex",
             flexDirection: "column",
+            justifyContent: "center",
+            alignContent: "center",
           }}
         >
-          <Typography gutterBottom variant="h1">
-            {currentUser?.displayName} Welcome to Key Box
+          <Typography
+            gutterBottom
+            variant="h1"
+            sx={{ fontSize: { xs: 30, md: 50 } }}
+          >
+            {currentUser?.displayName} <br /> Welcome to Key Box
           </Typography>
           {!currentUser ? (
             <Typography variant="h2">
