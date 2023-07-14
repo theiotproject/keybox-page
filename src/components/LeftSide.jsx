@@ -22,13 +22,7 @@ function LeftSide() {
         justifyContent: "center",
       }}
     >
-      <Box
-        alignContent="center"
-        component="img"
-        sx={{ height: "30rem", width: "30rem", mt: 5 }}
-        alt="logo"
-        src={logo}
-      />
+      <img style={{ maxWidth: "100%", mt: 5 }} alt="logo" src={logo} />
       <Grid
         container
         direction="column"
