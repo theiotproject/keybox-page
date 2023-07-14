@@ -1,22 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
-import { Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import { Box } from "@mui/material";
 import Container from "@mui/material/Container";
 
 import AddNewDevice from "src/components/AddNewDevice";
 import DeviceCard from "src/components/DeviceCard";
+import LoadingScreen from "src/components/LoadingScreen";
 
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "src/backend/db_config";
-import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Dashboard() {
-  // const { currentUser } = useAuthProvider();
-
   const [data, setData] = useState([]);
-
-  useEffect(() => {
+  const [loading, setLoading] = useState(false);
+  useLayoutEffect(() => {
+    setLoading(true);
     const unsubscribe = onSnapshot(collection(db, "keyboxes"), (snapshot) => {
       // Clear data to prevent data duplication of data,
       // which appears because onSnapshot runs every time user activates window
@@ -25,6 +24,7 @@ function Dashboard() {
       snapshot.docs.forEach((doc) => {
         setData((prevData) => [...prevData, { docId: doc.id, ...doc.data() }]);
       });
+      setLoading(false);
     });
 
     return () => {
@@ -56,7 +56,8 @@ function Dashboard() {
         }}
       >
         <AddNewDevice />
-        {data &&
+        {!loading ? (
+          data &&
           data.map((item) => (
             <DeviceCard
               key={item.deviceId}
@@ -66,7 +67,10 @@ function Dashboard() {
               deviceName={item.deviceName}
               deviceStatus={item.deviceStatus}
             />
-          ))}
+          ))
+        ) : (
+          <CircularProgress />
+        )}
       </Box>
     </Container>
   );

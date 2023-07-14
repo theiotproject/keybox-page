@@ -96,7 +96,7 @@ function DeviceCard({ ...props }) {
     <div>
       <Card
         sx={{
-          minWidth: 275,
+          width: 275,
           backgroundColor: "#FFF",
           height: "18rem",
           border: "1px solid #B6B6BB",
@@ -105,7 +105,15 @@ function DeviceCard({ ...props }) {
         }}
       >
         <CardContent>
-          <Typography variant="h1" sx={{ fontSize: 20 }}>
+          <Typography
+            variant="h1"
+            sx={{
+              fontSize: 20,
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+            }}
+          >
             {props.deviceName}
           </Typography>
           <Box
@@ -126,10 +134,26 @@ function DeviceCard({ ...props }) {
                 boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.20)",
               }}
             >
-              <Typography sx={{ color: "#5A5A5F", fontSize: "1rem" }}>
+              <Typography
+                sx={{
+                  color: "#5A5A5F",
+                  fontSize: "1rem",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                }}
+              >
                 id number
               </Typography>
-              <Typography sx={{ color: "primary.main", fontSize: "1.7rem" }}>
+              <Typography
+                sx={{
+                  color: "primary.main",
+                  fontSize: "1.7rem",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {props.deviceId}
               </Typography>
             </Card>
