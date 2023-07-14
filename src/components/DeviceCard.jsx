@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import AddBox from "@mui/icons-material/AddBox";
-import { Button, CircularProgress, Typography } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  Button,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -16,7 +21,7 @@ import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import { doc, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, setDoc } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import * as yup from "yup";
 
@@ -78,6 +83,13 @@ function DeviceCard({ ...props }) {
         setLoading(false);
         handleDialogToggle();
       });
+  };
+
+  const handleDeleteDevice = async () => {
+    setLoading(true);
+    const keyboxRef = doc(db, "keyboxes", props.docId);
+    await deleteDoc(keyboxRef);
+    setLoading(false);
   };
 
   return (
@@ -192,7 +204,7 @@ function DeviceCard({ ...props }) {
               <FormControlLabel
                 control={
                   <Switch
-                    onChange={(event) => {
+                    onChange={() => {
                       setDeviceStatus(!deviceStatus);
                     }}
                     checked={deviceStatus}
@@ -203,6 +215,9 @@ function DeviceCard({ ...props }) {
                 sx={{ mt: 2 }}
               />
               <DialogActions>
+                <IconButton aria-label="delete" onClick={handleDeleteDevice}>
+                  <DeleteIcon />
+                </IconButton>
                 <Button variant="outlined" onClick={handleDialogToggle}>
                   Cancel
                 </Button>

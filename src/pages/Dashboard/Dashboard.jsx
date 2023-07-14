@@ -27,8 +27,6 @@ function Dashboard() {
       });
     });
 
-    console.log(data);
-
     return () => {
       // Unsubscribe from the listener when the component unmounts
       unsubscribe();

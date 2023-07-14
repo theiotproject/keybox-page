@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -13,7 +12,6 @@ import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Home() {
   const { currentUser } = useAuthProvider();
-  useEffect(() => console.log(currentUser));
 
   return (
     <Box>
