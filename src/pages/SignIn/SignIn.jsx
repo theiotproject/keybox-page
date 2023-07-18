@@ -77,13 +77,13 @@ export default function SignIn() {
           noValidate
           onSubmit={handleSignInOnSubmit}
           sx={{
-            p: { xs: 3, md: 10 },
+            px: { xs: 3, md: 10 },
             width: { xs: 1, md: 1 / 2 },
             display: "flex",
             flexDirection: "column",
           }}
         >
-          <Box sx={{ alignContent: "flex-start" }}>
+          <Box sx={{ alignContent: "flex-start", mb: 3 }}>
             <Typography component="h1" variant="h1">
               Hello Again!
             </Typography>
@@ -91,11 +91,11 @@ export default function SignIn() {
               Sign in
             </Typography>
           </Box>
-          <Grid sx={{ mt: 5 }}>
+          <Grid>
             <TextField
-              margin="normal"
-              required
+              margin="dense"
               fullWidth
+              required
               id="email"
               label="Email Address"
               name="email"
@@ -103,7 +103,7 @@ export default function SignIn() {
               autoFocus
             />
             <TextField
-              margin="normal"
+              margin="dense"
               required
               fullWidth
               name="password"
@@ -121,38 +121,33 @@ export default function SignIn() {
             <Box
               sx={{
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "center",
+                my: 2,
               }}
             >
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{ m: 1, width: "30%" }}
-              >
+              <Button type="submit" variant="contained">
                 Sign In
               </Button>
-              or
+
               <Button
+                sx={{ m: 0.5 }}
                 startIcon={<Google />}
-                fullWidth
                 variant="contained"
-                sx={{ m: 1, width: "30%", p: 1 }}
                 onClick={() => signInWithGoogle()}
               >
-                {" "}
                 use Google
               </Button>
             </Box>
 
-            <Grid container>
+            <Grid container sx={{ mt: 5 }}>
               <Grid item xs>
                 <Link href="#" variant="body2" underline="hover">
                   Forgot password?
                 </Link>
               </Grid>
-              <Grid item sx={{ mb: 5 }}>
+              <Grid item>
                 <Link
                   to={`/signup`}
                   variant="body2"

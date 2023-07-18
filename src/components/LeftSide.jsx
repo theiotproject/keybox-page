@@ -53,10 +53,19 @@ function LeftSide() {
         alignItems="flex-start"
         sx={{ px: 5, flex: 1 }}
       >
-        <Typography component="h3" variant="h3" alignContent="left">
+        <Typography
+          component="h3"
+          variant="h3"
+          alignContent="left"
+          sx={{ fontSize: "2.5rem" }}
+        >
           Key Box
         </Typography>
-        <Typography variant="body2" alignContent="left">
+        <Typography
+          variant="body2"
+          alignContent="left"
+          sx={{ fontSize: "1rem" }}
+        >
           storing your keys has never been easier!
         </Typography>
         <Button

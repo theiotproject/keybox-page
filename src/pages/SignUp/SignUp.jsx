@@ -120,154 +120,142 @@ export default function SignUp() {
   }
 
   return (
-    //
-
-    <Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        alignItems: "center",
+      }}
+    >
+      <LeftSide />
+      <LeftSideMobile />
+      {/* the form */}
       <Box
+        component="form"
+        noValidate
+        onSubmit={handleSubmit(signUpOnSubmit)}
         sx={{
+          px: { xs: 3, md: 5 },
+          width: { xs: 1, md: 1 / 2 },
           display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: "center",
+          flexDirection: "column",
         }}
       >
-        <LeftSide />
-        <LeftSideMobile />
-        {/* the form */}
+        <Box sx={{ alignContent: "flex-start", mb: 2 }}>
+          <Typography component="h1" variant="h1">
+            Hello!
+          </Typography>
+          <Typography component="h2" variant="h2">
+            Sign up to get started
+          </Typography>
+        </Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              margin="dense"
+              autoComplete="given-name"
+              name="firstName"
+              required
+              fullWidth
+              id="firstName"
+              label="First Name"
+              autoFocus
+              {...register("firstName")}
+              error={!!errors.firstName}
+              helperText={errors.firstName?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              margin="dense"
+              required
+              fullWidth
+              id="lastName"
+              label="Last Name"
+              name="lastName"
+              autoComplete="family-name"
+              {...register("lastName")}
+              error={!!errors.lastName}
+              helperText={errors.lastName?.message}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              {...register("email")}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="new-password"
+              {...register("password")}
+              error={!!errors.password}
+              helperText={errors.passowrd?.message}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              fullWidth
+              name="c-password"
+              label="Confirm Password"
+              type="c-password"
+              id="c-password"
+              autoComplete="new-password"
+              {...register("confirmPassword")}
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword?.message}
+            />
+          </Grid>
+        </Grid>
         <Box
-          component="form"
-          noValidate
-          onSubmit={handleSubmit(signUpOnSubmit)}
           sx={{
-            p: { xs: 3, md: 10 },
-            width: { xs: 1, md: 1 / 2 },
             display: "flex",
-            flexDirection: "column",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            my: 2,
           }}
         >
-          <Box sx={{ alignContent: "flex-start" }}>
-            <Typography component="h1" variant="h1">
-              Hello!
-            </Typography>
-            <Typography component="h2" variant="h2">
-              Sign up to get started
-            </Typography>
-          </Box>
-          <Grid container spacing={2} sx={{ mt: 5 }}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="given-name"
-                name="firstName"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-                {...register("firstName")}
-                error={!!errors.firstName}
-                helperText={errors.firstName?.message}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="family-name"
-                {...register("lastName")}
-                error={!!errors.lastName}
-                helperText={errors.lastName?.message}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                {...register("email")}
-                error={!!errors.email}
-                helperText={errors.email?.message}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="new-password"
-                {...register("password")}
-                error={!!errors.password}
-                helperText={errors.passowrd?.message}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="c-password"
-                label="Confirm Password"
-                type="c-password"
-                id="c-password"
-                autoComplete="new-password"
-                {...register("confirmPassword")}
-                error={!!errors.confirmPassword}
-                helperText={errors.confirmPassword?.message}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
-              />
-            </Grid>
-          </Grid>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+          <Button type="submit" variant="contained" sx={{ m: 0.5 }}>
+            Sign Up
+          </Button>
+
+          <Button
+            startIcon={<Google />}
+            variant="contained"
+            sx={{ m: 0.5 }}
+            onClick={() => signInWithGoogle()}
           >
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{ m: 1, width: "30%" }}
-            >
-              Sign Up
-            </Button>
-            or
-            <Button
-              startIcon={<Google />}
-              fullWidth
-              variant="contained"
-              sx={{ m: 1, width: "30%", p: 1 }}
-              onClick={() => signInWithGoogle()}
-            >
-              {" "}
-              use Google
-            </Button>
-          </Box>
-          <Grid container justifyContent="center">
-            <Grid item sx={{ mb: 3 }}>
-              <Link
-                to={`/signin`}
-                variant="body2"
-                component={RouterLink}
-                underline="hover"
-              >
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
+            {" "}
+            use Google
+          </Button>
         </Box>
+        <Grid container justifyContent="center">
+          <Grid item>
+            <Link
+              to={`/signin`}
+              variant="body2"
+              component={RouterLink}
+              underline="hover"
+            >
+              Already have an account? Sign in
+            </Link>
+          </Grid>
+        </Grid>
       </Box>
     </Box>
   );

@@ -5,7 +5,7 @@ const theme = createTheme({
     fontFamily: ["Poppins"].join(","),
     h1: {
       color: "#333",
-      fontSize: "4rem",
+      fontSize: "2rem",
       fontFamily: "Poppins",
       fontStyle: "normal",
       fontWeight: 700,
@@ -15,7 +15,7 @@ const theme = createTheme({
 
     h2: {
       color: "#333",
-      fontSize: "3.5rem",
+      fontSize: "1.5rem",
       fontFamily: "Poppins",
       fontStyle: "normal",
       fontWeight: 400,
@@ -25,7 +25,7 @@ const theme = createTheme({
 
     h3: {
       color: "#FFF",
-      fontSize: "2.5rem",
+      fontSize: "1rem",
       fontFamily: "Poppins",
       fontStyle: "normal",
       fontWeight: 700,
@@ -34,7 +34,7 @@ const theme = createTheme({
     },
     body2: {
       color: "#FFF",
-      fontSize: "1rem",
+      fontSize: "0.7rem",
       fontFamily: "Poppins",
       fontStyle: "normal",
       fontWeight: 500,
