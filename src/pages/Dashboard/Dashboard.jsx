@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 
-import { CircularProgress, Typography } from "@mui/material";
+import { Button, CircularProgress, Typography } from "@mui/material";
 import { Box } from "@mui/material";
 import Container from "@mui/material/Container";
 
@@ -33,6 +33,30 @@ function Dashboard() {
     };
   }, []);
 
+  const testGoliothApi = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("X-API-Key", import.meta.env.VITE_GOLIOTH_API_KEY);
+
+    const myInit = {
+      method: "GET",
+      headers: myHeaders,
+    };
+
+    await fetch(
+      "https://api.golioth.io/v1/projects/test-e47c2d/devices",
+      myInit
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        alert(
+          `Dostępne urządzenie: ${data.list[0].name}, po więcej informacji sprawdź konsolę`
+        );
+        console.log(data.list);
+      });
+  };
+
   return (
     <Container
       sx={{
@@ -55,6 +79,7 @@ function Dashboard() {
           alignContent: "center",
         }}
       >
+        <Button onClick={() => testGoliothApi()}>Test api</Button>
         <AddNewDevice />
         {!loading ? (
           data &&

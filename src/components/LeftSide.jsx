@@ -12,24 +12,16 @@ function LeftSide() {
     <Box
       sx={{
         backgroundImage: `url(${bgimage})`,
-        backgroundRepeat: "no-repeat",
+        backgroundRepeat: "cover",
         backgroundSize: "cover",
         width: { xs: 1, md: 1 / 2 },
         alignItems: "center",
         display: { xs: "none", md: "flex" },
         flexDirection: "column",
         justifyContent: "center",
-        height: "100vh",
+        height: "141vh",
       }}
     >
-      {/* <Box
-        alignContent="center"
-        component="img"
-        sx={{ maxHeight: "0", maxWidth: "100%", mt: 5 }}
-        alt="logo"
-        src={logo}
-      /> */}
-
       <Box
         sx={{
           display: "flex",
@@ -49,9 +41,9 @@ function LeftSide() {
       <Grid
         container
         direction="column"
-        justifyContent="center"
+        justifyContent="start"
         alignItems="flex-start"
-        sx={{ px: 5, flex: 1 }}
+        sx={{ px: 7, flex: 1, mt: 5 }}
       >
         <Typography component="h3" variant="h3" alignContent="left">
           Key Box

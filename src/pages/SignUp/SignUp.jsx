@@ -138,7 +138,7 @@ export default function SignUp() {
           noValidate
           onSubmit={handleSubmit(signUpOnSubmit)}
           sx={{
-            p: { xs: 3, md: 10 },
+            p: { xs: 3, md: 5 },
             width: { xs: 1, md: 1 / 2 },
             display: "flex",
             flexDirection: "column",
