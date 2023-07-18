@@ -19,7 +19,7 @@ function LeftSide() {
         display: { xs: "none", md: "flex" },
         flexDirection: "column",
         justifyContent: "center",
-        height: "141vh",
+        height: "100vh",
       }}
     >
       <Box
@@ -45,10 +45,19 @@ function LeftSide() {
         alignItems="flex-start"
         sx={{ px: 7, flex: 1, mt: 5 }}
       >
-        <Typography component="h3" variant="h3" alignContent="left">
+        <Typography
+          component="h3"
+          variant="h3"
+          alignContent="left"
+          sx={{ fontSize: "2.5rem" }}
+        >
           Key Box
         </Typography>
-        <Typography variant="body2" alignContent="left">
+        <Typography
+          variant="body2"
+          alignContent="left"
+          sx={{ fontSize: "1rem" }}
+        >
           storing your keys has never been easier!
         </Typography>
         <Button
