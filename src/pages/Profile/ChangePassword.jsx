@@ -27,16 +27,16 @@ import * as yup from "yup";
 // Form yup validation schema
 const schema = yup
   .object({
-    oldPassword: yup
-      .string()
-      .required("New Password field is required")
-      .min(8, "Password length should be at least 8 characters")
-      .max(32, "Password cannot exceed more than 32 characters"),
+    oldPassword: yup.string().required("Old Password field is required"),
     newPassword: yup
       .string()
       .required("New Password field is required")
       .min(8, "Password length should be at least 8 characters")
-      .max(32, "Password cannot exceed more than 32 characters"),
+      .max(32, "Password cannot exceed more than 32 characters")
+      .notOneOf(
+        [yup.ref("oldPassword")],
+        "New Password should be different than Old Password"
+      ),
     confirmNewPassword: yup
       .string()
       .required("Confirm Password field is required")
