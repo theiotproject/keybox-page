@@ -22,7 +22,12 @@ export default function Header() {
         >
           <Grid item xs={1}></Grid>
           <Grid item xs={10}>
-            <Typography variant="h3" component="div" textAlign="center">
+            <Typography
+              variant="h3"
+              component="div"
+              textAlign="center"
+              sx={{ fontSize: "2.5rem" }}
+            >
               Key Box Admin Panel
             </Typography>
           </Grid>
