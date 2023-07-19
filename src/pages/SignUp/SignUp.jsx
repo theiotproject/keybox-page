@@ -50,12 +50,10 @@ const schema = yup
   .required();
 
 export default function SignUp() {
-  //TODO: PASSWORD STRENGHT METTER https://upmostly.com/tutorials/build-a-password-strength-meter-react
-
   const { currentUser } = useAuthProvider();
 
   const [loading, setLoading] = useState(false);
-  const [firebaseErros, setFirebaseErrors] = useState(false);
+  const [firebaseErrors, setFirebaseErrors] = useState(false);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
@@ -109,9 +107,9 @@ export default function SignUp() {
     return <LoadingScreen />;
   }
 
-  if (firebaseErros || errorGoogle) {
+  if (firebaseErrors || errorGoogle) {
     return (
-      <ErrorMsg errorMessage="Wystąpił nieznany błąd z bazą danych, sprawdź konsolę po więcej informacji" />
+      <ErrorMsg errorMessage="Unknown error has occured, check console for more info" />
     );
   }
 
