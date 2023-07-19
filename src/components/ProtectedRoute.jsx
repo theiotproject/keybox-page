@@ -5,6 +5,10 @@ import LoadingScreen from "./LoadingScreen";
 
 function Protected({ isSignedIn, isEmailVerified, children }) {
   // Check if user is still beeing fetched
+  if (isSignedIn === null) {
+    return <LoadingScreen />;
+  }
+
   if (!isSignedIn) {
     return <Navigate to="/" replace />;
   }

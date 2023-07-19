@@ -7,16 +7,18 @@ import {
   Button,
   Container,
   Grid,
-  Link,
   TextField,
   Typography,
 } from "@mui/material";
 
-import ErrorMsg from "src/components/ErrorMsg";
 import LoadingScreen from "src/components/LoadingScreen";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import { EmailAuthProvider, signOut } from "firebase/auth";
+import {
+  EmailAuthProvider,
+  sendPasswordResetEmail,
+  signOut,
+} from "firebase/auth";
 import { reauthenticateWithCredential, updatePassword } from "firebase/auth";
 import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
@@ -46,10 +48,9 @@ const schema = yup
 
 function ChangePassword() {
   const { currentUser } = useAuthProvider();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [resetPasswordSent, setResetPasswordSent] = useState(false);
   const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
@@ -58,12 +59,14 @@ function ChangePassword() {
     resolver: yupResolver(schema),
   });
 
-  const changePasswordOnSubmit = async (data) => {
-    const isSignedInWithProvider = currentUser.providerData.some(
+  const isSignedInWithProvider = () => {
+    return currentUser.providerData.some(
       (provider) => provider.providerId === "google.com"
     );
+  };
 
-    if (isSignedInWithProvider) {
+  const changePasswordOnSubmit = async (data) => {
+    if (isSignedInWithProvider()) {
       alert("You cannot change password using auth providers such as google!");
       return;
     }
@@ -73,21 +76,26 @@ function ChangePassword() {
       data.oldPassword
     );
 
+    setLoading(true);
     reauthenticateWithCredential(currentUser, credential)
       .then(() => {
         updatePassword(currentUser, data.newPassword)
           .then(() => {
+            setLoading(false);
             alert(
               "Your password has been changed successfully! Now you can login again!"
             );
-            signOut(auth);
+            navigate("/signout");
           })
           .catch((error) => {
+            setLoading(false);
+
             alert("Error while changing password, check console for more info");
             console.error(error);
           });
       })
       .catch((error) => {
+        setLoading(false);
         alert(
           "Your old password is different, try again or reset your password"
         );
@@ -95,69 +103,96 @@ function ChangePassword() {
       });
   };
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  const handleResetPassword = async () => {
+    if (isSignedInWithProvider()) {
+      alert("You cannot change password using auth providers such as google!");
+      return;
+    }
 
-  if (error) {
-    return (
-      <ErrorMsg errorMessage="Unknown error has occured, check console for more info. " />
-    );
-  }
+    setLoading(true);
+    sendPasswordResetEmail(auth, currentUser.email)
+      .then(() => {
+        alert("Sent mail with password reset");
+        setResetPasswordSent(true);
+        setLoading(false);
+      })
+      .catch((error) => {
+        alert("Error has occured, check console");
+        console.error(error);
+        setLoading(false);
+      });
+  };
 
   return (
     <Container>
       {/* the form */}
-      <Box
-        component="form"
-        noValidate
-        onSubmit={handleSubmit(changePasswordOnSubmit)}
-      >
-        <Grid
-          container
-          display="flex"
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ py: 5 }}
+      {isLoading ? (
+        <LoadingScreen />
+      ) : (
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSubmit(changePasswordOnSubmit)}
         >
-          <Typography variant="h2">Change your password</Typography>
-          <TextField
-            margin="normal"
-            name="oldPassword"
-            id="oldPassword"
-            label="Old Password"
-            autoFocus
-            {...register("oldPassword")}
-            error={!!errors.oldPassword}
-            helperText={errors.oldPassword?.message}
-          />
-          <TextField
-            margin="normal"
-            label="New Password"
-            name="newPassword"
-            id="newPassword"
-            {...register("newPassword")}
-            error={!!errors.newPassword}
-            helperText={errors.newPassword?.message}
-          />
-          <TextField
-            margin="normal"
-            label="Confirm Password"
-            name="confirmNewPassword"
-            id="confirmNewPassword"
-            {...register("confirmNewPassword")}
-            error={!!errors.confirmNewPassword}
-            helperText={errors.confirmNewPassword?.message}
-          />
-          <Button variant="contained" sx={{ my: 2 }} type="submit">
-            Change Password
-          </Button>
-          <Link to={`/#`} variant="body2" underline="hover">
-            {"Forgot your password?"}
-          </Link>
-        </Grid>
-      </Box>
+          <Grid
+            container
+            display="flex"
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ py: 5 }}
+          >
+            <Typography variant="h2">Change your password</Typography>
+            <TextField
+              margin="normal"
+              name="oldPassword"
+              id="oldPassword"
+              label="Old Password"
+              autoFocus
+              {...register("oldPassword")}
+              error={!!errors.oldPassword}
+              helperText={errors.oldPassword?.message}
+              type="password"
+            />
+            <TextField
+              margin="normal"
+              label="New Password"
+              name="newPassword"
+              id="newPassword"
+              {...register("newPassword")}
+              error={!!errors.newPassword}
+              helperText={errors.newPassword?.message}
+              type="password"
+            />
+            <TextField
+              margin="normal"
+              label="Confirm Password"
+              name="confirmNewPassword"
+              id="confirmNewPassword"
+              {...register("confirmNewPassword")}
+              error={!!errors.confirmNewPassword}
+              helperText={errors.confirmNewPassword?.message}
+              type="password"
+            />
+            <Button variant="contained" sx={{ my: 2 }} type="submit">
+              Change Password
+            </Button>
+            {!resetPasswordSent ? (
+              <Button
+                onClick={() => handleResetPassword()}
+                variant="body2"
+                underline="hover"
+              >
+                {"Forgot your password?"}
+              </Button>
+            ) : (
+              <Button variant="body2" underline="hover" disabled={true}>
+                {"Email sent! Check your inbox"}
+              </Button>
+            )}
+          </Grid>
+        </Box>
+      )}
     </Container>
   );
 }
