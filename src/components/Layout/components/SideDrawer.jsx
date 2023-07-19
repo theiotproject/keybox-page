@@ -92,7 +92,13 @@ export default function MiniDrawer() {
     <LogoutOutlined />,
   ];
 
-  const links = ["/dashboard", "/profile", "/settings", "/faq", "/signout"];
+  const links = [
+    "/dashboard",
+    "/changepassword",
+    "/settings",
+    "/faq",
+    "/signout",
+  ];
 
   return (
     <Box sx={{ display: "flex" }}>
