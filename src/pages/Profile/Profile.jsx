@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
   Avatar,
@@ -10,7 +10,10 @@ import {
   Typography,
 } from "@mui/material";
 
+import { useAuthProvider } from "src/contexts/AuthContext";
+
 function Profile() {
+  const currentUser = useAuthProvider();
   return (
     <Container>
       <Grid
@@ -25,9 +28,13 @@ function Profile() {
         }}
       >
         <Grid item xs={4} lg={12} display="flex">
-          <Avatar alt="Your Avatar" src="" sx={{ width: 50, height: 50 }} />
+          <Avatar
+            alt="Your Avatar"
+            src={currentUser.currentUser.photoURL}
+            sx={{ width: 50, height: 50 }}
+          />
           <Typography variant="h1" sx={{ mx: 2 }}>
-            Jan Kowalski
+            {currentUser.currentUser.displayName}
           </Typography>
         </Grid>
         <Grid item xs={4} lg={8}>
@@ -36,11 +43,11 @@ function Profile() {
           <TextField
             disabled
             id="outlined-disabled"
-            defaultValue="jkowalski@gmail.com"
+            defaultValue={currentUser.currentUser.email}
           />
         </Grid>
         <Grid item xs={4} lg={8}>
-          <Button variant="outlined" sx={{ my: 1 }}>
+          <Button variant="outlined" sx={{ my: 1 }} onClick={changeEmail}>
             Change email
           </Button>{" "}
           <Button
