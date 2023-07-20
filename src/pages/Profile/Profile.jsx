@@ -17,6 +17,7 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   EmailAuthProvider,
+  fetchSignInMethodsForEmail,
   reauthenticateWithCredential,
   updateEmail,
 } from "firebase/auth";
