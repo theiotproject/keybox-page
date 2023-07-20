@@ -46,7 +46,7 @@ const schema = yup
   })
   .required();
 
-function ChangePassword() {
+function ProfileChangePassword() {
   const { currentUser } = useAuthProvider();
   const [isLoading, setLoading] = useState(false);
   const [resetPasswordSent, setResetPasswordSent] = useState(false);
@@ -197,4 +197,4 @@ function ChangePassword() {
   );
 }
 
-export default ChangePassword;
+export default ProfileChangePassword;

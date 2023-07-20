@@ -14,7 +14,8 @@ import { AuthProvider } from "src/contexts/AuthContext";
 import Dashboard from "src/pages/Dashboard/Dashboard";
 import Error from "src/pages/Error/Error";
 import Home from "src/pages/Home/Home";
-import ChangePassword from "src/pages/Profile/ChangePassword";
+import ChangePassword from "src/pages/Profile/ProfileChangePassword";
+import ProfileChangePassword from "src/pages/Profile/ProfileChangePassword";
 import SignIn from "src/pages/SignIn/SignIn";
 import SignInChangePassword from "src/pages/SignIn/signInChangePassword";
 import SignOut from "src/pages/SignOut";
@@ -84,6 +85,17 @@ function App() {
                     isEmailVerified={currentUser?.emailVerified}
                   >
                     <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="profile/changepassword"
+                element={
+                  <ProtectedRoute
+                    isSignedIn={currentUser}
+                    isEmailVerified={currentUser?.emailVerified}
+                  >
+                    <ProfileChangePassword />
                   </ProtectedRoute>
                 }
               />

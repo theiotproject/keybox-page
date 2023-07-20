@@ -43,7 +43,11 @@ function Profile() {
           <Button variant="outlined" sx={{ my: 1 }}>
             Change email
           </Button>{" "}
-          <Button variant="outlined" sx={{ my: 1 }} href="/changepassword">
+          <Button
+            variant="outlined"
+            sx={{ my: 1 }}
+            href="profile/changepassword"
+          >
             Change password
           </Button>
         </Grid>
