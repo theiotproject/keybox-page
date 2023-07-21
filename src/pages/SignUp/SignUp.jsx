@@ -20,6 +20,7 @@ import LoadingScreen from "src/components/LoadingScreen";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   createUserWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
   sendEmailVerification,
   updateProfile,
 } from "firebase/auth";
@@ -61,6 +62,7 @@ export default function SignUp() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -68,6 +70,24 @@ export default function SignUp() {
 
   const signUpOnSubmit = async (data) => {
     setLoading(true);
+
+    fetchSignInMethodsForEmail(auth, data.email)
+      .then((signInMethods) => {
+        if (signInMethods.length > 0) {
+          alert("That email is already in use");
+          reset();
+          setLoading(false);
+          return;
+        }
+      })
+      .catch((error) => {
+        alert("Error while checking for email availability, check console");
+        console.error(error);
+        reset();
+        setLoading(false);
+        return;
+      });
+
     const user = await createUserWithEmailAndPassword(
       auth,
       data.email,

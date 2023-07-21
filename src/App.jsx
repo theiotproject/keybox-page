@@ -14,8 +14,10 @@ import { AuthProvider } from "src/contexts/AuthContext";
 import Dashboard from "src/pages/Dashboard/Dashboard";
 import Error from "src/pages/Error/Error";
 import Home from "src/pages/Home/Home";
-import ChangePassword from "src/pages/Profile/ChangePassword";
+import ChangePassword from "src/pages/Profile/ProfileChangePassword";
+import ProfileChangePassword from "src/pages/Profile/ProfileChangePassword";
 import SignIn from "src/pages/SignIn/SignIn";
+import SignInChangePassword from "src/pages/SignIn/signInChangePassword";
 import SignOut from "src/pages/SignOut";
 import SignUp from "src/pages/SignUp/SignUp";
 import Unverified from "src/pages/Unverified/Unverified";
@@ -49,10 +51,14 @@ function App() {
               loader={<CircularProgress />}
             >
               <Route path="*" element={<NotFound />} />
-              <Route path="/signout" element={<SignOut />} />
-              <Route path="/" element={<Home />} />
-              <Route path="/signin" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
+              <Route path="signout" element={<SignOut />} />
+              <Route path="" element={<Home />} />
+              <Route path="signin" element={<SignIn />} />
+              <Route
+                path="signin/changepassword"
+                element={<SignInChangePassword />}
+              />
+              <Route path="signup" element={<SignUp />} />
             </Route>
             <Route
               element={<LayoutSignedIn />}
@@ -60,7 +66,7 @@ function App() {
               loader={<CircularProgress />}
             >
               <Route
-                path="/dashboard"
+                path="dashboard"
                 element={
                   <ProtectedRoute
                     isSignedIn={currentUser}
@@ -72,7 +78,7 @@ function App() {
               />
 
               <Route
-                path="/profile"
+                path="profile"
                 element={
                   <ProtectedRoute
                     isSignedIn={currentUser}
@@ -83,7 +89,18 @@ function App() {
                 }
               />
               <Route
-                path="/changepassword"
+                path="profile/changepassword"
+                element={
+                  <ProtectedRoute
+                    isSignedIn={currentUser}
+                    isEmailVerified={currentUser?.emailVerified}
+                  >
+                    <ProfileChangePassword />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="changepassword"
                 element={
                   <ProtectedRoute
                     isSignedIn={currentUser}
@@ -94,7 +111,7 @@ function App() {
                 }
               />
             </Route>
-            <Route path="/unverified" element={<Unverified />} />
+            <Route path="unverified" element={<Unverified />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
