@@ -19,6 +19,7 @@ import {
   EmailAuthProvider,
   fetchSignInMethodsForEmail,
   reauthenticateWithCredential,
+  sendEmailVerification,
   updateEmail,
 } from "firebase/auth";
 import { auth } from "src/backend/db_config";
@@ -76,7 +77,9 @@ function Profile() {
           .then(() => {
             setLoading(false);
             alert("Check your new email address for verification link");
-            navigate("/signout");
+            sendEmailVerification(currentUser).then(() => {
+              navigate("/signout");
+            });
           })
           .catch((error) => {
             setLoading(false);
