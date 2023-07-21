@@ -9,6 +9,8 @@
     "build-prod": "dotenv -e .env.production vite build",
     "preview-dev": "dotenv -e .env.development vite preview",
     "preview-prod": "dotenv -e .env.production vite preview",
+    "deploy-dev": "firebase use -P development firebase deploy -P development",
+    "deploy-prod": "firebase use -P production firebase deploy -P production",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
