@@ -4,10 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "env-cmd -f .env vite",
-    "build": "env-cmd -f .env vite build",
-    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "env-cmd -f .env vite preview"
+    "dev": "dotenv -e .env.development vite",
+    "build-dev": "dotenv -e .env.development vite build",
+    "build-prod": "dotenv -e .env.production vite build",
+    "preview-dev": "dotenv -e .env.development vite preview",
+    "preview-prod": "dotenv -e .env.production vite preview",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -16,7 +18,7 @@
     "@hookform/resolvers": "^3.1.1",
     "@mui/icons-material": "^5.13.7",
     "@mui/material": "^5.13.7",
-    "env-cmd": "^10.1.0",
+    "dotenv-cli": "^7.2.1",
     "firebase": "^10.0.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
@@ -36,6 +38,7 @@
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^4.0.0",
+    "dotenv": "^16.3.1",
     "eslint": "^8.44.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
