@@ -24,6 +24,8 @@ dist-ssr
 *.sw?
 
 .env
+.env.development
+.env.production
 
 .firebaserc
 firebase.json
