@@ -110,7 +110,6 @@ export default function SideDrawer() {
     <ListAltOutlined />,
     <SettingsOutlinedIcon />,
     <HelpOutlineOutlinedIcon />,
-    <LogoutOutlined />,
   ];
 
   const links = [
@@ -121,7 +120,6 @@ export default function SideDrawer() {
     "events",
     "/settings",
     "/faq",
-    "/signout",
   ];
 
   return (
@@ -146,25 +144,80 @@ export default function SideDrawer() {
               {open ? <Close /> : <MenuIcon />}
             </IconButton>
           </DrawerHeader>
+
           <Divider />
-          <List>
-            {[
-              "Dashboard",
-              "Profile",
-              "Key Boxes",
-              "Cards",
-              "Events",
-              "Settings",
-              "FAQ",
-              "Log Out",
-            ].map((text, index) => (
-              <ListItem key={text} disablePadding sx={{ display: "block" }}>
+
+          <List
+            sx={{
+              display: "grid",
+              gridTemplateRows: "3fr 1fr",
+              height: "100%",
+              paddingBottom: 0,
+            }}
+          >
+            {/* Subsites */}
+            <div>
+              {[
+                "Dashboard",
+                "Profile",
+                "Key Boxes",
+                "Cards",
+                "Events",
+                "Settings",
+                "FAQ",
+              ].map((text, index) => (
+                <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
+                    href={links[index]}
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {icons[index]}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </div>
+
+            {/* Functions (ex LogOut) */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Divider />
+              <ListItem disablePadding sx={{ display: "block", pb: 0 }}>
                 <ListItemButton
-                  href={links[index]}
+                  href="/signout"
                   sx={{
                     minHeight: 48,
                     justifyContent: open ? "initial" : "center",
                     px: 2.5,
+                    bgcolor: "primary.main",
+                    "&:focus-within": { bgcolor: "white" },
+                    "&:focus-within > *": {
+                      color: "primary.main",
+                    },
+                    "&:hover": { bgcolor: "white" },
+                    "&:hover > *": {
+                      color: "primary.main",
+                    },
                   }}
                 >
                   <ListItemIcon
@@ -172,14 +225,21 @@ export default function SideDrawer() {
                       minWidth: 0,
                       mr: open ? 3 : "auto",
                       justifyContent: "center",
+                      color: "white",
                     }}
                   >
-                    {icons[index]}
+                    {<LogoutOutlined />}
                   </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                  <ListItemText
+                    primary={"Log Out"}
+                    sx={{
+                      opacity: open ? 1 : 0,
+                      color: "white",
+                    }}
+                  />
                 </ListItemButton>
               </ListItem>
-            ))}
+            </div>
           </List>
         </Drawer>
       </Box>
