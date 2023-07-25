@@ -14,6 +14,8 @@ import { AuthProvider } from "src/contexts/AuthContext";
 import Dashboard from "src/pages/Dashboard/Dashboard";
 import Error from "src/pages/Error/Error";
 import Home from "src/pages/Home/Home";
+import Keyboxes from "src/pages/Keyboxes/Keyboxes";
+import NotFound from "src/pages/NotFound/NotFound";
 import ChangePassword from "src/pages/Profile/ProfileChangePassword";
 import ProfileChangePassword from "src/pages/Profile/ProfileChangePassword";
 import SignIn from "src/pages/SignIn/SignIn";
@@ -22,9 +24,7 @@ import SignOut from "src/pages/SignOut";
 import SignUp from "src/pages/SignUp/SignUp";
 import Unverified from "src/pages/Unverified/Unverified";
 import Profile from "src/pages/profile/Profile";
-
-import NotFound from "./pages/NotFound/NotFound";
-import theme from "./theme";
+import theme from "src/theme";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -96,6 +96,17 @@ function App() {
                     isEmailVerified={currentUser?.emailVerified}
                   >
                     <ProfileChangePassword />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="keyboxes"
+                element={
+                  <ProtectedRoute
+                    isSignedIn={currentUser}
+                    isEmailVerified={currentUser?.emailVerified}
+                  >
+                    <Keyboxes />
                   </ProtectedRoute>
                 }
               />
