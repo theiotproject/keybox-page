@@ -13,13 +13,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
-import ErrorMsg from "src/components/ErrorMsg";
-
-import { auth } from "src/backend/db_config";
-
 function SignOutBtn() {
   const navigate = useNavigate();
-  const [signOut, loading, error] = useSignOut(auth);
   const [open, setOpen] = useState(false);
 
   const handleTogglePopUp = () => {
@@ -27,21 +22,8 @@ function SignOutBtn() {
   };
 
   const handleSignOut = async () => {
-    const success = await signOut();
-
-    // If user was signed out successfully
-    if (success) {
-      navigate("/");
-    }
+    navigate("/signout");
   };
-
-  if (loading) {
-    return <CircularProgress />;
-  }
-
-  if (error) {
-    <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
-  }
 
   return (
     <ListItem

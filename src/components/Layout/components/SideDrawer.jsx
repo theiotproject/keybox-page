@@ -28,6 +28,9 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { styled } from "@mui/material/styles";
 
+import SignOutBtn from "src/components/SignOutBtn";
+import SingOutSideDrawer from "src/components/SignOutSideDrawer";
+
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -202,43 +205,7 @@ export default function SideDrawer() {
               }}
             >
               <Divider />
-              <ListItem disablePadding sx={{ display: "block", pb: 0 }}>
-                <ListItemButton
-                  href="/signout"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                    bgcolor: "primary.main",
-                    "&:focus-within": { bgcolor: "white" },
-                    "&:focus-within > *": {
-                      color: "primary.main",
-                    },
-                    "&:hover": { bgcolor: "white" },
-                    "&:hover > *": {
-                      color: "primary.main",
-                    },
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                      color: "white",
-                    }}
-                  >
-                    {<LogoutOutlined />}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={"Log Out"}
-                    sx={{
-                      opacity: open ? 1 : 0,
-                      color: "white",
-                    }}
-                  />
-                </ListItemButton>
-              </ListItem>
+              <SingOutSideDrawer />
             </div>
           </List>
         </Drawer>
