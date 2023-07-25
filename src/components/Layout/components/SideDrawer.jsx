@@ -1,12 +1,21 @@
 import * as React from "react";
 
-import { LogoutOutlined } from "@mui/icons-material";
+import {
+  Close,
+  CreditCardOutlined,
+  GridViewOutlined,
+  Home,
+  HomeOutlined,
+  ListAltOutlined,
+  LogoutOutlined,
+  PermIdentityOutlined,
+} from "@mui/icons-material";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import DashboardCustomizeOutlinedIcon from "@mui/icons-material/DashboardCustomizeOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -42,6 +51,32 @@ const closedMixin = (theme) => ({
   },
 });
 
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+  ...(open && {
+    ...openedMixin(theme),
+    "& .MuiDrawer-paper": openedMixin(theme),
+  }),
+  ...(!open && {
+    ...closedMixin(theme),
+    "& .MuiDrawer-paper": closedMixin(theme),
+  }),
+}));
+
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+}));
+
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -60,24 +95,7 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
-
-export default function MiniDrawer() {
+export default function SideDrawer() {
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -85,14 +103,26 @@ export default function MiniDrawer() {
   };
 
   const icons = [
-    <DashboardCustomizeOutlinedIcon />,
-    <AccountCircleOutlinedIcon />,
+    <HomeOutlined />,
+    <PermIdentityOutlined />,
+    <GridViewOutlined />,
+    <CreditCardOutlined />,
+    <ListAltOutlined />,
     <SettingsOutlinedIcon />,
     <HelpOutlineOutlinedIcon />,
     <LogoutOutlined />,
   ];
 
-  const links = ["/dashboard", "/profile", "/settings", "/faq", "/signout"];
+  const links = [
+    "/dashboard",
+    "/profile",
+    "/keyboxes",
+    "cards",
+    "events",
+    "/settings",
+    "/faq",
+    "/signout",
+  ];
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -100,39 +130,56 @@ export default function MiniDrawer() {
         <CssBaseline />
         <AppBar position="relative" open={open} sx={{ width: "100%" }} />
         <Drawer variant="permanent" open={open}>
-          <Button onClick={handleDrawerOpen} sx={{ width: "5%" }}>
-            <MenuIcon />
-          </Button>
+          <DrawerHeader
+            sx={{
+              ...(!open && {
+                justifyContent: "center",
+                WebkitJustifyContent: "center",
+              }),
+            }}
+          >
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+            >
+              {open ? <Close /> : <MenuIcon />}
+            </IconButton>
+          </DrawerHeader>
           <Divider />
           <List>
-            {["Dashboard", "Profile", "Settings", "FAQ", "Log Out"].map(
-              (text, index) => (
-                <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                  <ListItemButton
-                    href={links[index]}
+            {[
+              "Dashboard",
+              "Profile",
+              "Key Boxes",
+              "Cards",
+              "Events",
+              "Settings",
+              "FAQ",
+              "Log Out",
+            ].map((text, index) => (
+              <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                <ListItemButton
+                  href={links[index]}
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
                     sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {icons[index]}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={text}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              )
-            )}
+                    {icons[index]}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
           </List>
         </Drawer>
       </Box>
