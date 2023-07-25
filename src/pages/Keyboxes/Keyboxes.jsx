@@ -37,6 +37,7 @@ function Keyboxes() {
           color: "secondary.contrastTextVariant",
           fontSize: "2rem",
           paddingRight: "1rem",
+          marginBottom: 3,
         }}
       >
         KeySlots:
