@@ -1,6 +1,12 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 
-import { Button, CircularProgress, Typography } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/material";
 import Container from "@mui/material/Container";
 
@@ -58,15 +64,7 @@ function Dashboard() {
   };
 
   return (
-    <Container
-      sx={{
-        minHeight: "90vh",
-        display: "flex",
-        justifyContent: "flex-start",
-        alignContent: "center",
-        flexDirection: "column",
-      }}
-    >
+    <>
       <Typography component="h1" variant="h1" sx={{ fontSize: 50, m: 5 }}>
         Your Key Boxes
       </Typography>
@@ -79,8 +77,28 @@ function Dashboard() {
           alignContent: "center",
         }}
       >
-        <Button onClick={() => testGoliothApi()}>Test api</Button>
         <AddNewDevice />
+        <Card
+          sx={{
+            width: 275,
+            maxWidth: { sx: "100%", sm: 275 },
+            backgroundColor: "#E9E9EF",
+            height: "18rem",
+            border: "1px solid #B6B6BB",
+            m: 2,
+          }}
+        >
+          <CardContent sx={{ height: "100%" }}>
+            <Typography variant="h1" sx={{ fontSize: 20 }}>
+              Przetestuj Golioth'a
+            </Typography>
+            <Box sx={{ display: "grid", placeItems: "center", height: "75%" }}>
+              <Button onClick={() => testGoliothApi()} variant="contained">
+                Test api
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
         {!loading ? (
           data &&
           data.map((item) => (
@@ -97,7 +115,7 @@ function Dashboard() {
           <CircularProgress />
         )}
       </Box>
-    </Container>
+    </>
   );
 }
 

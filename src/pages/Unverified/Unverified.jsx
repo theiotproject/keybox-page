@@ -49,7 +49,7 @@ function Unverified() {
   }
 
   return (
-    <div>
+    <>
       <Typography variant="body1">
         Nie zweryfikowałeś jeszcze swojego maila, zrób to aby uzyskać pełen
         dostęp do strony...
@@ -69,7 +69,7 @@ function Unverified() {
         Gotowe
       </Button>
       <SignOutBtn />
-    </div>
+    </>
   );
 }
 

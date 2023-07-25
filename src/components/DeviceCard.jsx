@@ -93,10 +93,11 @@ function DeviceCard({ ...props }) {
   };
 
   return (
-    <div>
+    <>
       <Card
         sx={{
           width: 275,
+          maxWidth: { sx: "100%", sm: 275 },
           backgroundColor: "#FFF",
           height: "18rem",
           border: "1px solid #B6B6BB",
@@ -253,7 +254,7 @@ function DeviceCard({ ...props }) {
           </DialogContent>
         </Dialog>
       )}
-    </div>
+    </>
   );
 }
 

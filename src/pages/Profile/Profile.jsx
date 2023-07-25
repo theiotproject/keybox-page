@@ -97,90 +97,88 @@ function Profile() {
   };
 
   return (
-    <Container>
-      <Grid
-        container
-        direction="column"
-        justifyContent="space-between"
-        alignItems="left"
-        spacing={2}
-        sx={{
-          mt: 5,
-          ml: 5,
-        }}
-      >
-        <Grid item xs={4} lg={12} display="flex">
-          <Avatar
-            alt="Your Avatar"
-            src={currentUser.photoURL}
-            sx={{ width: 50, height: 50 }}
-          />
-          <Typography variant="h1" sx={{ mx: 2 }}>
-            {currentUser.displayName}
-          </Typography>
-        </Grid>
-        <Grid item xs={4} lg={8}>
-          <Typography sx={{ m: 1 }}>E-mail Address</Typography>
-
-          {isLoading ? (
-            <CircularProgress />
-          ) : (
-            <Grid>
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: "1rem" }}
-                component="form"
-                noValidate
-                onSubmit={handleSubmit(changeEmailOnSubmit)}
-              >
-                <TextField
-                  disabled={!isChangingEmail}
-                  id="email"
-                  name="email"
-                  defaultValue={currentUser.email}
-                  {...register("email")}
-                  error={!!errors.email}
-                  helperText={errors.email?.message}
-                />
-                {isChangingEmail && (
-                  <>
-                    <TextField
-                      id="password"
-                      name="password"
-                      defaultValue={currentUser.password}
-                      {...register("password")}
-                      error={!!errors.password}
-                      helperText={errors.password?.message}
-                      type="password"
-                    />
-                    <Button type="submit">Confirm</Button>
-                  </>
-                )}
-              </Box>
-            </Grid>
-          )}
-        </Grid>
-        <Grid item xs={4} lg={8}>
-          {!isSignedInWithProvider() && (
-            <>
-              <Button
-                variant="outlined"
-                sx={{ my: 1 }}
-                onClick={() => setChangingEmail(true)}
-              >
-                Change email
-              </Button>{" "}
-              <Button
-                variant="outlined"
-                sx={{ my: 1 }}
-                href="profile/changepassword"
-              >
-                Change password
-              </Button>
-            </>
-          )}
-        </Grid>
+    <Grid
+      container
+      direction="column"
+      justifyContent="space-between"
+      alignItems="left"
+      spacing={2}
+      sx={{
+        mt: 5,
+        ml: 5,
+      }}
+    >
+      <Grid item xs={4} lg={12} display="flex">
+        <Avatar
+          alt="Your Avatar"
+          src={currentUser.photoURL}
+          sx={{ width: 50, height: 50 }}
+        />
+        <Typography variant="h1" sx={{ mx: 2 }}>
+          {currentUser.displayName}
+        </Typography>
       </Grid>
-    </Container>
+      <Grid item xs={4} lg={8}>
+        <Typography sx={{ m: 1 }}>E-mail Address</Typography>
+
+        {isLoading ? (
+          <CircularProgress />
+        ) : (
+          <Grid>
+            <Box
+              sx={{ display: "flex", alignItems: "center", gap: "1rem" }}
+              component="form"
+              noValidate
+              onSubmit={handleSubmit(changeEmailOnSubmit)}
+            >
+              <TextField
+                disabled={!isChangingEmail}
+                id="email"
+                name="email"
+                defaultValue={currentUser.email}
+                {...register("email")}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+              />
+              {isChangingEmail && (
+                <>
+                  <TextField
+                    id="password"
+                    name="password"
+                    defaultValue={currentUser.password}
+                    {...register("password")}
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                    type="password"
+                  />
+                  <Button type="submit">Confirm</Button>
+                </>
+              )}
+            </Box>
+          </Grid>
+        )}
+      </Grid>
+      <Grid item xs={4} lg={8}>
+        {!isSignedInWithProvider() && (
+          <>
+            <Button
+              variant="outlined"
+              sx={{ my: 1 }}
+              onClick={() => setChangingEmail(true)}
+            >
+              Change email
+            </Button>{" "}
+            <Button
+              variant="outlined"
+              sx={{ my: 1 }}
+              href="profile/changepassword"
+            >
+              Change password
+            </Button>
+          </>
+        )}
+      </Grid>
+    </Grid>
   );
 }
 
