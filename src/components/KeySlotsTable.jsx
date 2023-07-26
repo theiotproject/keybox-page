@@ -11,6 +11,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 const data = [
   {
@@ -52,28 +53,40 @@ const data = [
   },
 ];
 
+const CustomizedTableCell = styled(TableCell)`
+  font-size: 1.3rem;
+  border: 1px solid black;
+`;
+
+const CustomPaper = styled(Paper)`
+  border: 0;
+  border-radius: 0px;
+`;
+
 function KeySlotsTable() {
   return (
-    <TableContainer component={Paper} variant="outlined">
+    <TableContainer component={CustomPaper} variant="outlined" sx={{ mb: 3 }}>
       <Table aria-label="key slot table">
         <TableHead>
           <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Authorized Cards</TableCell>
-            <TableCell>Events</TableCell>
-            <TableCell>Edit</TableCell>
+            <CustomizedTableCell align="center">ID</CustomizedTableCell>
+            <CustomizedTableCell>Name</CustomizedTableCell>
+            <CustomizedTableCell>Authorized Cards</CustomizedTableCell>
+            <CustomizedTableCell align="center">Events</CustomizedTableCell>
+            <CustomizedTableCell align="center">Edit</CustomizedTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{row.id}</TableCell>
-              <TableCell sx={{ minWidth: "32ch" }}>{row.slotName}</TableCell>
-              <TableCell>
+              <CustomizedTableCell align="center">{row.id}</CustomizedTableCell>
+              <CustomizedTableCell sx={{ minWidth: "32ch" }}>
+                {row.slotName}
+              </CustomizedTableCell>
+              <CustomizedTableCell>
                 <div
                   style={{
-                    maxHeight: "100px",
+                    maxHeight: "64px",
                     overflowY: "auto",
                   }}
                 >
@@ -88,19 +101,22 @@ function KeySlotsTable() {
                           m: 1,
                           bgcolor: "lightGray",
                           borderColor: "secondary.contrastText",
+                          fontSize: "1rem",
+                          height: "48px",
+                          borderRadius: "32px",
                         }}
                         key={card}
                       />
                     ))
                   )}
                 </div>
-              </TableCell>
-              <TableCell>
-                <ContentPaste />
-              </TableCell>
-              <TableCell>
-                <Edit />
-              </TableCell>
+              </CustomizedTableCell>
+              <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
+                <ContentPaste sx={{ fontSize: "2rem" }} />
+              </CustomizedTableCell>
+              <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
+                <Edit sx={{ fontSize: "2rem" }} />
+              </CustomizedTableCell>
             </TableRow>
           ))}
         </TableBody>

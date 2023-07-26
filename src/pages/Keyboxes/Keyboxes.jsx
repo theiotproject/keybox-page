@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Add } from "@mui/icons-material";
 import { Button, Grid, Typography } from "@mui/material";
 
 import KeySlotsTable from "src/components/KeySlotsTable";
@@ -43,6 +44,17 @@ function Keyboxes() {
         KeySlots:
       </Typography>
       <KeySlotsTable />
+      <Grid
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "2rem",
+          alignItems: "center",
+        }}
+      >
+        <Add sx={{ fontSize: "2rem" }} />
+        <Typography sx={{ fontSize: "1.5rem" }}>Dodaj nowy</Typography>
+      </Grid>
     </>
   );
 }
