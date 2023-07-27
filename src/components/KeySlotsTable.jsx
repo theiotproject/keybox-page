@@ -19,6 +19,7 @@ import {
   collection,
   collectionGroup,
   getDocs,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -36,8 +37,7 @@ const CustomPaper = styled(Paper)`
 
 function KeySlotsTable() {
   const [data, setData] = useState([]);
-  const [slotsData, setSlotsData] = useState([]);
-  const [cardsData, setCardsData] = useState([]);
+  const [isLoading, setLoading] = useState([]);
 
   const getData = async () => {
     const getSlotsData = async () => {
@@ -53,13 +53,13 @@ function KeySlotsTable() {
 
       // array containing slots in keybox ex [1,2,3,4]
       // using docs[0] because it should always return one keybox
+      console.log(keyboxSnapshot);
       const keyboxSlots = keyboxSnapshot.docs[0].data().slots;
 
       const slotQuery = query(slotsRef, where("slotId", "in", keyboxSlots));
       const slotSnapshot = await getDocs(slotQuery);
 
       const slotsDataArray = slotSnapshot.docs.map((doc) => doc.data());
-      setSlotsData(slotsDataArray);
 
       return slotsDataArray;
     };
@@ -89,7 +89,6 @@ function KeySlotsTable() {
 
       const cardsDataTemp = await Promise.all(cardsDataPromises);
 
-      setCardsData(cardsDataTemp);
       return cardsDataTemp;
     };
 
@@ -98,89 +97,90 @@ function KeySlotsTable() {
         return {
           slotId: slot.slotId,
           slotName: slot.slotName,
-          cards: cardsData[index],
+          authorizedCards: cardsData[index],
         };
       });
 
-      setData(combinedData);
+      return combinedData;
     };
 
     const slotsDataTemp = await getSlotsData();
     const cardsDataTemp = await getCardsData(slotsDataTemp);
 
-    combineData(slotsDataTemp, cardsDataTemp);
+    const combinedData = combineData(slotsDataTemp, cardsDataTemp);
+    // sort data by slotId
+    combinedData.sort((prev, next) => prev.slotId - next.slotId);
+    setData(combinedData);
   };
 
-  const handleTest = async () => {
+  useEffect(() => {
     getData();
-  };
-
-  useLayoutEffect(() => {
-    getData();
-    console.log(data);
   }, []);
 
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   return (
-    // <TableContainer component={CustomPaper} variant="outlined" sx={{ mb: 3 }}>
-    //   <Table aria-label="key slot table">
-    //     <TableHead>
-    //       <TableRow>
-    //         <CustomizedTableCell align="center">ID</CustomizedTableCell>
-    //         <CustomizedTableCell>Name</CustomizedTableCell>
-    //         <CustomizedTableCell>Authorized Cards</CustomizedTableCell>
-    //         <CustomizedTableCell align="center">Events</CustomizedTableCell>
-    //         <CustomizedTableCell align="center">Edit</CustomizedTableCell>
-    //       </TableRow>
-    //     </TableHead>
-    //     <TableBody>
-    //       {data.map((row) => (
-    //         <TableRow key={row.id}>
-    //           <CustomizedTableCell align="center">{row.id}</CustomizedTableCell>
-    //           <CustomizedTableCell sx={{ minWidth: "32ch" }}>
-    //             {row.slotName}
-    //           </CustomizedTableCell>
-    //           <CustomizedTableCell>
-    //             <div
-    //               style={{
-    //                 maxHeight: "64px",
-    //                 overflowY: "auto",
-    //               }}
-    //             >
-    //               {row.authorizedCards.length <= 0 ? (
-    //                 <span>add authorized cards</span>
-    //               ) : (
-    //                 row.authorizedCards.map((card, index) => (
-    //                   <Chip
-    //                     label={card}
-    //                     variant="outlined"
-    //                     sx={{
-    //                       m: 1,
-    //                       bgcolor: "lightGray",
-    //                       borderColor: "secondary.contrastText",
-    //                       fontSize: "1rem",
-    //                       height: "48px",
-    //                       borderRadius: "32px",
-    //                     }}
-    //                     key={index}
-    //                   />
-    //                 ))
-    //               )}
-    //             </div>
-    //           </CustomizedTableCell>
-    //           <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
-    //             <ContentPaste sx={{ fontSize: "2rem" }} />
-    //           </CustomizedTableCell>
-    //           <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
-    //             <Edit sx={{ fontSize: "2rem" }} />
-    //           </CustomizedTableCell>
-    //         </TableRow>
-    //       ))}
-    //     </TableBody>
-    //   </Table>
-    // </TableContainer>
-    <>
-      <Button onClick={handleTest}>Test</Button>
-    </>
+    <TableContainer component={CustomPaper} variant="outlined" sx={{ mb: 3 }}>
+      <Table aria-label="key slot table">
+        <TableHead>
+          <TableRow>
+            <CustomizedTableCell align="center">ID</CustomizedTableCell>
+            <CustomizedTableCell>Name</CustomizedTableCell>
+            <CustomizedTableCell>Authorized Cards</CustomizedTableCell>
+            <CustomizedTableCell align="center">Events</CustomizedTableCell>
+            <CustomizedTableCell align="center">Edit</CustomizedTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((row) => (
+            <TableRow key={row.slotId}>
+              <CustomizedTableCell align="center">
+                {row.slotId}
+              </CustomizedTableCell>
+              <CustomizedTableCell sx={{ minWidth: "32ch" }}>
+                {row.slotName}
+              </CustomizedTableCell>
+              <CustomizedTableCell>
+                <div
+                  style={{
+                    maxHeight: "64px",
+                    overflowY: "auto",
+                  }}
+                >
+                  {row.authorizedCards.length <= 0 ? (
+                    <span>add authorized cards</span>
+                  ) : (
+                    row.authorizedCards.map((card, index) => (
+                      <Chip
+                        label={card.cardName}
+                        variant="outlined"
+                        sx={{
+                          m: 1,
+                          bgcolor: "lightGray",
+                          borderColor: "secondary.contrastText",
+                          fontSize: "1rem",
+                          height: "48px",
+                          borderRadius: "32px",
+                        }}
+                        key={index}
+                      />
+                    ))
+                  )}
+                </div>
+              </CustomizedTableCell>
+              <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
+                <ContentPaste sx={{ fontSize: "2rem" }} />
+              </CustomizedTableCell>
+              <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
+                <Edit sx={{ fontSize: "2rem" }} />
+              </CustomizedTableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 
