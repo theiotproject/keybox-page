@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { useState } from "react";
 
 import { ContentPaste, Edit } from "@mui/icons-material";
@@ -24,46 +24,6 @@ import {
 } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 
-const dataTest = [
-  {
-    id: 1,
-    slotName: "New Slot",
-    authorizedCards: [
-      "Aaaaaaaaaaa",
-      "Bbbbbbbbb",
-      "Cccccccccc",
-      "Dddddddddddddddd",
-      "Aaaaaaaaaaa",
-      "Bbbbbbbbb",
-      "Cccccccccc",
-      "Dddddddddddddddd",
-      "Aaaaaaaaaaa",
-      "Bbbbbbbbb",
-      "Cccccccccc",
-      "Dddddddddddddddd",
-      "Aaaaaaaaaaa",
-      "Bbbbbbbbb",
-      "Cccccccccc",
-      "Dddddddddddddddd",
-    ],
-  },
-  {
-    id: 2,
-    slotName: "New Slot #2",
-    authorizedCards: ["A"],
-  },
-  {
-    id: 3,
-    slotName: "New Slot #3",
-    authorizedCards: ["A", "B", "C"],
-  },
-  {
-    id: 4,
-    slotName: "New Slot #4",
-    authorizedCards: [],
-  },
-];
-
 const CustomizedTableCell = styled(TableCell)`
   font-size: 1.3rem;
   border: 1px solid black;
@@ -79,17 +39,16 @@ function KeySlotsTable() {
   const [slotsData, setSlotsData] = useState([]);
   const [cardsData, setCardsData] = useState([]);
 
-  const handleTest = async () => {
-    const keyboxesRef = collection(db, "keyboxes");
-    const slotsRef = collection(db, "slots");
-    const cardsRef = collection(db, "cards");
+  const getData = async () => {
+    const getSlotsData = async () => {
+      const keyboxesRef = collection(db, "keyboxes");
+      const slotsRef = collection(db, "slots");
 
-    const keyboxQuery = query(
-      keyboxesRef,
-      where("deviceId", "==", "123456789")
-    );
+      const keyboxQuery = query(
+        keyboxesRef,
+        where("deviceId", "==", "123456789")
+      );
 
-    const getData = async () => {
       const keyboxSnapshot = await getDocs(keyboxQuery);
 
       // array containing slots in keybox ex [1,2,3,4]
@@ -99,10 +58,14 @@ function KeySlotsTable() {
       const slotQuery = query(slotsRef, where("slotId", "in", keyboxSlots));
       const slotSnapshot = await getDocs(slotQuery);
 
-      setSlotsData([]);
       const slotsDataArray = slotSnapshot.docs.map((doc) => doc.data());
       setSlotsData(slotsDataArray);
 
+      return slotsDataArray;
+    };
+
+    const getCardsData = async (slotsDataArray) => {
+      const cardsRef = collection(db, "cards");
       // returns all cards arrays
       const slotCardsArray = slotsDataArray.map((slot) => {
         if (slot.cards.length <= 0) {
@@ -117,18 +80,45 @@ function KeySlotsTable() {
         query(cardsRef, where("cardId", "in", cards))
       );
 
-      setCardsData([]);
-      let cardsDataTemp = [];
-      for (const cardsQuery of cardsQueries) {
-        const cardsSnapshot = await getDocs(cardsQuery);
+      const cardsDataPromises = await cardsQueries.map(async (cardQuery) => {
+        const cardsSnapshot = await getDocs(cardQuery);
+
         // push one slot's cards to array of all slot's cards
-        cardsDataTemp.push(cardsSnapshot.docs.map((card) => card.data()));
-      }
+        return cardsSnapshot.docs.map((card) => card.data());
+      });
+
+      const cardsDataTemp = await Promise.all(cardsDataPromises);
 
       setCardsData(cardsDataTemp);
+      return cardsDataTemp;
     };
+
+    const combineData = (slotsData, cardsData) => {
+      const combinedData = slotsData.map((slot, index) => {
+        return {
+          slotId: slot.slotId,
+          slotName: slot.slotName,
+          cards: cardsData[index],
+        };
+      });
+
+      setData(combinedData);
+    };
+
+    const slotsDataTemp = await getSlotsData();
+    const cardsDataTemp = await getCardsData(slotsDataTemp);
+
+    combineData(slotsDataTemp, cardsDataTemp);
+  };
+
+  const handleTest = async () => {
     getData();
   };
+
+  useLayoutEffect(() => {
+    getData();
+    console.log(data);
+  }, []);
 
   return (
     // <TableContainer component={CustomPaper} variant="outlined" sx={{ mb: 3 }}>
