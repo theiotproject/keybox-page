@@ -48,14 +48,14 @@ function KeySlotsTable() {
 
       const keyboxQuery = query(
         keyboxesRef,
-        where("deviceId", "==", "123456789")
+        // change 123456789 to keybox id (from site address)
+        where("keyboxId", "==", "123456789")
       );
 
       const keyboxSnapshot = await getDocs(keyboxQuery);
 
       // array containing slots in keybox ex [1,2,3,4]
       // using docs[0] because it should always return one keybox
-      console.log(keyboxSnapshot);
       const keyboxSlots = keyboxSnapshot.docs[0].data().slots;
 
       const slotQuery = query(slotsRef, where("slotId", "in", keyboxSlots));
@@ -121,9 +121,7 @@ function KeySlotsTable() {
     getData();
   }, []);
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  useEffect(() => {}, [data]);
 
   return (
     <TableContainer component={CustomPaper} variant="outlined" sx={{ mb: 3 }}>
@@ -140,8 +138,8 @@ function KeySlotsTable() {
         <TableBody>
           {isLoading && (
             <>
-              {[1, 2, 3].map((row) => (
-                <TableRow>
+              {[1, 2, 3].map((row, index) => (
+                <TableRow key={index}>
                   <CustomizedTableCell align="center">
                     <Skeleton animation="wave" />
                   </CustomizedTableCell>
