@@ -70,8 +70,13 @@ function Keyboxes() {
 
   useEffect(() => {
     getKeyboxData();
-    setKeyboxName(keyboxData.data().keyboxName);
   }, []);
+
+  useEffect(() => {
+    if (keyboxData != undefined) {
+      setKeyboxName(keyboxData.data().keyboxName);
+    }
+  }, [keyboxData]);
 
   const handleDialogToggle = () => {
     setOpen(!open);
@@ -79,17 +84,14 @@ function Keyboxes() {
 
   const handleEditDevice = async (data) => {
     setLoading(true);
-
     const keyboxName = keyboxData.data().keyboxName;
     const keyboxRef = keyboxData.ref;
-
     // Back off from sending reqeuest if user haven't changed anything
     if (data.keyboxName == keyboxName) {
       setLoading(false);
       handleDialogToggle(false);
       return;
     }
-
     const editKeyboxQuery = {
       keyboxId: keyboxData.data().keyboxId,
       ownerId: keyboxData.data().ownerId,
