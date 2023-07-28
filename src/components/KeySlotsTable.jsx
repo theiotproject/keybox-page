@@ -6,6 +6,7 @@ import {
   Button,
   Chip,
   Paper,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -40,6 +41,7 @@ function KeySlotsTable() {
   const [isLoading, setLoading] = useState([]);
 
   const getData = async () => {
+    setLoading(true);
     const getSlotsData = async () => {
       const keyboxesRef = collection(db, "keyboxes");
       const slotsRef = collection(db, "slots");
@@ -111,9 +113,11 @@ function KeySlotsTable() {
     // sort data by slotId
     combinedData.sort((prev, next) => prev.slotId - next.slotId);
     setData(combinedData);
+    setLoading(false);
   };
 
   useEffect(() => {
+    setLoading(true);
     getData();
   }, []);
 
@@ -134,50 +138,76 @@ function KeySlotsTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
-            <TableRow key={row.slotId}>
-              <CustomizedTableCell align="center">
-                {row.slotId}
-              </CustomizedTableCell>
-              <CustomizedTableCell sx={{ minWidth: "32ch" }}>
-                {row.slotName}
-              </CustomizedTableCell>
-              <CustomizedTableCell>
-                <div
-                  style={{
-                    maxHeight: "64px",
-                    overflowY: "auto",
-                  }}
-                >
-                  {row.authorizedCards.length <= 0 ? (
-                    <span>add authorized cards</span>
-                  ) : (
-                    row.authorizedCards.map((card, index) => (
-                      <Chip
-                        label={card.cardName}
-                        variant="outlined"
-                        sx={{
-                          m: 1,
-                          bgcolor: "lightGray",
-                          borderColor: "secondary.contrastText",
-                          fontSize: "1rem",
-                          height: "48px",
-                          borderRadius: "32px",
-                        }}
-                        key={index}
-                      />
-                    ))
-                  )}
-                </div>
-              </CustomizedTableCell>
-              <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
-                <ContentPaste sx={{ fontSize: "2rem" }} />
-              </CustomizedTableCell>
-              <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
-                <Edit sx={{ fontSize: "2rem" }} />
-              </CustomizedTableCell>
-            </TableRow>
-          ))}
+          {isLoading && (
+            <>
+              {[1, 2, 3].map((row) => (
+                <TableRow>
+                  <CustomizedTableCell align="center">
+                    <Skeleton animation="wave" />
+                  </CustomizedTableCell>
+                  <CustomizedTableCell sx={{ minWidth: "32ch" }}>
+                    <Skeleton animation="wave" />
+                  </CustomizedTableCell>
+                  <CustomizedTableCell>
+                    <div>
+                      <Skeleton animation="wave" />
+                    </div>
+                  </CustomizedTableCell>
+                  <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
+                    <ContentPaste sx={{ fontSize: "2rem" }} />
+                  </CustomizedTableCell>
+                  <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
+                    <Edit sx={{ fontSize: "2rem" }} />
+                  </CustomizedTableCell>
+                </TableRow>
+              ))}
+            </>
+          )}
+          {!isLoading &&
+            data.map((row) => (
+              <TableRow key={row.slotId}>
+                <CustomizedTableCell align="center">
+                  {row.slotId}
+                </CustomizedTableCell>
+                <CustomizedTableCell sx={{ minWidth: "32ch" }}>
+                  {row.slotName}
+                </CustomizedTableCell>
+                <CustomizedTableCell>
+                  <div
+                    style={{
+                      maxHeight: "64px",
+                      overflowY: "auto",
+                    }}
+                  >
+                    {row.authorizedCards.length <= 0 ? (
+                      <span>add authorized cards</span>
+                    ) : (
+                      row.authorizedCards.map((card, index) => (
+                        <Chip
+                          label={card.cardName}
+                          variant="outlined"
+                          sx={{
+                            m: 1,
+                            bgcolor: "lightGray",
+                            borderColor: "secondary.contrastText",
+                            fontSize: "1rem",
+                            height: "48px",
+                            borderRadius: "32px",
+                          }}
+                          key={index}
+                        />
+                      ))
+                    )}
+                  </div>
+                </CustomizedTableCell>
+                <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
+                  <ContentPaste sx={{ fontSize: "2rem" }} />
+                </CustomizedTableCell>
+                <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
+                  <Edit sx={{ fontSize: "2rem" }} />
+                </CustomizedTableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

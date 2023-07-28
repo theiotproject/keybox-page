@@ -8,11 +8,9 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/material";
-import Container from "@mui/material/Container";
 
 import AddNewDevice from "src/components/AddNewDevice";
 import DeviceCard from "src/components/DeviceCard";
-import LoadingScreen from "src/components/LoadingScreen";
 
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "src/backend/db_config";
