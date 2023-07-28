@@ -12,15 +12,23 @@ import { Box } from "@mui/material";
 import AddNewDevice from "src/components/AddNewDevice";
 import DeviceCard from "src/components/DeviceCard";
 
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
+import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Dashboard() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { currentUser } = useAuthProvider();
   useLayoutEffect(() => {
     setLoading(true);
-    const unsubscribe = onSnapshot(collection(db, "keyboxes"), (snapshot) => {
+    const keyboxCollectionRef = collection(db, "keyboxes");
+
+    const keyboxQuery = query(
+      keyboxCollectionRef,
+      where("ownerId", "==", currentUser.uid)
+    );
+    const unsubscribe = onSnapshot(keyboxQuery, (snapshot) => {
       // Clear data to prevent data duplication of data,
       // which appears because onSnapshot runs every time user activates window
       // or does any action connected with data
