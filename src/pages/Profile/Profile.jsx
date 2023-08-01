@@ -8,21 +8,22 @@ import {
   Box,
   Button,
   CircularProgress,
-  Container,
   Grid,
   TextField,
   Typography,
 } from "@mui/material";
 
+import showError from "src/components/Toasts/ToastError";
+import showSuccess from "src/components/Toasts/ToastSuccess";
+import showWarning from "src/components/Toasts/ToastWarning";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   EmailAuthProvider,
-  fetchSignInMethodsForEmail,
   reauthenticateWithCredential,
   sendEmailVerification,
   updateEmail,
 } from "firebase/auth";
-import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 import * as yup from "yup";
 
@@ -56,12 +57,14 @@ function Profile() {
 
   const changeEmailOnSubmit = async (data) => {
     if (data.email === previousEmail) {
-      alert("Your new email must be different from previous one");
+      showWarning("Your new email must be different from previous one");
       return;
     }
 
     if (isSignedInWithProvider()) {
-      alert("You cannot change email using auth providers such as google!");
+      showWarning(
+        "You cannot change email using auth providers such as google!"
+      );
       return;
     }
 
@@ -76,21 +79,24 @@ function Profile() {
         updateEmail(currentUser, data.email)
           .then(() => {
             setLoading(false);
-            alert("Check your new email address for verification link");
+            showSuccess("Check your new email address for verification link");
             sendEmailVerification(currentUser).then(() => {
               navigate("/signout");
             });
           })
           .catch((error) => {
             setLoading(false);
-            alert("Error occured while updating email, check console");
+            showError(
+              "Error occured while updating email, check console for more info"
+            );
             console.error(error);
           });
       })
       .catch((error) => {
         setLoading(false);
-        alert(
-          "Error occured while revalidating your credentials, check console"
+
+        showError(
+          "Error occured while revalidating your credentials, check console for more info"
         );
         console.error(error);
       });

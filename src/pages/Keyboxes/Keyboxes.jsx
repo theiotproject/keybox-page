@@ -19,6 +19,8 @@ import {
 
 import ErrorMsg from "src/components/ErrorMsg";
 import KeySlotsTable from "src/components/KeySlotsTable";
+import showError from "src/components/Toasts/ToastError";
+import showSuccess from "src/components/Toasts/ToastSuccess";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -101,9 +103,17 @@ function Keyboxes() {
 
     setDoc(keyboxRef, editKeyboxQuery)
       .catch((error) => {
-        return <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
+        showError(
+          `Wystąpił błąd podczas aktualizacji nazwy keybox'a po więcej informacji sprawdź konsolę`
+        );
+        console.error(error);
+        setLoading(false);
+        handleDialogToggle();
       })
-      .finally(() => {
+      .then(() => {
+        showSuccess(`
+          Nazwa urzędzenia zaaktualizowana pomyślnie
+        `);
         setKeyboxName(data.keyboxName);
         setLoading(false);
         handleDialogToggle();

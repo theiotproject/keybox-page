@@ -12,6 +12,9 @@ import {
 } from "@mui/material";
 
 import LoadingScreen from "src/components/LoadingScreen";
+import showError from "src/components/Toasts/ToastError";
+import showSuccess from "src/components/Toasts/ToastSuccess";
+import showWarning from "src/components/Toasts/ToastWarning";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -49,12 +52,14 @@ function SignInChangePassword() {
     setLoading(true);
     sendPasswordResetEmail(auth, email)
       .then(() => {
-        alert("Sent mail with password reset");
+        showSuccess("Sent mail with password reset");
         setResetPasswordSent(true);
         setLoading(false);
       })
       .catch((error) => {
-        alert("Error has occured while sending email, check console");
+        showError(
+          "Error has occured while sending email, check console for more info"
+        );
         console.error(error);
         setLoading(false);
       });
@@ -64,7 +69,7 @@ function SignInChangePassword() {
     fetchSignInMethodsForEmail(auth, data.email)
       .then((signInMethods) => {
         if (signInMethods.includes("google.com")) {
-          alert(
+          showWarning(
             "You cannot change password using auth providers such as google!"
           );
           return;
@@ -74,11 +79,11 @@ function SignInChangePassword() {
           handleResetPassword(data.email);
           navigate("/signin");
         } else {
-          alert("There are no users with this email address");
+          showWarning("There are no users with this email address");
         }
       })
       .catch((error) => {
-        alert(
+        showError(
           "Error has occured while trying to find your account, check console for more info"
         );
         console.error(error);

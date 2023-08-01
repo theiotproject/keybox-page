@@ -61,15 +61,20 @@ function Dashboard() {
       "https://api.golioth.io/v1/projects/test-e47c2d/devices",
       myInit
     )
+      .catch((error) => {
+        showError(
+          `Error while sending query to Golioth, check console for more info`
+        );
+        console.error(error);
+      })
       .then((response) => {
         return response.json();
       })
       .then((data) => {
-        alert(
-          `Dostępne urządzenie: ${data.list[0].name}, po więcej informacji sprawdź konsolę`
+        showSuccess(
+          `Working device: ${data.list[0].name}, check console for more info`
         );
         console.log(data.list);
-        notify();
       });
   };
 
@@ -103,7 +108,7 @@ function Dashboard() {
               Przetestuj Golioth'a
             </Typography>
             <Box sx={{ display: "grid", placeItems: "center", height: "75%" }}>
-              <Button onClick={() => showError()} variant="contained">
+              <Button onClick={testGoliothApi} variant="contained">
                 Test api
               </Button>
             </Box>

@@ -12,6 +12,9 @@ import {
 } from "@mui/material";
 
 import LoadingScreen from "src/components/LoadingScreen";
+import showError from "src/components/Toasts/ToastError";
+import showSuccess from "src/components/Toasts/ToastSuccess";
+import showWarning from "src/components/Toasts/ToastWarning";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -67,7 +70,9 @@ function ProfileChangePassword() {
 
   const changePasswordOnSubmit = async (data) => {
     if (isSignedInWithProvider()) {
-      alert("You cannot change password using auth providers such as google!");
+      showWarning(
+        "You cannot change password using auth providers such as google!"
+      );
       return;
     }
 
@@ -82,21 +87,22 @@ function ProfileChangePassword() {
         updatePassword(currentUser, data.newPassword)
           .then(() => {
             setLoading(false);
-            alert(
+            showSuccess(
               "Your password has been changed successfully! Now you can login again!"
             );
             navigate("/signout");
           })
           .catch((error) => {
             setLoading(false);
-
-            alert("Error while changing password, check console for more info");
+            showError(
+              "Error while changing password, check console for more info"
+            );
             console.error(error);
           });
       })
       .catch((error) => {
         setLoading(false);
-        alert(
+        showWarning(
           "Your old password is different, try again or reset your password"
         );
         console.error(error);
@@ -105,19 +111,21 @@ function ProfileChangePassword() {
 
   const handleResetPassword = async () => {
     if (isSignedInWithProvider()) {
-      alert("You cannot change password using auth providers such as google!");
+      showWarning(
+        "You cannot change password using auth providers such as google!"
+      );
       return;
     }
 
     setLoading(true);
     sendPasswordResetEmail(auth, currentUser.email)
       .then(() => {
-        alert("Sent mail with password reset");
+        showSuccess("Sent mail with password reset");
         setResetPasswordSent(true);
         setLoading(false);
       })
       .catch((error) => {
-        alert("Error has occured, check console");
+        showError("Error has occured, check console for more info");
         console.error(error);
         setLoading(false);
       });

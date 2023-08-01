@@ -16,6 +16,8 @@ import ErrorMsg from "src/components/ErrorMsg";
 import LeftSide from "src/components/LeftSide";
 import LeftSideMobile from "src/components/LeftSideMobile";
 import LoadingScreen from "src/components/LoadingScreen";
+import showError from "src/components/Toasts/ToastError";
+import showWarning from "src/components/Toasts/ToastWarning";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -74,14 +76,16 @@ export default function SignUp() {
     fetchSignInMethodsForEmail(auth, data.email)
       .then((signInMethods) => {
         if (signInMethods.length > 0) {
-          alert("That email is already in use");
+          showWarning("That email is already in use");
           reset();
           setLoading(false);
           return;
         }
       })
       .catch((error) => {
-        alert("Error while checking for email availability, check console");
+        showError(
+          "Error while checking for email availability, check console for more info"
+        );
         console.error(error);
         reset();
         setLoading(false);
