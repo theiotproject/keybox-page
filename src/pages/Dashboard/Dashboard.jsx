@@ -13,6 +13,7 @@ import { Box } from "@mui/material";
 import AddNewDevice from "src/components/AddNewDevice";
 import DeviceCard from "src/components/DeviceCard";
 import showError from "src/components/Toasts/ToastError";
+import showInfo from "src/components/Toasts/ToastInfo";
 import showSuccess from "src/components/Toasts/ToastSuccess";
 
 import { collection, onSnapshot, query, where } from "firebase/firestore";
@@ -78,6 +79,26 @@ function Dashboard() {
       });
   };
 
+  // Simulate websocket behaviour
+  const [timerId, setTimerId] = useState(0);
+  // Function to send a message to the client
+  const sendMessageToClient = () => {
+    showInfo("New card is pending, configure it now!");
+  };
+
+  const toggleWebSocketSimulation = () => {
+    // Call the sendMessageToClient function initially
+
+    if (timerId === 0) {
+      // Set up a timer to simulate the periodic message sending (every 5 seconds)
+      const timerIdLocal = setInterval(sendMessageToClient, 1000);
+      setTimerId(timerIdLocal);
+    } else {
+      setTimerId(0);
+      clearInterval(timerId);
+    }
+  };
+
   return (
     <>
       <Typography component="h1" variant="h1" sx={{ fontSize: 50, m: 5 }}>
@@ -110,6 +131,30 @@ function Dashboard() {
             <Box sx={{ display: "grid", placeItems: "center", height: "75%" }}>
               <Button onClick={testGoliothApi} variant="contained">
                 Test api
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+        <Card
+          sx={{
+            width: 275,
+            maxWidth: { sx: "100%", sm: 275 },
+            backgroundColor: "#E9E9EF",
+            height: "18rem",
+            border: "1px solid #B6B6BB",
+            m: 2,
+          }}
+        >
+          <CardContent sx={{ height: "100%" }}>
+            <Typography variant="h1" sx={{ fontSize: 20 }}>
+              Przetestuj WebSocket
+            </Typography>
+            <Box sx={{ display: "grid", placeItems: "center", height: "75%" }}>
+              <Button
+                onClick={() => toggleWebSocketSimulation()}
+                variant="contained"
+              >
+                Test websocket
               </Button>
             </Box>
           </CardContent>

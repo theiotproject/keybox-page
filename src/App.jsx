@@ -7,6 +7,7 @@ import { CircularProgress, CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 
 import LayoutSignedIn from "./components/Layout/LayoutSignedIn";
+import showInfo from "./components/Toasts/ToastInfo";
 import Layout from "src/components/Layout/Layout";
 import ProtectedRoute from "src/components/ProtectedRoute";
 

@@ -26,3 +26,5 @@
 - react-firebase-hooks
 - react-hook-form
 - yup schema resolver for validation
+- react-tostify
+- mock-socket (for testing websockets)
