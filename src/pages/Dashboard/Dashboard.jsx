@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import {
   Button,
@@ -11,6 +12,8 @@ import { Box } from "@mui/material";
 
 import AddNewDevice from "src/components/AddNewDevice";
 import DeviceCard from "src/components/DeviceCard";
+import showError from "src/components/Toasts/ToastError";
+import showSuccess from "src/components/Toasts/ToastSuccess";
 
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
@@ -66,6 +69,7 @@ function Dashboard() {
           `Dostępne urządzenie: ${data.list[0].name}, po więcej informacji sprawdź konsolę`
         );
         console.log(data.list);
+        notify();
       });
   };
 
@@ -99,7 +103,7 @@ function Dashboard() {
               Przetestuj Golioth'a
             </Typography>
             <Box sx={{ display: "grid", placeItems: "center", height: "75%" }}>
-              <Button onClick={() => testGoliothApi()} variant="contained">
+              <Button onClick={() => showError()} variant="contained">
                 Test api
               </Button>
             </Box>

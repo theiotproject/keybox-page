@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { CircularProgress, CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
@@ -126,6 +128,18 @@ function App() {
           </Routes>
         </BrowserRouter>
       </AuthProvider>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </ThemeProvider>
   );
 }
