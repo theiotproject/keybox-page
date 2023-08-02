@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const showInfo = (label = "default info") => {
@@ -15,15 +16,9 @@ const showInfo = (label = "default info") => {
 };
 
 function ToastInfoComponent({ label }) {
-  return (
-    <span
-      onClick={() =>
-        console.log("tutaj nastąpi przekierowanie do inicjalizacji keyboxa")
-      }
-    >
-      {label}
-    </span>
-  );
+  const navigate = useNavigate();
+
+  return <span onClick={() => navigate("cards")}>{label}</span>;
 }
 
 export default showInfo;

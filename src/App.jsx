@@ -14,6 +14,7 @@ import ProtectedRoute from "src/components/ProtectedRoute";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "src/backend/db_config";
 import { AuthProvider } from "src/contexts/AuthContext";
+import Cards from "src/pages/Cards/Cards";
 import Dashboard from "src/pages/Dashboard/Dashboard";
 import Error from "src/pages/Error/Error";
 import Home from "src/pages/Home/Home";
@@ -48,6 +49,7 @@ function App() {
       <AuthProvider value={{ currentUser }}>
         <BrowserRouter>
           <Routes>
+            {/* Singed out routes */}
             <Route
               element={<Layout />}
               errorElement={<Error />}
@@ -63,6 +65,7 @@ function App() {
               />
               <Route path="signup" element={<SignUp />} />
             </Route>
+            {/* Singed in routes */}
             <Route
               element={<LayoutSignedIn />}
               errorElement={<Error />}
@@ -124,23 +127,34 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="cards"
+                element={
+                  <ProtectedRoute
+                    isSignedIn={currentUser}
+                    isEmailVerified={currentUser?.emailVerified}
+                  >
+                    <Cards />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
             <Route path="unverified" element={<Unverified />} />
           </Routes>
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
         </BrowserRouter>
       </AuthProvider>
-      <ToastContainer
-        position="bottom-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
     </ThemeProvider>
   );
 }

@@ -1,10 +1,8 @@
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 
 import { ContentPaste, Edit } from "@mui/icons-material";
 import {
-  Button,
-  Chip,
   Paper,
   Skeleton,
   Table,
@@ -16,14 +14,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import {
-  collection,
-  collectionGroup,
-  getDocs,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import CardChip from "src/components/CardChip";
+
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 
 const CustomizedTableCell = styled(TableCell)`
@@ -181,19 +174,7 @@ function KeySlotsTable() {
                       <span>add authorized cards</span>
                     ) : (
                       row.authorizedCards.map((card, index) => (
-                        <Chip
-                          label={card.cardName}
-                          variant="outlined"
-                          sx={{
-                            m: 1,
-                            bgcolor: "lightGray",
-                            borderColor: "secondary.contrastText",
-                            fontSize: "1rem",
-                            height: "48px",
-                            borderRadius: "32px",
-                          }}
-                          key={index}
-                        />
+                        <CardChip label={card.cardName} key={index} />
                       ))
                     )}
                   </div>
