@@ -114,7 +114,7 @@ function ConfiguredCardChip({ label, size = 1.6 }) {
                 label="Card Id"
                 defaultValue=""
                 // {...register("cardId")}
-                error=""
+                // error=""
                 helperText=""
                 fullWidth
                 variant="outlined"
@@ -129,7 +129,7 @@ function ConfiguredCardChip({ label, size = 1.6 }) {
                 label="Card Name"
                 defaultValue=""
                 // {...register("cardName")}
-                error=""
+                // error=""
                 helperText=""
                 fullWidth
                 variant="outlined"

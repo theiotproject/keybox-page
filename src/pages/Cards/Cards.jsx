@@ -2,10 +2,10 @@ import React from "react";
 
 import { Box, Stack, Typography } from "@mui/material";
 
-import ConfiguredCardChip from "src/components/ConfiguredCardChip";
-import CustomSmallSelect from "src/components/CustomSmallSelect";
-import PendingCardChip from "src/components/PendingCardChip";
 import SearchBar from "src/components/SearchBar";
+import ConfiguredCardChip from "src/pages/Cards/components/ConfiguredCardChip";
+import CustomSmallSelect from "src/pages/Cards/components/CustomSmallSelect";
+import PendingCardChip from "src/pages/Cards/components/PendingCardChip";
 
 function Cards() {
   return (

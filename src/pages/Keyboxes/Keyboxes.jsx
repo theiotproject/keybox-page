@@ -17,20 +17,12 @@ import {
   Typography,
 } from "@mui/material";
 
-import ErrorMsg from "src/components/ErrorMsg";
-import KeySlotsTable from "src/components/KeySlotsTable";
 import showError from "src/components/Toasts/ToastError";
 import showSuccess from "src/components/Toasts/ToastSuccess";
+import KeySlotsTable from "src/pages/Keyboxes/components/KeySlotsTable";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  collection,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, query, setDoc, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import * as yup from "yup";
 

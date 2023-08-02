@@ -20,12 +20,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 
+import ErrorMsg from "../../../components/ErrorMsg";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import * as yup from "yup";
-
-import ErrorMsg from "./ErrorMsg";
 
 const schema = yup
   .object({

@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import CardChip from "src/components/CardChip";
+import CardChip from "src/pages/Keyboxes/components/CardChip";
 
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";

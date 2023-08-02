@@ -2,8 +2,8 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
-import bgimage from "../assets/bg.jpg";
-import logo from "../assets/logo.png";
+import bgimage from "src/assets/bg.jpg";
+import logo from "src/assets/logo.png";
 
 function LeftSideMobile() {
   return (

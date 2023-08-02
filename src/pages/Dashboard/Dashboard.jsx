@@ -10,11 +10,11 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/material";
 
-import AddNewDevice from "src/components/AddNewDevice";
-import DeviceCard from "src/components/DeviceCard";
 import showError from "src/components/Toasts/ToastError";
 import showInfo from "src/components/Toasts/ToastInfo";
 import showSuccess from "src/components/Toasts/ToastSuccess";
+import AddNewDevice from "src/pages/Dashboard/components/AddNewDevice";
+import DeviceCard from "src/pages/Dashboard/components/DeviceCard";
 
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";

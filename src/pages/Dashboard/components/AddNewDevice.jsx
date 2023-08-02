@@ -19,13 +19,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 
+import ErrorMsg from "../../../components/ErrorMsg";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 import * as yup from "yup";
-
-import ErrorMsg from "./ErrorMsg";
 
 const schema = yup
   .object({

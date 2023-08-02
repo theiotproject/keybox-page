@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
-import { Add, AddCard, Close, CreditCard, Edit } from "@mui/icons-material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Add, AddCard, Close, CreditCard } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -14,9 +13,9 @@ import {
   TextField,
 } from "@mui/material";
 
-import styled from "@emotion/styled";
+import CustomFormSelect from "src/pages/Cards/components/CustomFormSelect";
 
-import CustomFormSelect from "./CustomFormSelect";
+import styled from "@emotion/styled";
 
 function PendingCardChip({ label, size = 1.6 }) {
   const StyledChip = styled(Chip)(() => ({
@@ -110,7 +109,7 @@ function PendingCardChip({ label, size = 1.6 }) {
                 label="Card Id"
                 defaultValue=""
                 // {...register("cardId")}
-                error=""
+                // error=""
                 helperText=""
                 fullWidth
                 variant="outlined"
@@ -125,7 +124,7 @@ function PendingCardChip({ label, size = 1.6 }) {
                 label="Card Name"
                 defaultValue=""
                 // {...register("cardName")}
-                error=""
+                // error=""
                 helperText=""
                 fullWidth
                 variant="outlined"
