@@ -6,18 +6,19 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
 function CustomSmallSelect() {
+  const [category, setCategory] = React.useState("");
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setCategory(event.target.value);
   };
 
   return (
     <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-      <InputLabel id="demo-select-small-label">Age</InputLabel>
+      <InputLabel id="select-category-label">Age</InputLabel>
       <Select
-        labelId="demo-select-small-label"
-        id="demo-select-small"
-        value=""
-        label="Age"
+        labelId="select-category-label"
+        id="category"
+        value={category}
+        label="Category"
         onChange={handleChange}
       >
         <MenuItem value="">

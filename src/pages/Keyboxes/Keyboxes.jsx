@@ -47,7 +47,6 @@ function Keyboxes() {
   });
 
   const getKeyboxData = async () => {
-    // change 123456789 to keybox id (from site address)
     const keyboxCollectionRef = collection(db, "keyboxes");
 
     const keyboxQuery = query(
