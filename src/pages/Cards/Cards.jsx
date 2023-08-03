@@ -104,7 +104,10 @@ function Cards() {
           }}
         >
           {cardsData.map((card) => (
-            <ConfiguredCardChip label={card.data().cardName} />
+            <ConfiguredCardChip
+              label={card.data().cardName}
+              key={card.data().cardName}
+            />
           ))}
         </Stack>
       </Box>

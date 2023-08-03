@@ -205,7 +205,7 @@ export default function SideDrawer() {
               }}
             >
               <Divider />
-              <SingOutSideDrawer />
+              <SingOutSideDrawer isExpanded={open} />
             </div>
           </List>
         </Drawer>

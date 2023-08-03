@@ -14,7 +14,7 @@ import {
   ListItemText,
 } from "@mui/material";
 
-function SignOutSideDrawer() {
+function SignOutSideDrawer({ isExpanded }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
@@ -32,7 +32,7 @@ function SignOutSideDrawer() {
           onClick={handleTogglePopUp}
           sx={{
             minHeight: 48,
-            justifyContent: open ? "initial" : "center",
+            justifyContent: isExpanded ? "initial" : "center",
             px: 2.5,
             bgcolor: "primary.main",
             "&:focus-within": { bgcolor: "white" },
@@ -48,7 +48,7 @@ function SignOutSideDrawer() {
           <ListItemIcon
             sx={{
               minWidth: 0,
-              mr: open ? 3 : "auto",
+              mr: isExpanded ? 3 : "auto",
               justifyContent: "center",
               color: "white",
             }}
@@ -58,7 +58,7 @@ function SignOutSideDrawer() {
           <ListItemText
             primary={"Log Out"}
             sx={{
-              opacity: open ? 1 : 0,
+              opacity: isExpanded ? 1 : 0,
               color: "white",
             }}
           />
