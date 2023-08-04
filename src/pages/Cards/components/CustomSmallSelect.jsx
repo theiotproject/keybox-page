@@ -13,7 +13,7 @@ function CustomSmallSelect() {
 
   return (
     <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-      <InputLabel id="select-category-label">Age</InputLabel>
+      <InputLabel id="select-category-label">Group</InputLabel>
       <Select
         labelId="select-category-label"
         id="category"
