@@ -11,7 +11,7 @@ function CustomFormSelect({ disabled }) {
   };
 
   return (
-    <FormControl fullWidth sx={{ mt: 2, maxWidth: "32ch" }}>
+    <FormControl fullWidth sx={{ mt: 2, width: "100%" }}>
       <InputLabel id="groupName-label">Group</InputLabel>
       <Select
         labelId="groupName"

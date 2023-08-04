@@ -5,6 +5,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
   Button,
+  Checkbox,
   Chip,
   CircularProgress,
   Dialog,
@@ -13,6 +14,13 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -21,7 +29,13 @@ import styled from "@emotion/styled";
 
 import CustomFormSelect from "./CustomFormSelect";
 
-function ConfiguredCardChip({ label, size = 1.6 }) {
+function ConfiguredCardChip({
+  cardName,
+  cardId,
+  cardGroup,
+  docCardRef,
+  size = 1.6,
+}) {
   const StyledChip = styled(Chip)(() => ({
     "& .MuiChip-label": {
       fontSize: `${size * 0.8125}rem`,
@@ -65,7 +79,7 @@ function ConfiguredCardChip({ label, size = 1.6 }) {
           display: "flex",
           justifyContent: "space-between",
         }}
-        label={label}
+        label={cardName}
         variant="outlined"
         onClick={handleClickCard}
         onDelete={handleDeleteCard}
@@ -118,7 +132,7 @@ function ConfiguredCardChip({ label, size = 1.6 }) {
                 helperText=""
                 fullWidth
                 variant="outlined"
-                sx={{ mt: 2, maxWidth: "32ch" }}
+                sx={{ mt: 2, width: "100%" }}
                 disabled={!isCardEditMode}
               />
               <TextField
@@ -133,10 +147,43 @@ function ConfiguredCardChip({ label, size = 1.6 }) {
                 helperText=""
                 fullWidth
                 variant="outlined"
-                sx={{ mt: 2, maxWidth: "32ch" }}
+                sx={{ mt: 2, width: "100%" }}
                 disabled={!isCardEditMode}
               />
               <CustomFormSelect disabled={!isCardEditMode} />
+
+              {/* Add to slots table */}
+
+              <TableContainer
+                component={Paper}
+                variant="outlined"
+                sx={{ marginY: 3 }}
+              >
+                <Table aria-label="key slot table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">ID</TableCell>
+                      <TableCell>Name</TableCell>
+                      <TableCell align="center">Authorize?</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {!isLoading &&
+                      [1, 2, 3].map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell align="center">ID</TableCell>
+                          <TableCell sx={{ minWidth: "32ch" }}>Slot</TableCell>
+                          <TableCell align="center">
+                            <Checkbox
+                              size="medium"
+                              disabled={!isCardEditMode}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
               <DialogActions
                 sx={{

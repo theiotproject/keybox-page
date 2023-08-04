@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -9,6 +10,7 @@ import LeftSideMobile from "src/components/LeftSideMobile";
 import SignOutBtn from "src/components/SignOutBtn";
 
 import { useAuthProvider } from "src/contexts/AuthContext";
+import useKeyboxData from "src/services/useKeyboxData";
 
 function Home() {
   const { currentUser } = useAuthProvider();

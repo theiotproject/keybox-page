@@ -30,6 +30,8 @@ import Unverified from "src/pages/Unverified/Unverified";
 import Profile from "src/pages/profile/Profile";
 import theme from "src/theme";
 
+import Dashboard2 from "./pages/Dashboard/Dashboard2";
+
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
 

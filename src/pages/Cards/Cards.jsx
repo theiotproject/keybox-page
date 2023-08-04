@@ -19,16 +19,10 @@ function Cards() {
       const cardsCollectionRef = collection(db, "cards");
       const cardsSnapshot = await getDocs(cardsCollectionRef);
       setCardsData(cardsSnapshot.docs);
-
-      console.log(cardsSnapshot.docs[0]);
     };
 
     getCardsData();
   }, []);
-
-  // useEffect(() => {
-
-  // },[])
 
   return (
     <>
@@ -103,10 +97,13 @@ function Cards() {
             },
           }}
         >
-          {cardsData.map((card) => (
+          {cardsData.map((card, index) => (
             <ConfiguredCardChip
-              label={card.data().cardName}
-              key={card.data().cardName}
+              cardName={card.data().cardName}
+              cardId={card.data().cardId}
+              cardGroup={card.data().group}
+              docCardRef={card.data().group}
+              key={index}
             />
           ))}
         </Stack>

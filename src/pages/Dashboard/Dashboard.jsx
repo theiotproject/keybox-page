@@ -24,7 +24,7 @@ function Dashboard() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { currentUser } = useAuthProvider();
-  useLayoutEffect(() => {
+  useEffect(() => {
     setLoading(true);
     const keyboxCollectionRef = collection(db, "keyboxes");
 

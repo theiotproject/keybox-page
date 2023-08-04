@@ -1,21 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Add, AddCard, Close, CreditCard } from "@mui/icons-material";
 import {
   Box,
   Button,
+  Checkbox,
   Chip,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
 } from "@mui/material";
 
 import CustomFormSelect from "src/pages/Cards/components/CustomFormSelect";
 
 import styled from "@emotion/styled";
+import useKeyboxData from "src/services/useKeyboxData";
+import useSlotsData from "src/services/useSlotsData";
 
 function PendingCardChip({ label, size = 1.6 }) {
   const StyledChip = styled(Chip)(() => ({
@@ -113,7 +123,7 @@ function PendingCardChip({ label, size = 1.6 }) {
                 helperText=""
                 fullWidth
                 variant="outlined"
-                sx={{ mt: 2, maxWidth: "32ch" }}
+                sx={{ mt: 2, width: "100%" }}
                 disabled
               />
               <TextField
@@ -128,9 +138,40 @@ function PendingCardChip({ label, size = 1.6 }) {
                 helperText=""
                 fullWidth
                 variant="outlined"
-                sx={{ mt: 2, maxWidth: "32ch" }}
+                sx={{ mt: 2, width: "100%" }}
               />
+
               <CustomFormSelect />
+
+              {/* Add to slots table */}
+
+              <TableContainer
+                component={Paper}
+                variant="outlined"
+                sx={{ marginY: 3 }}
+              >
+                <Table aria-label="key slot table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">ID</TableCell>
+                      <TableCell>Name</TableCell>
+                      <TableCell align="center">Authorize?</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {!isLoading &&
+                      [1, 2, 3].map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell align="center">ID</TableCell>
+                          <TableCell sx={{ minWidth: "32ch" }}>Slot</TableCell>
+                          <TableCell align="center">
+                            <Checkbox size="medium" />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
               <DialogActions
                 sx={{
