@@ -24,8 +24,8 @@ import {
 import CustomFormSelect from "src/pages/Cards/components/CustomFormSelect";
 
 import styled from "@emotion/styled";
-import useKeyboxData from "src/services/useKeyboxData";
-import useSlotsData from "src/services/useSlotsData";
+import useKeyboxData from "src/util/services/useKeyboxData";
+import useSlotsData from "src/util/services/useSlotsData";
 
 function PendingCardChip({ label, size = 1.6 }) {
   const StyledChip = styled(Chip)(() => ({

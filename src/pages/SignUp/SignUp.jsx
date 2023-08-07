@@ -28,38 +28,13 @@ import {
 } from "firebase/auth";
 import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
-import * as yup from "yup";
-
-// Form yup validation schema
-const schema = yup
-  .object({
-    firstName: yup.string().required("First Name field is required"),
-    lastName: yup.string().required("Last Name field is required"),
-    email: yup.string().required("Email field is required").email(),
-    password: yup
-      .string()
-      .required("Password field is required")
-      .min(8, "Password length should be at least 8 characters")
-      .max(32, "Password cannot exceed more than 32 characters"),
-    confirmPassword: yup
-      .string()
-      .required("Confirm Password field is required")
-      .min(8, "Password length should be at least 8 characters")
-      .max(32, "Password cannot exceed more than 32 characters")
-      .oneOf([yup.ref("password")], "Passwords do not match"),
-  })
-  .required();
+import { signUpValidationSchema } from "src/util/validation/SignUpSchema";
 
 export default function SignUp() {
   const { currentUser } = useAuthProvider();
 
   const [loading, setLoading] = useState(false);
-  const [firebaseErrors, setFirebaseErrors] = useState(false);
-  const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
-
-  const [signInWithGoogle, userGoogle, loadingGoogle, errorGoogle] =
-    useSignInWithGoogle(auth);
 
   const {
     register,
@@ -67,18 +42,31 @@ export default function SignUp() {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(signUpValidationSchema),
   });
 
+  // Sign Up user with Google Provider
+  const [signInWithGoogle, userGoogle, loadingGoogle, errorGoogle] =
+    useSignInWithGoogle(auth);
+
+  if (errorGoogle) {
+    showError(
+      "Error while creating user using Google Provider, check console for more info"
+    );
+    console.error(errorGoogle);
+    return;
+  }
+
+  // Sign Up user with Email and Password
   const signUpOnSubmit = async (data) => {
     setLoading(true);
 
+    // check if provided email is available
     fetchSignInMethodsForEmail(auth, data.email)
       .then((signInMethods) => {
         if (signInMethods.length > 0) {
           showWarning("That email is already in use");
           reset();
-          setLoading(false);
           return;
         }
       })
@@ -88,39 +76,50 @@ export default function SignUp() {
         );
         console.error(error);
         reset();
-        setLoading(false);
         return;
+      })
+      .finally(() => {
+        setLoading(false);
       });
 
+    // create user
     const user = await createUserWithEmailAndPassword(
       auth,
       data.email,
       data.password
     ).catch((error) => {
-      return <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
+      showError("Error while creating a user, check console for more info");
+      console.error(error);
+      return;
     });
 
+    // update user's profile picture and display name
     if (user && auth.currentUser) {
       updateProfile(auth.currentUser, {
         displayName: `${data.firstName} ${data.lastName}`,
         photoURL: `https://source.unsplash.com/collection/1103088/300x300`,
       })
         .then(() => {
+          // send user an verification email
           sendEmailVerification(auth.currentUser)
             .catch((error) => {
-              setFirebaseErrors(true);
-              setLoading(false);
+              showError(
+                "Error while sending an verification email, check console for more info"
+              );
               console.error(`Error: ${error.code} - ${error.message}`);
             })
             .finally(() => {
               setLoading(false);
-              setSuccess(true);
             });
         })
         .catch((error) => {
-          setFirebaseErrors(true);
-          setLoading(false);
+          showError(
+            "Error while sending an verification email, check console for more info"
+          );
           console.error(`Error: ${error.code} - ${error.message}`);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
@@ -129,13 +128,7 @@ export default function SignUp() {
     return <LoadingScreen />;
   }
 
-  if (firebaseErrors || errorGoogle) {
-    return (
-      <ErrorMsg errorMessage="Unknown error has occured, check console for more info" />
-    );
-  }
-
-  if (success || userGoogle || currentUser) {
+  if (userGoogle || currentUser) {
     navigate("/dashboard");
   }
 
