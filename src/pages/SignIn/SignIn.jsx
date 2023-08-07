@@ -25,6 +25,7 @@ import LeftSide from "src/components/LeftSide";
 import LeftSideMobile from "src/components/LeftSideMobile";
 import LoadingScreen from "src/components/LoadingScreen";
 
+import { GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
 import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
@@ -33,11 +34,48 @@ export default function SignIn() {
 
   const { currentUser } = useAuthProvider();
 
+  const setUserDocumentInFirestore = async (user) => {
+    // create user document in users collection
+    await setDoc(doc(db, "users", user.uid), {
+      // user inital data
+      groups: [],
+      test: false,
+    }).catch((error) => {
+      showError(
+        "Error while handling users database structure, check console for more info"
+      );
+      console.error(error);
+    });
+  };
+
+  const signInWithGoogle = async () => {
+    const signInWithGoogle = new GoogleAuthProvider();
+
+    signInWithGoogle.setCustomParameters({ prompt: "select_account" });
+    signInWithPopup(auth, signInWithGoogle)
+      .then(async (result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+
+        const { isNewUser } = getAdditionalUserInfo(result);
+        if (isNewUser) {
+          setUserDocumentInFirestore(user);
+        }
+      })
+
+      .catch((error) => {
+        showError(
+          "Error while creating user using Google Provider, check console for more info"
+        );
+        console.error(error);
+      });
+  };
+
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
-
-  const [signInWithGoogle, userGoogle, loadingGoogle, errorGoogle] =
-    useSignInWithGoogle(auth);
 
   const handleSignInOnSubmit = async (event) => {
     event.preventDefault();

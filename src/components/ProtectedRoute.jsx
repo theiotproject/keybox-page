@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 
 import LoadingScreen from "./LoadingScreen";
 
-function Protected({ isSignedIn, isEmailVerified, children }) {
+function Protected({ isSignedIn, isEmailVerified, isProvider, children }) {
   // Check if user is still beeing fetched
   if (isSignedIn === null) {
     return <LoadingScreen />;
@@ -13,7 +13,7 @@ function Protected({ isSignedIn, isEmailVerified, children }) {
     return <Navigate to="/" replace />;
   }
 
-  if (!isEmailVerified) {
+  if (!isEmailVerified && !isProvider) {
     return <Navigate to="/unverified" replace />;
   }
 

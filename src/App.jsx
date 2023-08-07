@@ -79,6 +79,9 @@ function App() {
                   <ProtectedRoute
                     isSignedIn={currentUser}
                     isEmailVerified={currentUser?.emailVerified}
+                    isProvider={
+                      currentUser?.providerData[0].providerId === "google.com"
+                    }
                   >
                     <Dashboard />
                   </ProtectedRoute>

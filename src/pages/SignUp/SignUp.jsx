@@ -21,12 +21,16 @@ import showWarning from "src/components/Toasts/ToastWarning";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
+  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
+  getAdditionalUserInfo,
   sendEmailVerification,
+  signInWithPopup,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "src/backend/db_config";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 import { signUpValidationSchema } from "src/util/validation/SignUpSchema";
 
@@ -45,42 +49,49 @@ export default function SignUp() {
     resolver: yupResolver(signUpValidationSchema),
   });
 
-  // Sign Up user with Google Provider
-  const [signInWithGoogle, userGoogle, loadingGoogle, errorGoogle] =
-    useSignInWithGoogle(auth);
+  const setUserDocumentInFirestore = async (user) => {
+    // create user document in users collection
+    await setDoc(doc(db, "users", user.uid), {
+      // user inital data
+      groups: [],
+      test: false,
+    }).catch((error) => {
+      showError(
+        "Error while handling users database structure, check console for more info"
+      );
+      console.error(error);
+    });
+  };
 
-  if (errorGoogle) {
-    showError(
-      "Error while creating user using Google Provider, check console for more info"
-    );
-    console.error(errorGoogle);
-    return;
-  }
+  const signInWithGoogle = async () => {
+    const signInWithGoogle = new GoogleAuthProvider();
 
-  // Sign Up user with Email and Password
-  const signUpOnSubmit = async (data) => {
-    setLoading(true);
+    signInWithGoogle.setCustomParameters({ prompt: "select_account" });
+    signInWithPopup(auth, signInWithGoogle)
+      .then(async (result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
 
-    // check if provided email is available
-    fetchSignInMethodsForEmail(auth, data.email)
-      .then((signInMethods) => {
-        if (signInMethods.length > 0) {
-          showWarning("That email is already in use");
-          reset();
-          return;
+        const { isNewUser } = getAdditionalUserInfo(result);
+        if (isNewUser) {
+          setUserDocumentInFirestore(user);
         }
       })
+
       .catch((error) => {
         showError(
-          "Error while checking for email availability, check console for more info"
+          "Error while creating user using Google Provider, check console for more info"
         );
         console.error(error);
-        reset();
-        return;
-      })
-      .finally(() => {
-        setLoading(false);
       });
+  };
+
+  // Sign Up user with Email and Password
+  const signUpWithEmailAndPassowrdOnSubmit = async (data) => {
+    setLoading(true);
 
     // create user
     const user = await createUserWithEmailAndPassword(
@@ -93,24 +104,23 @@ export default function SignUp() {
       return;
     });
 
-    // update user's profile picture and display name
     if (user && auth.currentUser) {
+      setUserDocumentInFirestore(user.user);
+
+      // update user's profile picture and display name
       updateProfile(auth.currentUser, {
         displayName: `${data.firstName} ${data.lastName}`,
         photoURL: `https://source.unsplash.com/collection/1103088/300x300`,
       })
         .then(() => {
           // send user an verification email
-          sendEmailVerification(auth.currentUser)
-            .catch((error) => {
-              showError(
-                "Error while sending an verification email, check console for more info"
-              );
-              console.error(`Error: ${error.code} - ${error.message}`);
-            })
-            .finally(() => {
-              setLoading(false);
-            });
+          sendEmailVerification(auth.currentUser).catch((error) => {
+            showError(
+              "Error while sending an verification email, check console for more info"
+            );
+            console.error(`Error: ${error.code} - ${error.message}`);
+            setLoading(false);
+          });
         })
         .catch((error) => {
           showError(
@@ -124,11 +134,11 @@ export default function SignUp() {
     }
   };
 
-  if (loading || loadingGoogle) {
+  if (loading) {
     return <LoadingScreen />;
   }
 
-  if (userGoogle || currentUser) {
+  if (currentUser) {
     navigate("/dashboard");
   }
 
@@ -146,7 +156,7 @@ export default function SignUp() {
       <Box
         component="form"
         noValidate
-        onSubmit={handleSubmit(signUpOnSubmit)}
+        onSubmit={handleSubmit(signUpWithEmailAndPassowrdOnSubmit)}
         sx={{
           px: { xs: 3, md: 5 },
           width: { xs: 1, md: 1 / 2 },

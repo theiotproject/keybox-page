@@ -19,17 +19,25 @@ function Unverified() {
   // Once every 10 seconds site refreshes to check if user verified email
   useEffect(() => {
     // Check before interval if user is still unverified
-    if (currentUser?.emailVerified) {
+    if (
+      currentUser?.emailVerified ||
+      currentUser?.providerData[0].providerId === "google.com"
+    ) {
       navigate("/dashboard");
     }
 
     const isUserVerifiedInterval = setInterval(() => {
-      if (currentUser.emailVerified) {
+      if (
+        currentUser.emailVerified ||
+        currentUser?.providerData[0].providerId === "google.com"
+      ) {
         navigate("/dashboard");
       } else {
         window.location.reload();
       }
     }, 10000);
+
+    // console.log(currentUser);
     return () => clearInterval(isUserVerifiedInterval);
   }, [currentUser]);
 
