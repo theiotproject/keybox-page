@@ -20,9 +20,17 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 
 import ErrorMsg from "../../../components/ErrorMsg";
+import showError from "src/components/Toasts/ToastError";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 import { addNewKeyboxValidationSchema } from "src/util/validation/addNewKeyboxValidationSchema";
@@ -51,11 +59,12 @@ function AddNewKeybox() {
 
   const handleAddNewDevice = async (data) => {
     setLoading(true);
-    const keyboxesRef = collection(db, "keyboxes");
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const keyboxCollectionRef = collection(userDocRef, "keyboxes");
 
     const isDeviceUniqueQuery = query(
-      keyboxesRef,
-      where("deviceId", "==", data.deviceId)
+      keyboxCollectionRef,
+      where("keyboxId", "==", data.keyboxId)
     );
 
     const isDeviceUnique = await getDocs(isDeviceUniqueQuery);
@@ -68,15 +77,14 @@ function AddNewKeybox() {
     }
 
     const addKeyboxQuery = {
-      deviceId: data.deviceId,
-      ownerId: currentUser.uid,
-      deviceName: data.deviceName,
-      deviceStatus: false,
+      keyboxId: data.keyboxId,
+      keyboxName: data.keyboxName,
     };
 
-    addDoc(keyboxesRef, addKeyboxQuery)
+    addDoc(keyboxCollectionRef, addKeyboxQuery)
       .catch((error) => {
-        return <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
+        showError("Error while adding new keybox, check console for more info");
+        console.error(error);
       })
       .finally(() => {
         setLoading(false);
@@ -142,27 +150,27 @@ function AddNewKeybox() {
               <TextField
                 autoFocus
                 margin="dense"
-                id="deviceId"
-                name="deviceId"
+                id="keyboxId"
+                name="keyboxId"
                 label="Device ID"
                 type="text"
                 fullWidth
-                {...register("deviceId")}
-                error={!!errors.deviceId}
-                helperText={errors.deviceId?.message}
+                {...register("keyboxId")}
+                error={!!errors.keyboxId}
+                helperText={errors.keyboxId?.message}
                 variant="standard"
               />
               <TextField
                 autoFocus
                 margin="dense"
-                id="deviceName"
-                name="deviceName"
+                id="keyboxName"
+                name="keyboxName"
                 label="Device Name"
                 type="text"
                 fullWidth
-                {...register("deviceName")}
-                error={!!errors.deviceName}
-                helperText={errors.deviceName?.message}
+                {...register("keyboxName")}
+                error={!!errors.keyboxName}
+                helperText={errors.keyboxName?.message}
                 variant="standard"
               />
               <DialogActions>
