@@ -20,27 +20,18 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 
-import ErrorMsg from "../../../components/ErrorMsg";
+import showError from "src/components/Toasts/ToastError";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { deleteDoc, doc, setDoc } from "firebase/firestore";
 import { db } from "src/backend/db_config";
-import * as yup from "yup";
+import { useAuthProvider } from "src/contexts/AuthContext";
+import { editKeyboxValidationSchema } from "src/util/validation/editKeyboxValidationSchema";
 
-const schema = yup
-  .object({
-    deviceName: yup.string().required("Device Name field is required"),
-  })
-  .required();
-
-function DeviceCard({ ...props }) {
+function KeyboxCard({ ...props }) {
   const [open, setOpen] = React.useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [deviceStatus, setDeviceStatus] = useState(null);
-
-  useEffect(() => {
-    setDeviceStatus(props.deviceStatus);
-  }, [props.deviceStatus]);
+  const { currentUser } = useAuthProvider();
 
   const handleDialogToggle = () => {
     setOpen(!open);
@@ -51,33 +42,30 @@ function DeviceCard({ ...props }) {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(editKeyboxValidationSchema),
   });
 
-  const handleEditDevice = async (data) => {
+  const handleEditKeybox = async (data) => {
     setLoading(true);
-    const keyboxRef = doc(db, "keyboxes", props.docId);
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const keyboxDocRef = doc(userDocRef, "keyboxes", props.docId);
 
     // Back off from sending reqeuest if user haven't changed anything
-    if (
-      data.deviceName == props.deviceName &&
-      data.deviceStatus == props.deviceStatus
-    ) {
+    if (data.keyboxName == props.keyboxName) {
       setLoading(false);
       handleDialogToggle(false);
       return;
     }
 
     const editKeyboxQuery = {
-      deviceId: props.deviceId,
-      ownerId: props.ownerId,
-      deviceName: data.deviceName,
-      deviceStatus: data.deviceStatus,
+      keyboxId: props.keyboxId,
+      keyboxName: data.keyboxName,
     };
 
-    setDoc(keyboxRef, editKeyboxQuery)
+    setDoc(keyboxDocRef, editKeyboxQuery)
       .catch((error) => {
-        return <ErrorMsg errorCode={error.code} errorMessage={error.message} />;
+        showError("Error while updating keybox, check console for more info");
+        console.error(error);
       })
       .finally(() => {
         setLoading(false);
@@ -85,10 +73,11 @@ function DeviceCard({ ...props }) {
       });
   };
 
-  const handleDeleteDevice = async () => {
+  const handleDeleteKeybox = async () => {
     setLoading(true);
-    const keyboxRef = doc(db, "keyboxes", props.docId);
-    await deleteDoc(keyboxRef);
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const keyboxDocRef = doc(userDocRef, "keyboxes", props.docId);
+    await deleteDoc(keyboxDocRef);
     setLoading(false);
   };
 
@@ -105,7 +94,7 @@ function DeviceCard({ ...props }) {
           m: 2,
         }}
       >
-        <CardContent>
+        <CardContent sx={{ height: "100%" }}>
           <Typography
             variant="h1"
             sx={{
@@ -115,15 +104,16 @@ function DeviceCard({ ...props }) {
               whiteSpace: "nowrap",
             }}
           >
-            {props.deviceName}
+            {props.keyboxName}
           </Typography>
           <Box
             sx={{
               width: "100%",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "space-between",
               flexDirection: "column",
+              height: "85%",
             }}
           >
             <Card
@@ -155,92 +145,55 @@ function DeviceCard({ ...props }) {
                   whiteSpace: "nowrap",
                 }}
               >
-                {props.deviceId}
+                {props.keyboxId}
               </Typography>
             </Card>
 
-            <Card
-              sx={{
-                width: "100%",
-                p: 0.5,
-                pl: 1.5,
-                mt: 1,
-                boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.20)",
-              }}
-            >
-              <Typography
-                variant="body1"
-                sx={{ color: "#5A5A5F", fontSize: "1rem" }}
-              >
-                status
-              </Typography>
-              <Typography
-                sx={{
-                  color: props.deviceStatus ? "green" : "#CA1414",
-                  fontSize: "1.7rem",
-                }}
-              >
-                {props.deviceStatus ? "online" : "offline"}
-              </Typography>
-            </Card>
             <Button
               variant="outlined"
               onClick={handleDialogToggle}
               sx={{ mt: 3, border: 1.5 }}
             >
-              Edit device
+              Edit keybox
             </Button>
           </Box>
         </CardContent>
       </Card>
       {isLoading ? (
         <Dialog open={isLoading}>
-          <DialogTitle>Edit device</DialogTitle>
+          <DialogTitle>Edit keybox</DialogTitle>
           <DialogContent sx={{ display: "grid", placeItems: "center" }}>
             <CircularProgress />
           </DialogContent>
         </Dialog>
       ) : (
         <Dialog open={open} onClose={handleDialogToggle}>
-          <DialogTitle>Edit device</DialogTitle>
+          <DialogTitle>Edit keybox</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Here you can change the device name or switch it on.
+              Here you can change the keybox name!
             </DialogContentText>
             <Box
               component="form"
               noValidate
-              onSubmit={handleSubmit(handleEditDevice)}
+              onSubmit={handleSubmit(handleEditKeybox)}
             >
               <TextField
                 autoFocus
                 margin="dense"
-                id="deviceName"
-                name="deviceName"
-                label="Device Name"
-                defaultValue={props.deviceName}
-                {...register("deviceName")}
-                error={!!errors.deviceName}
-                helperText={errors.deviceName?.message}
+                id="keyboxName"
+                name="keyboxName"
+                label="Keybox Name"
+                defaultValue={props.keyboxName}
+                {...register("keyboxName")}
+                error={!!errors.keyboxName}
+                helperText={errors.keyboxName?.message}
                 fullWidth
                 variant="standard"
                 sx={{ mt: 2 }}
               />
-              <FormControlLabel
-                control={
-                  <Switch
-                    onChange={() => {
-                      setDeviceStatus(!deviceStatus);
-                    }}
-                    checked={deviceStatus}
-                  />
-                }
-                label={`Your keybox is ${deviceStatus ? "on" : "off"}`}
-                {...register("deviceStatus")}
-                sx={{ mt: 2 }}
-              />
               <DialogActions>
-                <IconButton aria-label="delete" onClick={handleDeleteDevice}>
+                <IconButton aria-label="delete" onClick={handleDeleteKeybox}>
                   <DeleteIcon />
                 </IconButton>
                 <Button variant="outlined" onClick={handleDialogToggle}>
@@ -258,4 +211,4 @@ function DeviceCard({ ...props }) {
   );
 }
 
-export default DeviceCard;
+export default KeyboxCard;

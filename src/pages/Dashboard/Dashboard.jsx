@@ -14,9 +14,9 @@ import showError from "src/components/Toasts/ToastError";
 import showInfo from "src/components/Toasts/ToastInfo";
 import showSuccess from "src/components/Toasts/ToastSuccess";
 import AddNewKeybox from "src/pages/Dashboard/components/AddNewKeybox";
-import DeviceCard from "src/pages/Dashboard/components/DeviceCard";
+import KeyboxCard from "src/pages/Dashboard/components/KeyboxCard";
 
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
@@ -27,12 +27,10 @@ function Dashboard() {
 
   useEffect(() => {
     setLoading(true);
-    const keyboxCollectionRef = collection(db, "keyboxes");
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const keyboxCollectionRef = collection(userDocRef, "keyboxes");
 
-    const keyboxQuery = query(
-      keyboxCollectionRef,
-      where("ownerId", "==", currentUser.uid)
-    );
+    const keyboxQuery = query(keyboxCollectionRef);
     const unsubscribe = onSnapshot(keyboxQuery, (snapshot) => {
       // Clear data to prevent data duplication of data,
       // which appears because onSnapshot runs every time user activates window
@@ -162,14 +160,12 @@ function Dashboard() {
         </Card>
         {!loading ? (
           data &&
-          data.map((item) => (
-            <DeviceCard
-              key={item.deviceId}
+          data.map((item, index) => (
+            <KeyboxCard
+              key={index}
               docId={item.docId}
-              deviceId={item.deviceId}
-              ownerId={item.ownerId}
-              deviceName={item.deviceName}
-              deviceStatus={item.deviceStatus}
+              keyboxId={item.keyboxId}
+              keyboxName={item.keyboxName}
             />
           ))
         ) : (

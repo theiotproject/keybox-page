@@ -21,6 +21,7 @@ import TextField from "@mui/material/TextField";
 
 import ErrorMsg from "../../../components/ErrorMsg";
 import showError from "src/components/Toasts/ToastError";
+import showWarning from "src/components/Toasts/ToastWarning";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -71,7 +72,7 @@ function AddNewKeybox() {
 
     // Check if isDeviceUnique has any docs (if yes device already exists)
     if (isDeviceUnique.docs[0]) {
-      alert("Wystąpił błąd: Jest już taki keybox!");
+      showWarning("Wystąpił błąd: Jest już taki keybox!");
       setLoading(false);
       return;
     }
