@@ -58,20 +58,20 @@ function AddNewKeybox() {
     resolver: yupResolver(addNewKeyboxValidationSchema),
   });
 
-  const handleAddNewDevice = async (data) => {
+  const handleAddNewKeybox = async (data) => {
     setLoading(true);
     const userDocRef = doc(db, "users", currentUser.uid);
     const keyboxCollectionRef = collection(userDocRef, "keyboxes");
 
-    const isDeviceUniqueQuery = query(
+    const isKeyboxUniqueQuery = query(
       keyboxCollectionRef,
       where("keyboxId", "==", data.keyboxId)
     );
 
-    const isDeviceUnique = await getDocs(isDeviceUniqueQuery);
+    const isKeyboxUnique = await getDocs(isKeyboxUniqueQuery);
 
-    // Check if isDeviceUnique has any docs (if yes device already exists)
-    if (isDeviceUnique.docs[0]) {
+    // Check if isKeyboxUnique has any docs (if yes keybox already exists)
+    if (isKeyboxUnique.docs[0]) {
       showWarning("Wystąpił błąd: Jest już taki keybox!");
       setLoading(false);
       return;
@@ -107,7 +107,7 @@ function AddNewKeybox() {
       >
         <CardContent>
           <Typography variant="h1" sx={{ fontSize: 20 }}>
-            Add new device
+            Add new keybox
           </Typography>
         </CardContent>
         <CardActions>
@@ -130,30 +130,30 @@ function AddNewKeybox() {
       {/* dialog is also a form component */}
       {isLoading ? (
         <Dialog open={isLoading}>
-          <DialogTitle>Add new device</DialogTitle>
+          <DialogTitle>Add new keybox</DialogTitle>
           <DialogContent sx={{ display: "grid", placeItems: "center" }}>
             <CircularProgress />
           </DialogContent>
         </Dialog>
       ) : (
         <Dialog open={open} onClose={handleDialogToggle}>
-          <DialogTitle>Add new device</DialogTitle>
+          <DialogTitle>Add new keybox</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Please, input the device id number <br />
+              Please, input the keybox id number <br />
               and choose a name for your new Key Box.
             </DialogContentText>
             <Box
               component="form"
               noValidate
-              onSubmit={handleSubmit(handleAddNewDevice)}
+              onSubmit={handleSubmit(handleAddNewKeybox)}
             >
               <TextField
                 autoFocus
                 margin="dense"
                 id="keyboxId"
                 name="keyboxId"
-                label="Device ID"
+                label="Keybox ID"
                 type="text"
                 fullWidth
                 {...register("keyboxId")}
@@ -166,7 +166,7 @@ function AddNewKeybox() {
                 margin="dense"
                 id="keyboxName"
                 name="keyboxName"
-                label="Device Name"
+                label="Keybox Name"
                 type="text"
                 fullWidth
                 {...register("keyboxName")}

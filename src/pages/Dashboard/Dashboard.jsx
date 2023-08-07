@@ -16,7 +16,7 @@ import showSuccess from "src/components/Toasts/ToastSuccess";
 import AddNewKeybox from "src/pages/Dashboard/components/AddNewKeybox";
 import KeyboxCard from "src/pages/Dashboard/components/KeyboxCard";
 
-import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
+import { collection, doc, onSnapshot, query } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
