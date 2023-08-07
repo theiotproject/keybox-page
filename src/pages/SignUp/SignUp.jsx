@@ -32,7 +32,7 @@ import {
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
-import { signUpValidationSchema } from "src/util/validation/SignUpSchema";
+import { signUpValidationSchema } from "src/util/validation/signUpValidationSchema";
 
 export default function SignUp() {
   const { currentUser } = useAuthProvider();

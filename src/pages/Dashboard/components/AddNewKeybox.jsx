@@ -25,24 +25,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
-import * as yup from "yup";
+import { addNewKeyboxValidationSchema } from "src/util/validation/addNewKeyboxValidationSchema";
 
-const schema = yup
-  .object({
-    deviceId: yup.string().required("Device ID field is required"),
-    deviceName: yup.string().required("Device Name field is required"),
-  })
-  .required();
-
-function AddNewDevice() {
+function AddNewKeybox() {
   const [open, setOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const { currentUser } = useAuthProvider();
 
   useEffect(() => {
-    reset({
-      data: "",
-    });
+    reset();
   }, [isLoading]);
 
   const handleDialogToggle = () => {
@@ -55,7 +46,7 @@ function AddNewDevice() {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(addNewKeyboxValidationSchema),
   });
 
   const handleAddNewDevice = async (data) => {
@@ -186,4 +177,4 @@ function AddNewDevice() {
   );
 }
 
-export default AddNewDevice;
+export default AddNewKeybox;

@@ -13,7 +13,7 @@ import { Box } from "@mui/material";
 import showError from "src/components/Toasts/ToastError";
 import showInfo from "src/components/Toasts/ToastInfo";
 import showSuccess from "src/components/Toasts/ToastSuccess";
-import AddNewDevice from "src/pages/Dashboard/components/AddNewDevice";
+import AddNewKeybox from "src/pages/Dashboard/components/AddNewKeybox";
 import DeviceCard from "src/pages/Dashboard/components/DeviceCard";
 
 import { collection, onSnapshot, query, where } from "firebase/firestore";
@@ -24,6 +24,7 @@ function Dashboard() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { currentUser } = useAuthProvider();
+
   useEffect(() => {
     setLoading(true);
     const keyboxCollectionRef = collection(db, "keyboxes");
@@ -113,7 +114,7 @@ function Dashboard() {
           alignContent: "center",
         }}
       >
-        <AddNewDevice />
+        <AddNewKeybox />
         <Card
           sx={{
             width: 275,
