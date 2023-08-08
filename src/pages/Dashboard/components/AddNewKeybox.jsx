@@ -63,16 +63,24 @@ function AddNewKeybox() {
     const userDocRef = doc(db, "users", currentUser.uid);
     const keyboxCollectionRef = collection(userDocRef, "keyboxes");
 
-    const isKeyboxUniqueQuery = query(
+    const isKeyboxIdUniqueQuery = query(
       keyboxCollectionRef,
       where("keyboxId", "==", data.keyboxId)
     );
 
-    const isKeyboxUnique = await getDocs(isKeyboxUniqueQuery);
+    const isKeyboxNameUniqueQuery = query(
+      keyboxCollectionRef,
+      where("keyboxName", "==", data.keyboxName)
+    );
+
+    const isKeyboxIdUnique = await getDocs(isKeyboxIdUniqueQuery);
+    const isKeyboxNameUnique = await getDocs(isKeyboxNameUniqueQuery);
 
     // Check if isKeyboxUnique has any docs (if yes keybox already exists)
-    if (isKeyboxUnique.docs[0]) {
-      showWarning("Wystąpił błąd: Jest już taki keybox!");
+    if (isKeyboxIdUnique.docs[0] || isKeyboxNameUnique.docs[0]) {
+      showWarning(
+        "Wystąpił błąd: Jest już taki keybox! (Nazwa lub id się powtarza!)"
+      );
       setLoading(false);
       return;
     }

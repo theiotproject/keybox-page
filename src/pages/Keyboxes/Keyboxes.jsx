@@ -134,6 +134,7 @@ function Keyboxes() {
         handleDialogToggle();
       });
   };
+
   return (
     <>
       <Typography variant="h1" my={4}>
@@ -179,17 +180,6 @@ function Keyboxes() {
           keyboxRef={selectedKeyboxData.keyboxRef}
         />
       )}
-      <Grid
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: "2rem",
-          alignItems: "center",
-        }}
-      >
-        <Add sx={{ fontSize: "2rem" }} />
-        <Typography sx={{ fontSize: "1.5rem" }}>Dodaj nowy</Typography>
-      </Grid>
 
       {isLoading ? (
         <Dialog open={isLoading}>
