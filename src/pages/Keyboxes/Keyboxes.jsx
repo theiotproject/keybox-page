@@ -88,11 +88,6 @@ function Keyboxes() {
 
   useEffect(() => {
     if (keyboxesData) {
-      setSelectedKeyboxData({
-        keyboxRef: keyboxesData[0].ref,
-        keyboxName: keyboxesData[0].data().keyboxName,
-        keyboxId: keyboxesData[0].data().keyboxId,
-      });
       getKeyboxData(keyboxesData[0].data().keyboxName);
     }
   }, [keyboxesData]);
@@ -179,7 +174,10 @@ function Keyboxes() {
         KeySlots:
       </Typography>
       {selectedKeyboxData && (
-        <KeySlotsTable keyboxRef={selectedKeyboxData.keyboxRef} />
+        <KeySlotsTable
+          key={selectedKeyboxData}
+          keyboxRef={selectedKeyboxData.keyboxRef}
+        />
       )}
       <Grid
         sx={{

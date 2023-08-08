@@ -78,7 +78,8 @@ function KeySlotsTable(props) {
 
   useEffect(() => {
     setKeyboxRef(props.keyboxRef);
-  }, []);
+    console.log(props.keyboxesRef);
+  }, [props.keyboxRef]);
 
   useEffect(() => {
     getData();
