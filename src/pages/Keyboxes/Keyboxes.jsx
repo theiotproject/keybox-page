@@ -35,13 +35,7 @@ import {
 } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
-import * as yup from "yup";
-
-const schema = yup
-  .object({
-    keyboxName: yup.string().required("Device Name field is required"),
-  })
-  .required();
+import { editKeyboxValidationSchema } from "src/util/validation/editKeyboxValidationSchema";
 
 function Keyboxes() {
   const { currentUser } = useAuthProvider();
@@ -56,7 +50,7 @@ function Keyboxes() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(editKeyboxValidationSchema),
   });
 
   const getKeyboxesData = async () => {
@@ -184,7 +178,9 @@ function Keyboxes() {
       >
         KeySlots:
       </Typography>
-      <KeySlotsTable />
+      {selectedKeyboxData && (
+        <KeySlotsTable keyboxRef={selectedKeyboxData.keyboxRef} />
+      )}
       <Grid
         sx={{
           display: "flex",
