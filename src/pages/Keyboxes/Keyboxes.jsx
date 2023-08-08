@@ -68,13 +68,13 @@ function Keyboxes() {
     setKeyboxesData(keyboxesData);
   };
 
-  const getKeyboxData = async (id) => {
+  const getKeyboxData = async (keyboxName) => {
     const userDocRef = doc(db, "users", currentUser.uid);
     const keyboxesCollectionRef = collection(userDocRef, "keyboxes");
 
     const keyboxQuery = query(
       keyboxesCollectionRef,
-      where("keyboxId", "==", id)
+      where("keyboxName", "==", keyboxName)
     );
 
     const keyboxSnapshot = await getDocs(keyboxQuery);
@@ -82,6 +82,7 @@ function Keyboxes() {
 
     // query is supposed to return only one document so it checks first index
     setSelectedKeyboxData({
+      keyboxRef: keyboxData[0].ref,
       keyboxName: keyboxData[0].data().keyboxName,
       keyboxId: keyboxData[0].data().keyboxId,
     });
@@ -94,113 +95,82 @@ function Keyboxes() {
   useEffect(() => {
     if (keyboxesData) {
       setSelectedKeyboxData({
+        keyboxRef: keyboxesData[0].ref,
         keyboxName: keyboxesData[0].data().keyboxName,
         keyboxId: keyboxesData[0].data().keyboxId,
       });
+      getKeyboxData(keyboxesData[0].data().keyboxName);
     }
   }, [keyboxesData]);
 
   const handleChangeKeybox = (event) => {
-    setSelectedKeyboxData({
-      keyboxName: keyboxesData[event.target.value].data().keyboxName,
-      keyboxId: keyboxesData[event.target.value].data().keyboxId,
-    });
-    getKeyboxData(keyboxesData[event.target.value].data().keyboxId);
-    // console.log(
-    //   keyboxesData[event.target.value].data().keyboxName,
-    //   keyboxesData[event.target.value].data().keyboxId
-    // );
+    getKeyboxData(event.target.value);
   };
 
   const handleDialogToggle = () => {
     setOpen(!open);
   };
 
-  // const handleEditDevice = async (data) => {
-  //   setLoading(true);
-  //   const keyboxName = keyboxData.data().keyboxName;
-  //   const keyboxRef = keyboxData.ref;
-  //   // Back off from sending reqeuest if user haven't changed anything
-  //   if (data.keyboxName == keyboxName) {
-  //     setLoading(false);
-  //     handleDialogToggle(false);
-  //     return;
-  //   }
-  // const editKeyboxQuery = {
-  //   keyboxId: keyboxData.data().keyboxId,
-  //   ownerId: keyboxData.data().ownerId,
-  //   keyboxName: data.keyboxName,
-  //   slots: keyboxData.data().slots,
-  // };
+  const handleEditKeybox = async (data) => {
+    setLoading(true);
+    const keyboxName = selectedKeyboxData.keyboxName;
+    const keyboxRef = selectedKeyboxData.keyboxRef;
+    // Back off from sending reqeuest if user haven't changed anything
+    if (data.keyboxName == keyboxName) {
+      setLoading(false);
+      handleDialogToggle(false);
+      return;
+    }
 
-  // setDoc(keyboxRef, editKeyboxQuery)
-  //   .catch((error) => {
-  //     showError(
-  //       `Wystąpił błąd podczas aktualizacji nazwy keybox'a po więcej informacji sprawdź konsolę`
-  //     );
-  //     console.error(error);
-  //     setLoading(false);
-  //     handleDialogToggle();
-  //   })
-  //   .then(() => {
-  //     showSuccess(`
-  //       Nazwa urzędzenia zaaktualizowana pomyślnie
-  //     `);
-  //     setKeyboxName(data.keyboxName);
-  //     setLoading(false);
-  //     handleDialogToggle();
-  //   });
-  // };
+    const editKeyboxQuery = {
+      keyboxId: selectedKeyboxData.keyboxId,
+      keyboxName: data.keyboxName,
+    };
+
+    setDoc(keyboxRef, editKeyboxQuery)
+      .then(() => {
+        showSuccess(`
+          Keybox name updated successfully
+        `);
+        getKeyboxesData();
+        setLoading(false);
+        handleDialogToggle();
+      })
+      .catch((error) => {
+        showError(
+          `Error while updating keybox name, check console for more info`
+        );
+        console.error(error);
+        setLoading(false);
+        handleDialogToggle();
+      });
+  };
   return (
     <>
       <Typography variant="h1" my={4}>
         Manage your KeyBox
       </Typography>
-      {keyboxesData ? (
-        <Select
-          labelId="selectKeyboxLabel"
-          id="selectKeybox"
-          // displayEmpty={true}
-          value={0}
-          label="Select your keybox"
-          onChange={handleChangeKeybox}
-        >
-          {keyboxesData.map((keybox, index) => (
-            <MenuItem key={index} value={index}>
-              {keybox.data().keyboxName}
-            </MenuItem>
-          ))}
-        </Select>
-      ) : (
-        <Skeleton animation="wave" width={"6ch"} />
-      )}
 
-      <Grid container direction="row" my={4}>
-        <Typography
-          variant="h1"
-          sx={{
-            paddingRight: "1rem",
-            display: "flex",
-          }}
-        >
-          <Typography
-            component="span"
-            sx={{
-              color: "secondary.contrastTextVariant",
-              fontSize: "2rem",
-              paddingRight: "1rem",
-            }}
+      <Grid container direction="row" my={4} gap={2}>
+        {selectedKeyboxData ? (
+          <Select
+            labelId="selectKeyboxLabel"
+            id="selectKeybox"
+            value={selectedKeyboxData.keyboxName}
+            label="Select your keybox"
+            onChange={handleChangeKeybox}
           >
-            Name:
-          </Typography>
-          {/* {keyboxesData ? (
-            { selectedKeyboxName }
-          ) : (
-            <Skeleton animation="wave" width={120} />
-          )} */}
-        </Typography>
+            {keyboxesData.map((keybox, index) => (
+              <MenuItem key={index} value={keybox.data().keyboxName}>
+                {keybox.data().keyboxName}
+              </MenuItem>
+            ))}
+          </Select>
+        ) : (
+          <Skeleton animation="wave" width={"6ch"} />
+        )}
         <Button variant="outlined" onClick={handleDialogToggle}>
-          Edit
+          Edit Keybox
         </Button>
       </Grid>
 
@@ -244,7 +214,7 @@ function Keyboxes() {
             <Box
               component="form"
               noValidate
-              // onSubmit={handleSubmit(handleEditDevice)}
+              onSubmit={handleSubmit(handleEditKeybox)}
             >
               <TextField
                 autoFocus
