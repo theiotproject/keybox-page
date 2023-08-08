@@ -12,6 +12,8 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
+  MenuItem,
+  Select,
   Skeleton,
   TextField,
   Typography,
@@ -22,8 +24,17 @@ import showSuccess from "src/components/Toasts/ToastSuccess";
 import KeySlotsTable from "src/pages/Keyboxes/components/KeySlotsTable";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import { collection, getDocs, query, setDoc, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "src/backend/db_config";
+import { useAuthProvider } from "src/contexts/AuthContext";
 import * as yup from "yup";
 
 const schema = yup
@@ -33,10 +44,12 @@ const schema = yup
   .required();
 
 function Keyboxes() {
+  const { currentUser } = useAuthProvider();
+
   const [open, setOpen] = useState(false);
+  const [keyboxesData, setKeyboxesData] = useState();
+  const [selectedKeyboxData, setSelectedKeyboxData] = useState();
   const [isLoading, setLoading] = useState(false);
-  const [keyboxData, setKeyboxData] = useState();
-  const [keyboxName, setKeyboxName] = useState("");
 
   const {
     register,
@@ -46,75 +59,122 @@ function Keyboxes() {
     resolver: yupResolver(schema),
   });
 
-  const getKeyboxData = async () => {
-    const keyboxCollectionRef = collection(db, "keyboxes");
+  const getKeyboxesData = async () => {
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const keyboxesCollectionRef = collection(userDocRef, "keyboxes");
+    const keyboxSnapshot = await getDocs(keyboxesCollectionRef);
+    const keyboxesData = keyboxSnapshot.docs;
+
+    setKeyboxesData(keyboxesData);
+  };
+
+  const getKeyboxData = async (id) => {
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const keyboxesCollectionRef = collection(userDocRef, "keyboxes");
 
     const keyboxQuery = query(
-      keyboxCollectionRef,
-      // change 123456789 to keybox id (from site address)
-      where("keyboxId", "==", "123456789")
+      keyboxesCollectionRef,
+      where("keyboxId", "==", id)
     );
 
     const keyboxSnapshot = await getDocs(keyboxQuery);
-    const keyboxData = keyboxSnapshot.docs[0];
+    const keyboxData = keyboxSnapshot.docs;
 
-    setKeyboxData(keyboxData);
+    // query is supposed to return only one document so it checks first index
+    setSelectedKeyboxData({
+      keyboxName: keyboxData[0].data().keyboxName,
+      keyboxId: keyboxData[0].data().keyboxId,
+    });
   };
 
   useEffect(() => {
-    getKeyboxData();
+    getKeyboxesData();
   }, []);
 
   useEffect(() => {
-    if (keyboxData != undefined) {
-      setKeyboxName(keyboxData.data().keyboxName);
+    if (keyboxesData) {
+      setSelectedKeyboxData({
+        keyboxName: keyboxesData[0].data().keyboxName,
+        keyboxId: keyboxesData[0].data().keyboxId,
+      });
     }
-  }, [keyboxData]);
+  }, [keyboxesData]);
+
+  const handleChangeKeybox = (event) => {
+    setSelectedKeyboxData({
+      keyboxName: keyboxesData[event.target.value].data().keyboxName,
+      keyboxId: keyboxesData[event.target.value].data().keyboxId,
+    });
+    getKeyboxData(keyboxesData[event.target.value].data().keyboxId);
+    // console.log(
+    //   keyboxesData[event.target.value].data().keyboxName,
+    //   keyboxesData[event.target.value].data().keyboxId
+    // );
+  };
 
   const handleDialogToggle = () => {
     setOpen(!open);
   };
 
-  const handleEditDevice = async (data) => {
-    setLoading(true);
-    const keyboxName = keyboxData.data().keyboxName;
-    const keyboxRef = keyboxData.ref;
-    // Back off from sending reqeuest if user haven't changed anything
-    if (data.keyboxName == keyboxName) {
-      setLoading(false);
-      handleDialogToggle(false);
-      return;
-    }
-    const editKeyboxQuery = {
-      keyboxId: keyboxData.data().keyboxId,
-      ownerId: keyboxData.data().ownerId,
-      keyboxName: data.keyboxName,
-      slots: keyboxData.data().slots,
-    };
+  // const handleEditDevice = async (data) => {
+  //   setLoading(true);
+  //   const keyboxName = keyboxData.data().keyboxName;
+  //   const keyboxRef = keyboxData.ref;
+  //   // Back off from sending reqeuest if user haven't changed anything
+  //   if (data.keyboxName == keyboxName) {
+  //     setLoading(false);
+  //     handleDialogToggle(false);
+  //     return;
+  //   }
+  // const editKeyboxQuery = {
+  //   keyboxId: keyboxData.data().keyboxId,
+  //   ownerId: keyboxData.data().ownerId,
+  //   keyboxName: data.keyboxName,
+  //   slots: keyboxData.data().slots,
+  // };
 
-    setDoc(keyboxRef, editKeyboxQuery)
-      .catch((error) => {
-        showError(
-          `Wystąpił błąd podczas aktualizacji nazwy keybox'a po więcej informacji sprawdź konsolę`
-        );
-        console.error(error);
-        setLoading(false);
-        handleDialogToggle();
-      })
-      .then(() => {
-        showSuccess(`
-          Nazwa urzędzenia zaaktualizowana pomyślnie
-        `);
-        setKeyboxName(data.keyboxName);
-        setLoading(false);
-        handleDialogToggle();
-      });
-  };
+  // setDoc(keyboxRef, editKeyboxQuery)
+  //   .catch((error) => {
+  //     showError(
+  //       `Wystąpił błąd podczas aktualizacji nazwy keybox'a po więcej informacji sprawdź konsolę`
+  //     );
+  //     console.error(error);
+  //     setLoading(false);
+  //     handleDialogToggle();
+  //   })
+  //   .then(() => {
+  //     showSuccess(`
+  //       Nazwa urzędzenia zaaktualizowana pomyślnie
+  //     `);
+  //     setKeyboxName(data.keyboxName);
+  //     setLoading(false);
+  //     handleDialogToggle();
+  //   });
+  // };
   return (
     <>
       <Typography variant="h1" my={4}>
         Manage your KeyBox
       </Typography>
+      {keyboxesData ? (
+        <Select
+          labelId="selectKeyboxLabel"
+          id="selectKeybox"
+          // displayEmpty={true}
+          value={0}
+          label="Select your keybox"
+          onChange={handleChangeKeybox}
+        >
+          {keyboxesData.map((keybox, index) => (
+            <MenuItem key={index} value={index}>
+              {keybox.data().keyboxName}
+            </MenuItem>
+          ))}
+        </Select>
+      ) : (
+        <Skeleton animation="wave" width={"6ch"} />
+      )}
+
       <Grid container direction="row" my={4}>
         <Typography
           variant="h1"
@@ -133,7 +193,11 @@ function Keyboxes() {
           >
             Name:
           </Typography>
-          {keyboxData ? keyboxName : <Skeleton animation="wave" width={120} />}
+          {/* {keyboxesData ? (
+            { selectedKeyboxName }
+          ) : (
+            <Skeleton animation="wave" width={120} />
+          )} */}
         </Typography>
         <Button variant="outlined" onClick={handleDialogToggle}>
           Edit
@@ -180,7 +244,7 @@ function Keyboxes() {
             <Box
               component="form"
               noValidate
-              onSubmit={handleSubmit(handleEditDevice)}
+              // onSubmit={handleSubmit(handleEditDevice)}
             >
               <TextField
                 autoFocus
