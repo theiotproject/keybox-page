@@ -1,113 +1,115 @@
 import React, { useEffect, useState } from "react";
 
-import { Box, Stack, Typography } from "@mui/material";
+import { Refresh } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  MenuItem,
+  Select,
+  Skeleton,
+  Typography,
+} from "@mui/material";
 
-import SearchBar from "src/components/SearchBar";
-import ConfiguredCardChip from "src/pages/Cards/components/ConfiguredCardChip";
-import CustomSmallSelect from "src/pages/Cards/components/CustomSmallSelect";
-import PendingCardChip from "src/pages/Cards/components/PendingCardChip";
+import ConfiguredCardsBox from "./components/ConfiguredCardsBox";
+import PendingCardsBox from "./components/PendingCardsBox";
 
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
+import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Cards() {
-  const [itemListArray, setItemListArray] = useState([]);
-  const [filteredResults, setFilteredResults] = useState([]);
-  const [cardsData, setCardsData] = useState([]);
-  useEffect(() => {
-    const getCardsData = async () => {
-      const cardsCollectionRef = collection(db, "cards");
-      const cardsSnapshot = await getDocs(cardsCollectionRef);
-      setCardsData(cardsSnapshot.docs);
-    };
+  const { currentUser } = useAuthProvider();
 
-    getCardsData();
+  const [keyboxesData, setKeyboxesData] = useState();
+  const [selectedKeyboxData, setSelectedKeyboxData] = useState();
+
+  const getKeyboxesData = async () => {
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const keyboxesCollectionRef = collection(userDocRef, "keyboxes");
+    const keyboxSnapshot = await getDocs(keyboxesCollectionRef);
+    const keyboxesData = keyboxSnapshot.docs;
+
+    setKeyboxesData(keyboxesData);
+  };
+
+  const getKeyboxData = async (keyboxName) => {
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const keyboxesCollectionRef = collection(userDocRef, "keyboxes");
+
+    const keyboxQuery = query(
+      keyboxesCollectionRef,
+      where("keyboxName", "==", keyboxName)
+    );
+
+    const keyboxSnapshot = await getDocs(keyboxQuery);
+    const keyboxData = keyboxSnapshot.docs;
+
+    // query is supposed to return only one document so it checks first index
+    setSelectedKeyboxData({
+      keyboxRef: keyboxData[0].ref,
+      keyboxName: keyboxData[0].data().keyboxName,
+      keyboxId: keyboxData[0].data().keyboxId,
+    });
+  };
+
+  const handleChangeKeybox = (event) => {
+    getKeyboxData(event.target.value);
+  };
+
+  const handleRefreshKeyboxes = () => {
+    getKeyboxesData();
+  };
+
+  useEffect(() => {
+    getKeyboxesData();
   }, []);
+
+  useEffect(() => {
+    if (keyboxesData) {
+      getKeyboxData(keyboxesData[0].data().keyboxName);
+    }
+  }, [keyboxesData]);
 
   return (
     <>
       <Typography component="h1" variant="h1" sx={{ fontSize: 50, m: 5 }}>
         Manage Cards
       </Typography>
+      <Grid container direction="row" my={4} gap={2}>
+        {selectedKeyboxData ? (
+          <Select
+            labelId="selectKeyboxLabel"
+            id="selectKeybox"
+            value={selectedKeyboxData.keyboxName}
+            label="Select your keybox"
+            onChange={handleChangeKeybox}
+          >
+            {keyboxesData.map((keybox, index) => (
+              <MenuItem key={index} value={keybox.data().keyboxName}>
+                {keybox.data().keyboxName}
+              </MenuItem>
+            ))}
+          </Select>
+        ) : (
+          <Skeleton animation="wave" width={"6ch"} />
+        )}
+        <IconButton
+          aria-label="refresh keyboxes"
+          onClick={() => handleRefreshKeyboxes()}
+        >
+          <Refresh />
+        </IconButton>
+      </Grid>
       {/* pending cards box */}
-      <Box
-        sx={{
-          border: "3px solid gray",
-          borderRadius: "4px",
-          paddingY: "1em",
-          paddingX: "1.5em",
-          marginBottom: 3,
-        }}
-      >
-        <Typography component="h2" variant="h1" sx={{ fontSize: 30, mb: 3 }}>
-          Pending
-        </Typography>
-        <Stack
-          sx={{
-            flexDirection: {
-              xs: "column",
-              md: "row",
-              gap: "8px",
-              flexWrap: "wrap",
-            },
-          }}
-        >
-          <PendingCardChip label="hej" />
-          <PendingCardChip label="Nowa1" />
-          <PendingCardChip label="hej2" />
-        </Stack>
-      </Box>
+      {selectedKeyboxData && (
+        <PendingCardsBox keyboxRef={selectedKeyboxData.keyboxRef} />
+      )}
       {/* configured cards box */}
-      <Box
-        sx={{
-          border: "3px solid gray",
-          borderRadius: "4px",
-          paddingY: "1em",
-          paddingX: "1.5em",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            width: "100%",
-            alignItems: "center",
-            mb: 3,
-            flexDirection: { xs: "column", md: "row" },
-          }}
-        >
-          <Typography component="h2" variant="h1" sx={{ fontSize: 30 }}>
-            Cards
-          </Typography>
-          <Box sx={{ display: "flex", gap: "1em" }}>
-            <SearchBar
-              itemListArray={["admin", "moderator", "forklift operator"]}
-              setFilteredResults={setFilteredResults}
-            />
-            <CustomSmallSelect />
-          </Box>
-        </Box>
-        <Stack
-          sx={{
-            flexDirection: {
-              xs: "column",
-              md: "row",
-              gap: "8px",
-              flexWrap: "wrap",
-            },
-          }}
-        >
-          {cardsData.map((card, index) => (
-            <ConfiguredCardChip
-              cardName={card.data().cardName}
-              cardId={card.data().cardId}
-              cardGroup={card.data().group}
-              docCardRef={card.data().group}
-              key={index}
-            />
-          ))}
-        </Stack>
-      </Box>
+      {selectedKeyboxData && (
+        <ConfiguredCardsBox keyboxRef={selectedKeyboxData.keyboxRef} />
+      )}
     </>
   );
 }

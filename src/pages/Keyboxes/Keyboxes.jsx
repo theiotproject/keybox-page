@@ -123,10 +123,7 @@ function Keyboxes() {
         KeySlots:
       </Typography>
       {selectedKeyboxData && (
-        <KeySlotsTable
-          key={selectedKeyboxData}
-          keyboxRef={selectedKeyboxData.keyboxRef}
-        />
+        <KeySlotsTable keyboxRef={selectedKeyboxData.keyboxRef} />
       )}
 
       <EditKeyboxDialog
