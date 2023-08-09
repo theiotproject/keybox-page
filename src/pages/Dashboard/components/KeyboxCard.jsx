@@ -77,8 +77,15 @@ function KeyboxCard({ ...props }) {
     setLoading(true);
     const userDocRef = doc(db, "users", currentUser.uid);
     const keyboxDocRef = doc(userDocRef, "keyboxes", props.docId);
-    await deleteDoc(keyboxDocRef);
-    setLoading(false);
+    deleteDoc(keyboxDocRef)
+      .catch((error) => {
+        showError("Error while deleting keybox, check console for more info");
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+        handleDialogToggle();
+      });
   };
 
   return (

@@ -1,57 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 
-import { Add } from "@mui/icons-material";
 import {
-  Box,
   Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Grid,
   MenuItem,
   Select,
   Skeleton,
-  TextField,
   Typography,
 } from "@mui/material";
 
-import showError from "src/components/Toasts/ToastError";
-import showSuccess from "src/components/Toasts/ToastSuccess";
+import EditKeyboxDialog from "./components/EditKeyboxDialog";
 import KeySlotsTable from "src/pages/Keyboxes/components/KeySlotsTable";
 
-import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
-import { editKeyboxValidationSchema } from "src/util/validation/editKeyboxValidationSchema";
 
 function Keyboxes() {
   const { currentUser } = useAuthProvider();
 
-  const [open, setOpen] = useState(false);
   const [keyboxesData, setKeyboxesData] = useState();
   const [selectedKeyboxData, setSelectedKeyboxData] = useState();
-  const [isLoading, setLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(editKeyboxValidationSchema),
-  });
+  const [editKeyboxDialogOpen, setEditKeyboxDialogOpen] = useState(false);
+
+  const toggleEditKeyboxDialog = () => {
+    setEditKeyboxDialogOpen(!editKeyboxDialogOpen);
+  };
 
   const getKeyboxesData = async () => {
     const userDocRef = doc(db, "users", currentUser.uid);
@@ -82,6 +57,10 @@ function Keyboxes() {
     });
   };
 
+  const handleChangeKeybox = (event) => {
+    getKeyboxData(event.target.value);
+  };
+
   useEffect(() => {
     getKeyboxesData();
   }, []);
@@ -91,49 +70,6 @@ function Keyboxes() {
       getKeyboxData(keyboxesData[0].data().keyboxName);
     }
   }, [keyboxesData]);
-
-  const handleChangeKeybox = (event) => {
-    getKeyboxData(event.target.value);
-  };
-
-  const handleDialogToggle = () => {
-    setOpen(!open);
-  };
-
-  const handleEditKeybox = async (data) => {
-    setLoading(true);
-    const keyboxName = selectedKeyboxData.keyboxName;
-    const keyboxRef = selectedKeyboxData.keyboxRef;
-    // Back off from sending reqeuest if user haven't changed anything
-    if (data.keyboxName == keyboxName) {
-      setLoading(false);
-      handleDialogToggle(false);
-      return;
-    }
-
-    const editKeyboxQuery = {
-      keyboxId: selectedKeyboxData.keyboxId,
-      keyboxName: data.keyboxName,
-    };
-
-    setDoc(keyboxRef, editKeyboxQuery)
-      .then(() => {
-        showSuccess(`
-          Keybox name updated successfully
-        `);
-        getKeyboxesData();
-        setLoading(false);
-        handleDialogToggle();
-      })
-      .catch((error) => {
-        showError(
-          `Error while updating keybox name, check console for more info`
-        );
-        console.error(error);
-        setLoading(false);
-        handleDialogToggle();
-      });
-  };
 
   return (
     <>
@@ -159,7 +95,7 @@ function Keyboxes() {
         ) : (
           <Skeleton animation="wave" width={"6ch"} />
         )}
-        <Button variant="outlined" onClick={handleDialogToggle}>
+        <Button variant="outlined" onClick={toggleEditKeyboxDialog}>
           Edit Keybox
         </Button>
       </Grid>
@@ -181,50 +117,12 @@ function Keyboxes() {
         />
       )}
 
-      {isLoading ? (
-        <Dialog open={isLoading}>
-          <DialogTitle>Edit keybox</DialogTitle>
-          <DialogContent sx={{ display: "grid", placeItems: "center" }}>
-            <CircularProgress />
-          </DialogContent>
-        </Dialog>
-      ) : (
-        <Dialog open={open} onClose={handleDialogToggle}>
-          <DialogTitle>Edit keybox</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Here you can change the device name
-            </DialogContentText>
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit(handleEditKeybox)}
-            >
-              <TextField
-                autoFocus
-                margin="dense"
-                id="keyboxName"
-                name="keyboxName"
-                label="Device Name"
-                {...register("keyboxName")}
-                error={!!errors.keyboxName}
-                helperText={errors.keyboxName?.message}
-                fullWidth
-                variant="standard"
-                sx={{ mt: 2 }}
-              />
-              <DialogActions>
-                <Button variant="outlined" onClick={handleDialogToggle}>
-                  Cancel
-                </Button>
-                <Button variant="contained" type="submit">
-                  Submit
-                </Button>
-              </DialogActions>
-            </Box>
-          </DialogContent>
-        </Dialog>
-      )}
+      <EditKeyboxDialog
+        open={editKeyboxDialogOpen}
+        toggleDialog={toggleEditKeyboxDialog}
+        refreshKeyboxesData={getKeyboxesData}
+        selectedKeyboxData={selectedKeyboxData}
+      />
     </>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { Delete } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -10,6 +11,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
   TextField,
 } from "@mui/material";
 
@@ -18,6 +20,7 @@ import showWarning from "src/components/Toasts/ToastWarning";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   collection,
+  deleteDoc,
   doc,
   getDocs,
   query,
@@ -58,7 +61,7 @@ function EditKeySlotDialog({
     // Check if isSlotUnique has any docs (if yes keybox already exists)
     if (isSlotNameUnique.docs[0]) {
       showWarning(
-        "Wystąpił błąd: Jest już taki keybox! (Nazwa lub id się powtarza!)"
+        "Error while editing key slot: there is already key slot with this name!)"
       );
       setLoading(false);
       reset();
@@ -79,6 +82,20 @@ function EditKeySlotDialog({
         setLoading(false);
         toggleDialog();
         refreshKeyboxTable();
+      });
+  };
+
+  const handleDeleteSlot = async () => {
+    setLoading(true);
+    deleteDoc(doc(keyboxRef, "slots", slotId))
+      .catch((error) => {
+        showError("Error while deleting key slot, check console for more info");
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+        refreshKeyboxTable();
+        toggleDialog();
       });
   };
 
@@ -117,6 +134,12 @@ function EditKeySlotDialog({
                 variant="standard"
               />
               <DialogActions>
+                <IconButton
+                  aria-label="delete slot"
+                  onClick={() => handleDeleteSlot()}
+                >
+                  <Delete />
+                </IconButton>
                 <Button onClick={toggleDialog}>Cancel</Button>
                 <Button type="submit">Submit</Button>
               </DialogActions>
