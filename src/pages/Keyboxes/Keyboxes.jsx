@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 
+import { Refresh } from "@mui/icons-material";
 import {
   Button,
   Grid,
+  IconButton,
   MenuItem,
   Select,
   Skeleton,
@@ -61,6 +63,10 @@ function Keyboxes() {
     getKeyboxData(event.target.value);
   };
 
+  const handleRefreshKeyboxes = () => {
+    getKeyboxesData();
+  };
+
   useEffect(() => {
     getKeyboxesData();
   }, []);
@@ -98,6 +104,12 @@ function Keyboxes() {
         <Button variant="outlined" onClick={toggleEditKeyboxDialog}>
           Edit Keybox
         </Button>
+        <IconButton
+          aria-label="refresh keyboxes"
+          onClick={() => handleRefreshKeyboxes()}
+        >
+          <Refresh />
+        </IconButton>
       </Grid>
 
       <Typography
