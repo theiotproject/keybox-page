@@ -35,6 +35,7 @@ function EditKeySlotDialog({
   refreshKeyboxTable,
   keyboxRef,
   slotId,
+  slotName,
 }) {
   const [isLoading, setLoading] = useState(false);
 
@@ -49,6 +50,14 @@ function EditKeySlotDialog({
 
   const handleEditSlot = async (data) => {
     setLoading(true);
+
+    if (data.slotName == slotName) {
+      reset();
+      setLoading(false);
+      toggleDialog(false);
+      return;
+    }
+
     const slotsCollectionRef = collection(keyboxRef, "slots");
 
     const isSlotNameUniqueQuery = query(

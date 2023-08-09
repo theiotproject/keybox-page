@@ -54,6 +54,7 @@ function KeySlotsTable(props) {
 
   const [editSlotDialogOpen, setEditSlotDialogOpen] = useState(false);
   const [editSlotId, setEditSlotId] = useState("");
+  const [editSlotName, setEditSlotName] = useState("");
 
   const handleAddNewSlotDialogToggle = () => {
     setAddNewSlotDialogOpen(!addNewSlotDialogOpen);
@@ -197,6 +198,7 @@ function KeySlotsTable(props) {
                       aria-label="edit slot"
                       onClick={() => {
                         setEditSlotId(row.slotId);
+                        setEditSlotName(row.slotName);
                         handleEditSlotDialogToggle();
                       }}
                     >
@@ -239,6 +241,7 @@ function KeySlotsTable(props) {
         refreshKeyboxTable={getData}
         keyboxRef={props.keyboxRef}
         slotId={editSlotId}
+        slotName={editSlotName}
       />
     </>
   );
