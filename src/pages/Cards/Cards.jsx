@@ -104,7 +104,10 @@ function Cards() {
       </Grid>
       {/* pending cards box */}
       {selectedKeyboxData && (
-        <PendingCardsBox keyboxRef={selectedKeyboxData.keyboxRef} />
+        <PendingCardsBox
+          keyboxRef={selectedKeyboxData.keyboxRef}
+          refreshCards={getKeyboxesData}
+        />
       )}
       {/* configured cards box */}
       {selectedKeyboxData && (

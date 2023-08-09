@@ -7,7 +7,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 
 import PendingCardChip from "./PendingCardChip";
 
-function PendingCardsBox(props) {
+function PendingCardsBox({ refreshCards, ...props }) {
   const [keyboxRef, setKeyboxRef] = useState();
   const [data, setData] = useState([]);
   const [isLoadingData, setLoadingData] = useState(false);
@@ -22,7 +22,7 @@ function PendingCardsBox(props) {
 
     const pendingCardsSnapshot = await getDocs(pendingCardsQuery);
 
-    const pendingCardsData = pendingCardsSnapshot.docs.map((doc) => doc.data());
+    const pendingCardsData = pendingCardsSnapshot.docs.map((doc) => doc);
 
     setData(pendingCardsData);
     setLoadingData(false);
@@ -71,7 +71,12 @@ function PendingCardsBox(props) {
           {data.length > 0 ? (
             <>
               {data.map((card, index) => (
-                <PendingCardChip key={index} label={card?.cardName} />
+                <PendingCardChip
+                  key={index}
+                  cardData={card}
+                  keyboxRef={keyboxRef}
+                  refreshCards={refreshCards}
+                />
               ))}
             </>
           ) : (
