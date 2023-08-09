@@ -43,11 +43,6 @@ function EditPendingCardDialog({
     resolver: yupResolver(editCardValidationSchema),
   });
 
-  const checkCSF = (event) => {
-    const a = event.target.value;
-    console.log(a.replaceAll(" ", "").split(","));
-  };
-
   const handleEditCard = async (data) => {
     setLoading(true);
 
@@ -75,8 +70,6 @@ function EditPendingCardDialog({
       group: selectedGroup,
     };
 
-    console.log(data.cardName, selectedGroup);
-
     updateDoc(doc(keyboxRef, "cards", cardData.id), editCardQuery)
       .catch((error) => {
         showError("Error while editing card, check console for more info");
@@ -93,10 +86,6 @@ function EditPendingCardDialog({
   useEffect(() => {
     setKeyboxRef(props.keyboxRef);
   }, [props.keyboxRef]);
-
-  useEffect(() => {
-    console.log(keyboxRef);
-  }, [keyboxRef]);
 
   return (
     <>
@@ -181,7 +170,6 @@ function EditPendingCardDialog({
                 variant="outlined"
                 sx={{ mt: 2 }}
                 fullWidth
-                onClick={(event) => checkCSF(event)}
               />
               <em>Comma seperated</em>
 
