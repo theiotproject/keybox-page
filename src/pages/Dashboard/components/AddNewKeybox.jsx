@@ -37,9 +37,9 @@ import { useAuthProvider } from "src/contexts/AuthContext";
 import { addNewKeyboxValidationSchema } from "src/util/validation/addNewKeyboxValidationSchema";
 
 function AddNewKeybox() {
+  const { currentUser } = useAuthProvider();
   const [open, setOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const { currentUser } = useAuthProvider();
 
   useEffect(() => {
     reset();

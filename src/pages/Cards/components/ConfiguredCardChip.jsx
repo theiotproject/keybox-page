@@ -87,7 +87,7 @@ function ConfiguredCardChip({
       />
       {isLoading ? (
         <Dialog open={isLoading}>
-          <DialogTitle>Edit device</DialogTitle>
+          <DialogTitle>Edit card</DialogTitle>
           <DialogContent sx={{ display: "grid", placeItems: "center" }}>
             <CircularProgress />
           </DialogContent>

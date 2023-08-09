@@ -1,10 +1,19 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 import { Add, ContentPaste, Edit } from "@mui/icons-material";
 import {
+  Box,
   Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
+  IconButton,
   Paper,
   Skeleton,
   Table,
@@ -13,13 +22,18 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
+import showWarning from "src/components/Toasts/ToastWarning";
 import CardChip from "src/pages/Keyboxes/components/CardChip";
 
 import { collection, getDocs } from "firebase/firestore";
+
+import AddNewKeySlotDialog from "./AddNewKeySlotDialog";
+import EditKeySlotDialog from "./EditKeySlotDialog";
 
 const CustomizedTableCell = styled(TableCell)`
   font-size: 1.3rem;
@@ -34,10 +48,23 @@ const CustomPaper = styled(Paper)`
 function KeySlotsTable(props) {
   const [keyboxRef, setKeyboxRef] = useState();
   const [data, setData] = useState([]);
-  const [isLoading, setLoading] = useState([]);
+  const [isLoadingData, setLoadingData] = useState(false);
+
+  const [addNewSlotDialogOpen, setAddNewSlotDialogOpen] = useState(false);
+
+  const [editSlotDialogOpen, setEditSlotDialogOpen] = useState(false);
+  const [editSlotId, setEditSlotId] = useState("");
+
+  const handleAddNewSlotDialogToggle = () => {
+    setAddNewSlotDialogOpen(!addNewSlotDialogOpen);
+  };
+
+  const handleEditSlotDialogToggle = () => {
+    setEditSlotDialogOpen(!editSlotDialogOpen);
+  };
 
   const getData = async () => {
-    setLoading(true);
+    setLoadingData(true);
     const slotsCollectionRef = collection(keyboxRef, "slots");
     const cardsCollectionRef = collection(keyboxRef, "cards");
     const slotsSnapshot = await getDocs(slotsCollectionRef);
@@ -65,11 +92,7 @@ function KeySlotsTable(props) {
     });
 
     setData(combinedDataFixed);
-    setLoading(false);
-  };
-
-  const addNewKeyboxSlot = async () => {
-    const slotsCollectionRef = collection(keyboxRef, "slots");
+    setLoadingData(false);
   };
 
   useEffect(() => {
@@ -104,7 +127,7 @@ function KeySlotsTable(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {isLoading && (
+            {isLoadingData && (
               <>
                 {[1, 2, 3].map((row, index) => (
                   <TableRow key={index}>
@@ -120,23 +143,27 @@ function KeySlotsTable(props) {
                       </div>
                     </CustomizedTableCell>
                     <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
-                      <ContentPaste sx={{ fontSize: "2rem" }} />
+                      <IconButton aria-label="show slot events">
+                        <ContentPaste sx={{ fontSize: "2rem" }} />
+                      </IconButton>
                     </CustomizedTableCell>
                     <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
-                      <Edit sx={{ fontSize: "2rem" }} />
+                      <IconButton aria-label="edit slot">
+                        <Edit sx={{ fontSize: "2rem" }} />
+                      </IconButton>
                     </CustomizedTableCell>
                   </TableRow>
                 ))}
               </>
             )}
-            {!isLoading && data.length == 0 && (
+            {!isLoadingData && data.length == 0 && (
               <TableRow>
                 <CustomizedTableCell sx={{ width: "8ch" }} colSpan={5}>
                   <Typography>Brak dodanych slotów</Typography>
                 </CustomizedTableCell>
               </TableRow>
             )}
-            {!isLoading &&
+            {!isLoadingData &&
               data.length > 0 &&
               data.map((row) => (
                 <TableRow key={row.slotId}>
@@ -161,16 +188,27 @@ function KeySlotsTable(props) {
                     </div>
                   </CustomizedTableCell>
                   <CustomizedTableCell align="center">
-                    <ContentPaste sx={{ fontSize: "2rem" }} />
+                    <IconButton aria-label="show slot events">
+                      <ContentPaste sx={{ fontSize: "2rem" }} />
+                    </IconButton>
                   </CustomizedTableCell>
                   <CustomizedTableCell align="center">
-                    <Edit sx={{ fontSize: "2rem" }} />
+                    <IconButton
+                      aria-label="edit slot"
+                      onClick={() => {
+                        setEditSlotId(row.slotId);
+                        handleEditSlotDialogToggle();
+                      }}
+                    >
+                      <Edit sx={{ fontSize: "2rem" }} />
+                    </IconButton>
                   </CustomizedTableCell>
                 </TableRow>
               ))}
           </TableBody>
         </Table>
       </TableContainer>
+      {/* Add new slot button */}
       <Grid
         sx={{
           display: "flex",
@@ -182,12 +220,26 @@ function KeySlotsTable(props) {
         <Button
           sx={{ fontSize: "1.5rem" }}
           variant="text"
-          onClick={() => addNewKeyboxSlot()}
+          onClick={() => handleAddNewSlotDialogToggle()}
         >
           <Add sx={{ fontSize: "2rem" }} />
           Dodaj nowy
         </Button>
       </Grid>
+      <AddNewKeySlotDialog
+        open={addNewSlotDialogOpen}
+        toggleDialog={handleAddNewSlotDialogToggle}
+        refreshKeyboxTable={getData}
+        keyboxRef={props.keyboxRef}
+      />
+      {/* Edit slot dialog */}
+      <EditKeySlotDialog
+        open={editSlotDialogOpen}
+        toggleDialog={handleEditSlotDialogToggle}
+        refreshKeyboxTable={getData}
+        keyboxRef={props.keyboxRef}
+        slotId={editSlotId}
+      />
     </>
   );
 }
