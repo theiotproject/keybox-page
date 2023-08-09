@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { Delete } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -10,6 +11,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
   TextField,
 } from "@mui/material";
 
@@ -20,6 +22,7 @@ import showWarning from "src/components/Toasts/ToastWarning";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   collection,
+  deleteDoc,
   doc,
   getDocs,
   query,
@@ -107,6 +110,22 @@ function EditKeyboxDialog({
       });
   };
 
+  const handleDeleteKeybox = async () => {
+    const keyboxRef = selectedKeyboxData.keyboxRef;
+
+    setLoading(true);
+    deleteDoc(keyboxRef)
+      .catch((error) => {
+        showError("Error while deleting keybox, check console for more info");
+        console.error(error);
+      })
+      .finally(() => {
+        refreshKeyboxesData();
+        toggleDialog();
+        setLoading(false);
+      });
+  };
+
   return (
     <>
       {isLoading ? (
@@ -142,6 +161,12 @@ function EditKeyboxDialog({
                 sx={{ mt: 2 }}
               />
               <DialogActions>
+                <IconButton
+                  aria-label="delete keybox"
+                  onClick={() => handleDeleteKeybox()}
+                >
+                  <Delete />
+                </IconButton>
                 <Button variant="outlined" onClick={toggleDialog}>
                   Cancel
                 </Button>
