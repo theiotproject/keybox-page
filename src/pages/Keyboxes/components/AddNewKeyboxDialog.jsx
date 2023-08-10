@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import AddBox from "@mui/icons-material/AddBox";
 import {
   Box,
   Button,
   CircularProgress,
-  IconButton,
-  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
 } from "@mui/material";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import TextField from "@mui/material/TextField";
 
-import ErrorMsg from "../../../components/ErrorMsg";
 import showError from "src/components/Toasts/ToastError";
 import showWarning from "src/components/Toasts/ToastWarning";
 
@@ -36,10 +29,11 @@ import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 import { addNewKeyboxValidationSchema } from "src/util/validation/addNewKeyboxValidationSchema";
 
-function AddNewKeybox() {
+function AddNewKeyboxDialog({ open, toggleDialog, refreshKeyboxesData }) {
   const { currentUser } = useAuthProvider();
-  const [open, setOpen] = useState(false);
+
   const [isLoading, setLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -48,10 +42,6 @@ function AddNewKeybox() {
   } = useForm({
     resolver: yupResolver(addNewKeyboxValidationSchema),
   });
-
-  const handleDialogToggle = () => {
-    setOpen(!open);
-  };
 
   const handleAddNewKeybox = async (data) => {
     setLoading(true);
@@ -89,50 +79,15 @@ function AddNewKeybox() {
         console.error(error);
       })
       .finally(() => {
+        refreshKeyboxesData();
+        reset();
         setLoading(false);
-        handleDialogToggle();
+        toggleDialog();
       });
   };
 
-  useEffect(() => {
-    reset();
-  }, [isLoading]);
-
   return (
     <>
-      <Card
-        sx={{
-          width: 275,
-          maxWidth: { sx: "100%", sm: 275 },
-          backgroundColor: "#E9E9EF",
-          height: "18rem",
-          border: "1px solid #B6B6BB",
-          m: 2,
-        }}
-      >
-        <CardContent>
-          <Typography variant="h1" sx={{ fontSize: 20 }}>
-            Add new keybox
-          </Typography>
-        </CardContent>
-        <CardActions>
-          <Box
-            sx={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              mt: 6,
-            }}
-          >
-            <IconButton onClick={handleDialogToggle}>
-              <AddBox sx={{ height: "40px", width: "40px" }} />
-            </IconButton>
-          </Box>
-        </CardActions>
-      </Card>
-      {/* dialog is also a form component */}
       {isLoading ? (
         <Dialog open={isLoading}>
           <DialogTitle>Add new keybox</DialogTitle>
@@ -141,7 +96,7 @@ function AddNewKeybox() {
           </DialogContent>
         </Dialog>
       ) : (
-        <Dialog open={open} onClose={handleDialogToggle}>
+        <Dialog open={open} onClose={toggleDialog}>
           <DialogTitle>Add new keybox</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -180,7 +135,7 @@ function AddNewKeybox() {
                 variant="standard"
               />
               <DialogActions>
-                <Button onClick={handleDialogToggle}>Cancel</Button>
+                <Button onClick={toggleDialog}>Cancel</Button>
                 <Button type="submit">Submit</Button>
               </DialogActions>
             </Box>
@@ -191,4 +146,4 @@ function AddNewKeybox() {
   );
 }
 
-export default AddNewKeybox;
+export default AddNewKeyboxDialog;

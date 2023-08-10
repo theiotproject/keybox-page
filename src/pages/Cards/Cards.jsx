@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { Refresh } from "@mui/icons-material";
 import {
-  Box,
-  Button,
   Grid,
   IconButton,
   MenuItem,
@@ -111,7 +109,10 @@ function Cards() {
       )}
       {/* configured cards box */}
       {selectedKeyboxData && (
-        <ConfiguredCardsBox keyboxRef={selectedKeyboxData.keyboxRef} />
+        <ConfiguredCardsBox
+          keyboxRef={selectedKeyboxData.keyboxRef}
+          refreshCards={getKeyboxesData}
+        />
       )}
     </>
   );

@@ -80,7 +80,7 @@ function PendingCardsBox({ refreshCards, ...props }) {
               ))}
             </>
           ) : (
-            <Typography>There are no pending cards</Typography>
+            <Typography>There are no pending cards for this keybox</Typography>
           )}
         </Stack>
       )}

@@ -1,27 +1,21 @@
 import React, { useEffect, useState } from "react";
 
-import { Add, AddCard, Close, CreditCard } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Chip,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-} from "@mui/material";
+import { CreditCard } from "@mui/icons-material";
+import { Chip } from "@mui/material";
+
+import showError from "src/components/Toasts/ToastError";
 
 import styled from "@emotion/styled";
+import {
+  arrayRemove,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 
 import EditPendingCardDialog from "./EditPendingCardDialog";
 
@@ -43,21 +37,46 @@ function PendingCardChip({ cardData, size = 1.6, refreshCards, ...props }) {
   const [open, setOpen] = useState(false);
   const [keyboxRef, setKeyboxRef] = useState();
 
-  const handleClick = () => {
-    console.info("You clicked the Chip.");
-  };
-
-  const handleClickCard = () => {
-    setOpen(true);
-    console.info("You clicked the Chip.");
-  };
-
   const handleDialogToggle = () => {
     setOpen(!open);
   };
 
-  const handleDelete = () => {
-    console.info("You clicked the delete icon.");
+  const handleDeleteCard = async (cardId) => {
+    const slotsColletionRef = collection(keyboxRef, "slots");
+    const cardApperedInSlotQuery = query(
+      slotsColletionRef,
+      where("authorizedCards", "array-contains", Number(cardData.id))
+    );
+
+    const cardApperedInSlotSnapshot = await getDocs(cardApperedInSlotQuery);
+
+    const slotIdArray = cardApperedInSlotSnapshot.docs.map((slot) => slot.id);
+
+    const editSlotData = {
+      authorizedCards: arrayRemove(Number(cardId)),
+    };
+
+    if (slotIdArray.length > 0) {
+      slotIdArray.forEach((slotId) => {
+        updateDoc(doc(keyboxRef, "slots", slotId), editSlotData).catch(
+          (error) => {
+            showError(
+              "Error while updating slots authorized Cards, check console for more info"
+            );
+            console.error(error);
+          }
+        );
+      });
+    }
+
+    deleteDoc(doc(keyboxRef, "cards", cardId))
+      .catch((error) => {
+        showError("Error while deleting card, check console for more info");
+        console.error(error);
+      })
+      .finally(() => {
+        refreshCards();
+      });
   };
 
   useEffect(() => {
@@ -74,8 +93,8 @@ function PendingCardChip({ cardData, size = 1.6, refreshCards, ...props }) {
         }}
         label={cardData.data().cardName}
         variant="outlined"
-        onClick={handleClickCard}
-        onDelete={handleDelete}
+        onClick={handleDialogToggle}
+        onDelete={() => handleDeleteCard(cardData.id)}
         icon={<CreditCard />}
       />
       <EditPendingCardDialog

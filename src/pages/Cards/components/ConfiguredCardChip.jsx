@@ -1,41 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Close, CreditCard, Edit } from "@mui/icons-material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  Box,
-  Button,
-  Checkbox,
-  Chip,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { CreditCard } from "@mui/icons-material";
+import { Chip } from "@mui/material";
+
+import showError from "src/components/Toasts/ToastError";
 
 import styled from "@emotion/styled";
+import {
+  arrayRemove,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 
-import CustomFormSelect from "./CustomFormSelect";
+import EditConfiguredCardDialog from "./EditConfiguredCardDialog";
 
-function ConfiguredCardChip({
-  cardName,
-  cardId,
-  cardGroup,
-  docCardRef,
-  size = 1.6,
-}) {
+function ConfiguredCardChip({ size = 1.6, cardData, refreshCards, ...props }) {
+  // StyledChip uses component props so it must be here
   const StyledChip = styled(Chip)(() => ({
     "& .MuiChip-label": {
       fontSize: `${size * 0.8125}rem`,
@@ -50,26 +35,54 @@ function ConfiguredCardChip({
     },
   }));
 
+  const [keyboxRef, setKeyboxRef] = useState();
   const [open, setOpen] = useState(false);
-  const [isCardEditMode, setEditCardMode] = useState(false);
-  const [isLoading, setLoading] = useState(false);
 
-  const handleClickCard = () => {
-    setOpen(true);
-    console.info("You clicked the Chip.");
+  const handleDialogToggle = () => {
+    setOpen(!open);
   };
 
-  const handleDialogClose = () => {
-    setOpen(false);
+  const handleDeleteCard = async (cardId) => {
+    const slotsColletionRef = collection(keyboxRef, "slots");
+    const cardApperedInSlotQuery = query(
+      slotsColletionRef,
+      where("authorizedCards", "array-contains", Number(cardData.id))
+    );
+
+    const cardApperedInSlotSnapshot = await getDocs(cardApperedInSlotQuery);
+
+    const slotIdArray = cardApperedInSlotSnapshot.docs.map((slot) => slot.id);
+
+    const editSlotData = {
+      authorizedCards: arrayRemove(Number(cardId)),
+    };
+
+    if (slotIdArray.length > 0) {
+      slotIdArray.forEach((slotId) => {
+        updateDoc(doc(keyboxRef, "slots", slotId), editSlotData).catch(
+          (error) => {
+            showError(
+              "Error while updating slots authorized Cards, check console for more info"
+            );
+            console.error(error);
+          }
+        );
+      });
+    }
+
+    deleteDoc(doc(keyboxRef, "cards", cardId))
+      .catch((error) => {
+        showError("Error while deleting card, check console for more info");
+        console.error(error);
+      })
+      .finally(() => {
+        refreshCards();
+      });
   };
 
-  const toggleCardEditMode = () => {
-    setEditCardMode(!isCardEditMode);
-  };
-
-  const handleDeleteCard = () => {
-    console.info("You clicked the delete icon.");
-  };
+  useEffect(() => {
+    setKeyboxRef(props.keyboxRef);
+  }, [props.keyboxRef]);
 
   return (
     <>
@@ -79,178 +92,19 @@ function ConfiguredCardChip({
           display: "flex",
           justifyContent: "space-between",
         }}
-        label={cardName}
+        label={cardData.data().cardName}
         variant="outlined"
-        onClick={handleClickCard}
-        onDelete={handleDeleteCard}
+        onClick={handleDialogToggle}
+        onDelete={() => handleDeleteCard(cardData.id)}
         icon={<CreditCard />}
       />
-      {isLoading ? (
-        <Dialog open={isLoading}>
-          <DialogTitle>Edit card</DialogTitle>
-          <DialogContent sx={{ display: "grid", placeItems: "center" }}>
-            <CircularProgress />
-          </DialogContent>
-        </Dialog>
-      ) : (
-        <Dialog open={open} onClose={handleDialogClose}>
-          <DialogTitle
-            sx={{
-              fontSize: "2rem",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            Card Profile
-            <CreditCard sx={{ fontSize: "3em" }} />
-          </DialogTitle>
-          <DialogContent
-            sx={{
-              marginX: { xs: "unset", sm: "4em" },
-            }}
-          >
-            <Box
-              component="form"
-              noValidate
-              sx={{
-                display: "grid",
-                placeItems: "center",
-              }}
-              //   onSubmit={handleSubmit(handleEditDevice)}
-            >
-              <TextField
-                autoFocus
-                margin="dense"
-                id="cardId"
-                name="cardId"
-                label="Card Id"
-                defaultValue=""
-                // {...register("cardId")}
-                // error=""
-                helperText=""
-                fullWidth
-                variant="outlined"
-                sx={{ mt: 2, width: "100%" }}
-                disabled={!isCardEditMode}
-              />
-              <TextField
-                autoFocus
-                margin="dense"
-                id="cardName"
-                name="cardName"
-                label="Card Name"
-                defaultValue=""
-                // {...register("cardName")}
-                // error=""
-                helperText=""
-                fullWidth
-                variant="outlined"
-                sx={{ mt: 2, width: "100%" }}
-                disabled={!isCardEditMode}
-              />
-              <CustomFormSelect disabled={!isCardEditMode} />
-
-              {/* Add to slots table */}
-
-              <TableContainer
-                component={Paper}
-                variant="outlined"
-                sx={{ marginY: 3 }}
-              >
-                <Table aria-label="key slot table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="center">ID</TableCell>
-                      <TableCell>Name</TableCell>
-                      <TableCell align="center">Authorize?</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {!isLoading &&
-                      [1, 2, 3].map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell align="center">ID</TableCell>
-                          <TableCell sx={{ minWidth: "32ch" }}>Slot</TableCell>
-                          <TableCell align="center">
-                            <Checkbox
-                              size="medium"
-                              disabled={!isCardEditMode}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-
-              <DialogActions
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                  columnGap: ".5em",
-                }}
-                disableSpacing
-              >
-                <Button
-                  aria-label="delete"
-                  startIcon={<DeleteIcon />}
-                  color="error"
-                  variant="contained"
-                  sx={{ width: "100%", marginY: "2em" }}
-                >
-                  Delete Card
-                </Button>
-                {!isCardEditMode ? (
-                  <Button
-                    variant="contained"
-                    sx={{ width: "100%", marginY: "2em" }}
-                    startIcon={<Edit />}
-                    onClick={() => toggleCardEditMode()}
-                  >
-                    Edit Card
-                  </Button>
-                ) : (
-                  <Button
-                    variant="contained"
-                    sx={{ width: "100%", marginY: "2em" }}
-                    startIcon={<Close />}
-                    onClick={() => toggleCardEditMode()}
-                    color="error"
-                  >
-                    Stop Edit
-                  </Button>
-                )}
-
-                {isCardEditMode ? (
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    sx={{
-                      gridColumn: { sm: "1/-1" },
-                      width: "100%",
-                    }}
-                  >
-                    Submit & Close
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outlined"
-                    onClick={handleDialogClose}
-                    sx={{
-                      gridColumn: { sm: "1/-1" },
-                      width: "100%",
-                    }}
-                  >
-                    Close
-                  </Button>
-                )}
-              </DialogActions>
-            </Box>
-          </DialogContent>
-        </Dialog>
-      )}
+      <EditConfiguredCardDialog
+        open={open}
+        toggleDialog={handleDialogToggle}
+        cardData={cardData}
+        keyboxRef={keyboxRef}
+        refreshCards={refreshCards}
+      />
     </>
   );
 }

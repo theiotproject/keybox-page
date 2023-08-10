@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Refresh } from "@mui/icons-material";
+import { Add, Delete, Refresh } from "@mui/icons-material";
 import {
   Button,
   Grid,
@@ -11,10 +11,19 @@ import {
   Typography,
 } from "@mui/material";
 
+import AddNewKeyboxDialog from "./components/AddNewKeyboxDialog";
 import EditKeyboxDialog from "./components/EditKeyboxDialog";
+import showError from "src/components/Toasts/ToastError";
 import KeySlotsTable from "src/pages/Keyboxes/components/KeySlotsTable";
 
-import { collection, doc, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
@@ -26,8 +35,14 @@ function Keyboxes() {
 
   const [editKeyboxDialogOpen, setEditKeyboxDialogOpen] = useState(false);
 
+  const [newKeyboxDialogOpen, setNewKeyboxDialogOpen] = useState(false);
+
   const toggleEditKeyboxDialog = () => {
     setEditKeyboxDialogOpen(!editKeyboxDialogOpen);
+  };
+
+  const toggleAddNewKeyboxDialog = () => {
+    setNewKeyboxDialogOpen(!newKeyboxDialogOpen);
   };
 
   const getKeyboxesData = async () => {
@@ -67,6 +82,19 @@ function Keyboxes() {
     getKeyboxesData();
   };
 
+  const deleteSelectedKeybox = async (keyboxRef) => {
+    deleteDoc(keyboxRef)
+      .catch((error) => {
+        showError(
+          "Erorr while deleting selected keybox, check console for more info"
+        );
+        console.error(error);
+      })
+      .finally(() => {
+        getKeyboxesData();
+      });
+  };
+
   useEffect(() => {
     getKeyboxesData();
   }, []);
@@ -84,6 +112,18 @@ function Keyboxes() {
       </Typography>
 
       <Grid container direction="row" my={4} gap={2}>
+        <IconButton
+          aria-label="add new keybox"
+          onClick={() => toggleAddNewKeyboxDialog()}
+        >
+          <Add />
+        </IconButton>
+        <IconButton
+          aria-label="delete selected keybox"
+          onClick={() => deleteSelectedKeybox(selectedKeyboxData.keyboxRef)}
+        >
+          <Delete />
+        </IconButton>
         {selectedKeyboxData ? (
           <Select
             labelId="selectKeyboxLabel"
@@ -126,10 +166,16 @@ function Keyboxes() {
         <KeySlotsTable keyboxRef={selectedKeyboxData.keyboxRef} />
       )}
 
+      <AddNewKeyboxDialog
+        open={newKeyboxDialogOpen}
+        toggleDialog={toggleAddNewKeyboxDialog}
+        refreshKeyboxesData={getKeyboxData}
+      />
+
       <EditKeyboxDialog
         open={editKeyboxDialogOpen}
         toggleDialog={toggleEditKeyboxDialog}
-        refreshKeyboxesData={getKeyboxesData}
+        refreshKeyboxesData={getKeyboxData}
         selectedKeyboxData={selectedKeyboxData}
       />
     </>

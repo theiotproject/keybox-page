@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Add, AddCard, Close } from "@mui/icons-material";
+import {
+  Close,
+  CreditCard,
+  Delete as DeleteIcon,
+  Edit,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -31,17 +36,20 @@ import { editCardValidationSchema } from "src/util/validation/editCardValidation
 
 import CustomFormSelect from "./CustomFormSelect";
 
-function EditPendingCardDialog({
+function EditConfiguredCardDialog({
   open,
   toggleDialog,
   cardData,
   refreshCards,
   ...props
 }) {
-  const [isLoading, setLoading] = useState();
   const [keyboxRef, setKeyboxRef] = useState();
 
+  const [isLoading, setLoading] = useState(false);
+  const [isCardEditMode, setCardEditMode] = useState(false);
+
   const [selectedGroup, setSelectedGroup] = useState("");
+  const [authorizedSlots, setAuthorizedSlots] = useState();
 
   const {
     register,
@@ -51,6 +59,11 @@ function EditPendingCardDialog({
   } = useForm({
     resolver: yupResolver(editCardValidationSchema),
   });
+
+  const toggleCardEditMode = () => {
+    setCardEditMode(!isCardEditMode);
+    reset();
+  };
 
   const handleEditCard = async (data) => {
     setLoading(true);
@@ -104,12 +117,13 @@ function EditPendingCardDialog({
     const cardApperedInSlotSnapshot = await getDocs(cardApperedInSlotQuery);
 
     const slotIdArray = cardApperedInSlotSnapshot.docs.map((slot) => slot.id);
+    console.log(slotIdArray);
 
     const editSlotData = {
       authorizedCards: arrayRemove(Number(cardId)),
     };
 
-    if (slotIdArray.length > 0) {
+    if (slotIdArray.length) {
       slotIdArray.forEach((slotId) => {
         console.log(slotId);
         updateDoc(doc(keyboxRef, "slots", slotId), editSlotData).catch(
@@ -129,9 +143,9 @@ function EditPendingCardDialog({
         console.error(error);
       })
       .finally(() => {
+        reset();
         refreshCards();
         setLoading(false);
-        reset();
         toggleDialog();
       });
   };
@@ -144,7 +158,7 @@ function EditPendingCardDialog({
     <>
       {isLoading ? (
         <Dialog open={isLoading}>
-          <DialogTitle>Edit pending card</DialogTitle>
+          <DialogTitle>Edit configured card</DialogTitle>
           <DialogContent sx={{ display: "grid", placeItems: "center" }}>
             <CircularProgress />
           </DialogContent>
@@ -160,8 +174,8 @@ function EditPendingCardDialog({
               alignItems: "center",
             }}
           >
-            Configure Pending Card
-            <AddCard sx={{ fontSize: "3em" }} />
+            Card Profile
+            <CreditCard sx={{ fontSize: "3em" }} />
           </DialogTitle>
           <DialogContent
             sx={{
@@ -190,7 +204,7 @@ function EditPendingCardDialog({
                 fullWidth
                 variant="outlined"
                 sx={{ mt: 2, width: "100%" }}
-                // disabled CHECK THIS
+                disabled={!isCardEditMode}
               />
               <TextField
                 autoFocus
@@ -205,9 +219,10 @@ function EditPendingCardDialog({
                 fullWidth
                 variant="outlined"
                 sx={{ mt: 2, width: "100%" }}
+                disabled={!isCardEditMode}
               />
-
               <CustomFormSelect
+                disabled={!isCardEditMode}
                 selectedValue={cardData.data().group}
                 setSelectedGroup={setSelectedGroup}
                 selectedGroup={selectedGroup}
@@ -218,11 +233,13 @@ function EditPendingCardDialog({
                 name="authorizedSlots"
                 label="Authorized Slots"
                 {...register("authorizedSlots")}
+                value={authorizedSlots && authorizedSlots}
                 error={!!errors.authorizedSlots}
                 helperText={errors.authorizedSlots?.message}
                 variant="outlined"
                 sx={{ mt: 2 }}
                 fullWidth
+                disabled={!isCardEditMode}
               />
               <em>Comma seperated</em>
 
@@ -236,33 +253,58 @@ function EditPendingCardDialog({
               >
                 <Button
                   aria-label="delete"
-                  startIcon={<Close />}
+                  startIcon={<DeleteIcon />}
                   color="error"
                   variant="contained"
                   sx={{ width: "100%", marginY: "2em" }}
                   onClick={() => handleDeleteCard(cardData.id)}
                 >
-                  Dismiss Card
+                  Delete Card
                 </Button>
-                <Button
-                  variant="contained"
-                  sx={{ width: "100%", marginY: "2em" }}
-                  startIcon={<Add />}
-                  type="submit"
-                >
-                  Add Card
-                </Button>
+                {!isCardEditMode ? (
+                  <Button
+                    variant="contained"
+                    sx={{ width: "100%", marginY: "2em" }}
+                    startIcon={<Edit />}
+                    onClick={() => toggleCardEditMode()}
+                  >
+                    Edit Card
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    sx={{ width: "100%", marginY: "2em" }}
+                    startIcon={<Close />}
+                    onClick={() => toggleCardEditMode()}
+                    color="error"
+                  >
+                    Stop Edit
+                  </Button>
+                )}
 
-                <Button
-                  variant="outlined"
-                  onClick={toggleDialog}
-                  sx={{
-                    gridColumn: { sm: "1/-1" },
-                    width: "100%",
-                  }}
-                >
-                  Close
-                </Button>
+                {isCardEditMode ? (
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    sx={{
+                      gridColumn: { sm: "1/-1" },
+                      width: "100%",
+                    }}
+                  >
+                    Submit & Close
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    onClick={toggleDialog}
+                    sx={{
+                      gridColumn: { sm: "1/-1" },
+                      width: "100%",
+                    }}
+                  >
+                    Close
+                  </Button>
+                )}
               </DialogActions>
             </Box>
           </DialogContent>
@@ -272,4 +314,4 @@ function EditPendingCardDialog({
   );
 }
 
-export default EditPendingCardDialog;
+export default EditConfiguredCardDialog;

@@ -9,7 +9,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import ConfiguredCardChip from "./ConfiguredCardChip";
 import CustomSmallSelect from "./CustomSmallSelect";
 
-function ConfiguredCardsBox(props) {
+function ConfiguredCardsBox({ refreshCards, cardData, ...props }) {
   const [keyboxRef, setKeyboxRef] = useState();
   const [data, setData] = useState([]);
   const [isLoadingData, setLoadingData] = useState(false);
@@ -24,9 +24,7 @@ function ConfiguredCardsBox(props) {
 
     const configuredCardsSnapshot = await getDocs(configuredCardsQuery);
 
-    const configuredCardsData = configuredCardsSnapshot.docs.map((doc) =>
-      doc.data()
-    );
+    const configuredCardsData = configuredCardsSnapshot.docs.map((doc) => doc);
 
     setData(configuredCardsData);
     setLoadingData(false);
@@ -89,11 +87,18 @@ function ConfiguredCardsBox(props) {
           {data.length > 0 ? (
             <>
               {data.map((card, index) => (
-                <ConfiguredCardChip key={index} cardName={card?.cardName} />
+                <ConfiguredCardChip
+                  key={index}
+                  cardData={card}
+                  keyboxRef={keyboxRef}
+                  refreshCards={refreshCards}
+                />
               ))}
             </>
           ) : (
-            <Typography>There are no configured cards</Typography>
+            <Typography>
+              There are no configured cards for this keybox
+            </Typography>
           )}
         </Stack>
       )}
