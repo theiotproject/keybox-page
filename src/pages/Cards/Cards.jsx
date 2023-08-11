@@ -91,7 +91,17 @@ function Cards() {
             ))}
           </Select>
         ) : (
-          <Skeleton animation="wave" width={"6ch"} />
+          <Select
+            labelId="selectKeyboxLabel"
+            id="selectKeybox"
+            value=""
+            displayEmpty
+            label="Select your keybox"
+          >
+            <MenuItem value="">
+              <em>No keybox found</em>
+            </MenuItem>
+          </Select>
         )}
         <IconButton
           aria-label="refresh keyboxes"

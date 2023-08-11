@@ -65,6 +65,20 @@ function EditConfiguredCardDialog({
     reset();
   };
 
+  const getAuthorizedSlots = async (cardId) => {
+    const slotsColletionRef = collection(keyboxRef, "slots");
+    const cardApperedInSlotQuery = query(
+      slotsColletionRef,
+      where("authorizedCards", "array-contains", Number(cardId))
+    );
+
+    const cardApperedInSlotSnapshot = await getDocs(cardApperedInSlotQuery);
+
+    const slotIdArray = cardApperedInSlotSnapshot.docs.map((slot) => slot.id);
+
+    if (slotIdArray.length > 0) setAuthorizedSlots(slotIdArray.join(", "));
+  };
+
   const handleEditCard = async (data) => {
     setLoading(true);
 
@@ -117,7 +131,6 @@ function EditConfiguredCardDialog({
     const cardApperedInSlotSnapshot = await getDocs(cardApperedInSlotQuery);
 
     const slotIdArray = cardApperedInSlotSnapshot.docs.map((slot) => slot.id);
-    console.log(slotIdArray);
 
     const editSlotData = {
       authorizedCards: arrayRemove(Number(cardId)),
@@ -149,6 +162,12 @@ function EditConfiguredCardDialog({
         toggleDialog();
       });
   };
+
+  useEffect(() => {
+    if (keyboxRef) {
+      getAuthorizedSlots(cardData.id);
+    }
+  }, []);
 
   useEffect(() => {
     setKeyboxRef(props.keyboxRef);

@@ -100,7 +100,7 @@ function Keyboxes() {
   }, []);
 
   useEffect(() => {
-    if (keyboxesData) {
+    if (keyboxesData && keyboxesData.length > 0) {
       getKeyboxData(keyboxesData[0].data().keyboxName);
     }
   }, [keyboxesData]);
@@ -121,10 +121,11 @@ function Keyboxes() {
         <IconButton
           aria-label="delete selected keybox"
           onClick={() => deleteSelectedKeybox(selectedKeyboxData.keyboxRef)}
+          disabled={keyboxesData && !keyboxesData.length > 0}
         >
           <Delete />
         </IconButton>
-        {selectedKeyboxData ? (
+        {keyboxesData && keyboxesData.length > 0 && selectedKeyboxData ? (
           <Select
             labelId="selectKeyboxLabel"
             id="selectKeybox"
@@ -139,7 +140,17 @@ function Keyboxes() {
             ))}
           </Select>
         ) : (
-          <Skeleton animation="wave" width={"6ch"} />
+          <Select
+            labelId="selectKeyboxLabel"
+            id="selectKeybox"
+            value=""
+            displayEmpty
+            label="Select your keybox"
+          >
+            <MenuItem value="">
+              <em>No keybox found</em>
+            </MenuItem>
+          </Select>
         )}
         <Button variant="outlined" onClick={toggleEditKeyboxDialog}>
           Edit Keybox
@@ -162,20 +173,20 @@ function Keyboxes() {
       >
         KeySlots:
       </Typography>
-      {selectedKeyboxData && (
+      {keyboxesData && keyboxesData.length > 0 && selectedKeyboxData && (
         <KeySlotsTable keyboxRef={selectedKeyboxData.keyboxRef} />
       )}
 
       <AddNewKeyboxDialog
         open={newKeyboxDialogOpen}
         toggleDialog={toggleAddNewKeyboxDialog}
-        refreshKeyboxesData={getKeyboxData}
+        refreshKeyboxesData={getKeyboxesData}
       />
 
       <EditKeyboxDialog
         open={editKeyboxDialogOpen}
         toggleDialog={toggleEditKeyboxDialog}
-        refreshKeyboxesData={getKeyboxData}
+        refreshKeyboxesData={getKeyboxesData}
         selectedKeyboxData={selectedKeyboxData}
       />
     </>

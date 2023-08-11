@@ -190,7 +190,7 @@ function EditPendingCardDialog({
                 fullWidth
                 variant="outlined"
                 sx={{ mt: 2, width: "100%" }}
-                // disabled CHECK THIS
+                disabled
               />
               <TextField
                 autoFocus

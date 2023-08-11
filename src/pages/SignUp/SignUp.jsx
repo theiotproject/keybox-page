@@ -54,7 +54,6 @@ export default function SignUp() {
     await setDoc(doc(db, "users", user.uid), {
       // user inital data
       groups: [],
-      test: false,
     }).catch((error) => {
       showError(
         "Error while handling users database structure, check console for more info"
