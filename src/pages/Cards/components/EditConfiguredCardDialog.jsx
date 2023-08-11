@@ -82,13 +82,45 @@ function EditConfiguredCardDialog({
   const handleEditCard = async (data) => {
     setLoading(true);
 
+    // user input
     const authorizedSlotsToArray = data.authorizedSlots
       .replaceAll(" ", "")
       .split(",");
 
+    // firesotre slots data
+    const slotsCollectionRef = collection(keyboxRef, "slots");
+    const slotsCollectionQuery = query(
+      slotsCollectionRef,
+      where("authorizedCards", "array-contains", Number(data.cardId))
+    );
+
+    const slotsSnapshot = await getDocs(slotsCollectionQuery);
+    // console.log(slotsSnapshot);
+    const availableSlots = slotsSnapshot.docs.map((slot) => slot.id);
+
+    const slotsAccessToDelete = availableSlots.filter(
+      (availableSlot) => !authorizedSlotsToArray.includes(availableSlot)
+    );
+
+    // Adding slot access
     authorizedSlotsToArray.forEach((slotId) => {
       const editSlotData = {
         authorizedCards: arrayUnion(Number(cardData.id)),
+      };
+      updateDoc(doc(keyboxRef, "slots", slotId), editSlotData).catch(
+        (error) => {
+          showError(
+            "Error while editing authorized slots, check console for more info"
+          );
+          console.error(error);
+        }
+      );
+    });
+
+    // Deleting slot access
+    slotsAccessToDelete.forEach((slotId) => {
+      const editSlotData = {
+        authorizedCards: arrayRemove(Number(cardData.id)),
       };
       updateDoc(doc(keyboxRef, "slots", slotId), editSlotData).catch(
         (error) => {
@@ -164,14 +196,14 @@ function EditConfiguredCardDialog({
   };
 
   useEffect(() => {
+    setKeyboxRef(props.keyboxRef);
+  }, [props.keyboxRef]);
+
+  useEffect(() => {
     if (keyboxRef) {
       getAuthorizedSlots(cardData.id);
     }
-  }, []);
-
-  useEffect(() => {
-    setKeyboxRef(props.keyboxRef);
-  }, [props.keyboxRef]);
+  }, [cardData, keyboxRef]);
 
   return (
     <>
@@ -252,7 +284,8 @@ function EditConfiguredCardDialog({
                 name="authorizedSlots"
                 label="Authorized Slots"
                 {...register("authorizedSlots")}
-                value={authorizedSlots && authorizedSlots}
+                value={authorizedSlots || ""}
+                onChange={(e) => setAuthorizedSlots(e.target.value)}
                 error={!!errors.authorizedSlots}
                 helperText={errors.authorizedSlots?.message}
                 variant="outlined"
@@ -315,7 +348,10 @@ function EditConfiguredCardDialog({
                 ) : (
                   <Button
                     variant="outlined"
-                    onClick={toggleDialog}
+                    onClick={() => {
+                      toggleDialog();
+                      getAuthorizedSlots(cardData.id);
+                    }}
                     sx={{
                       gridColumn: { sm: "1/-1" },
                       width: "100%",
