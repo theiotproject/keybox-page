@@ -65,7 +65,7 @@ function Cards() {
   }, []);
 
   useEffect(() => {
-    if (keyboxesData) {
+    if (keyboxesData && keyboxesData.length > 0) {
       getKeyboxData(keyboxesData[0].data().keyboxName);
     }
   }, [keyboxesData]);
