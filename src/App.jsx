@@ -31,6 +31,7 @@ import Profile from "src/pages/profile/Profile";
 import theme from "src/theme";
 
 import Dashboard2 from "./pages/Dashboard/Dashboard2";
+import Events from "./pages/Events/Events";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -87,7 +88,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
               <Route
                 path="profile"
                 element={
@@ -140,6 +140,17 @@ function App() {
                     isEmailVerified={currentUser?.emailVerified}
                   >
                     <Cards />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="events"
+                element={
+                  <ProtectedRoute
+                    isSignedIn={currentUser}
+                    isEmailVerified={currentUser?.emailVerified}
+                  >
+                    <Events />
                   </ProtectedRoute>
                 }
               />
