@@ -20,6 +20,7 @@
     "@hookform/resolvers": "^3.1.1",
     "@mui/icons-material": "^5.13.7",
     "@mui/material": "^5.13.7",
+    "dayjs": "^1.11.9",
     "dotenv-cli": "^7.2.1",
     "firebase": "^10.0.0",
     "localforage": "^1.10.0",
