@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Add, ContentPaste, Edit } from "@mui/icons-material";
 import {
@@ -45,6 +46,7 @@ const CustomPaper = styled(Paper)`
 `;
 
 function KeySlotsTable(props) {
+  const navigate = useNavigate();
   const [keyboxRef, setKeyboxRef] = useState();
   const [data, setData] = useState([]);
   const [isLoadingData, setLoadingData] = useState(false);
@@ -143,7 +145,7 @@ function KeySlotsTable(props) {
                       </div>
                     </CustomizedTableCell>
                     <CustomizedTableCell align="center" sx={{ width: "8ch" }}>
-                      <IconButton aria-label="show slot events">
+                      <IconButton aria-label="show events">
                         <ContentPaste sx={{ fontSize: "2rem" }} />
                       </IconButton>
                     </CustomizedTableCell>
@@ -188,7 +190,10 @@ function KeySlotsTable(props) {
                     </div>
                   </CustomizedTableCell>
                   <CustomizedTableCell align="center">
-                    <IconButton aria-label="show slot events">
+                    <IconButton
+                      aria-label="show slot events"
+                      onClick={() => navigate("/events")}
+                    >
                       <ContentPaste sx={{ fontSize: "2rem" }} />
                     </IconButton>
                   </CustomizedTableCell>

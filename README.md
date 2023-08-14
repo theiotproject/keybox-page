@@ -27,4 +27,4 @@
 - react-hook-form
 - yup schema resolver for validation
 - react-tostify
-- mock-socket (for testing websockets)
+- dayjs for date formatting
