@@ -84,17 +84,17 @@ export default function SignIn() {
     signInWithEmailAndPassword(data.get("email"), data.get("password"));
   };
 
-  if (loading || loadingGoogle) {
+  if (loading) {
     return <LoadingScreen />;
   }
 
-  if (error || errorGoogle) {
+  if (error) {
     return (
       <ErrorMsg errorMessage="Wystąpił nieznany błąd z bazą danych, sprawdź konsolę po więcej informacji" />
     );
   }
 
-  if (currentUser || user || userGoogle) {
+  if (currentUser || user) {
     navigate("/dashboard");
   }
 

@@ -3,7 +3,14 @@ import { useState } from "react";
 
 import { Box, Skeleton, Stack, Typography } from "@mui/material";
 
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 
 import PendingCardChip from "./PendingCardChip";
 
@@ -11,6 +18,58 @@ function PendingCardsBox({ refreshCards, ...props }) {
   const [keyboxRef, setKeyboxRef] = useState();
   const [data, setData] = useState([]);
   const [isLoadingData, setLoadingData] = useState(false);
+
+  const fetchPendingCards = async (keyboxId) => {
+    const myHeaders = new Headers();
+    myHeaders.append("X-API-Key", import.meta.env.VITE_GOLIOTH_API_KEY);
+
+    const myInit = {
+      method: "GET",
+      headers: myHeaders,
+    };
+
+    // checks only for events from last minute
+    const response = await fetch(
+      `https://api.golioth.io/v1/projects/keybox/devices/${keyboxId}/stream?interval=1h&encodedQuery=%7B%22fields%22%3A%20%5B%7B%22path%22%3A%20%22time%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%20%22deviceId%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%22newCard%22%2C%22type%22%3A%20%22%22%7D%5D%7D`,
+      myInit
+    )
+      .catch((error) => {
+        showError(
+          `Error while sending query to Golioth, check console for more info`
+        );
+        console.error(error);
+        return;
+      })
+      .then((response) => {
+        return response.json();
+      });
+
+    return response;
+  };
+
+  const checkForPendingCards = async () => {
+    const keyboxDoc = await getDoc(keyboxRef);
+
+    const { list } = await fetchPendingCards(keyboxDoc.data().keyboxId);
+
+    if (list.length > 0) {
+      const addNewCard = async (cardId) => {
+        const cardsCollectionRef = collection(keyboxRef, "cards");
+
+        const newCardData = {
+          cardName: `newCard: ${cardId}`,
+          cardId: cardId,
+          isPending: true,
+        };
+
+        await addDoc(cardsCollectionRef, newCardData);
+      };
+
+      list.forEach((card) => {
+        // addNewCard(card.newCard);
+      });
+    }
+  };
 
   const getData = async () => {
     setLoadingData(true);
@@ -34,6 +93,7 @@ function PendingCardsBox({ refreshCards, ...props }) {
 
   useEffect(() => {
     if (keyboxRef) {
+      checkForPendingCards(keyboxRef);
       getData();
     }
   }, [keyboxRef]);

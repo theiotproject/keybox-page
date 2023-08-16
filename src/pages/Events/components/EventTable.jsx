@@ -70,7 +70,6 @@ function EventTable({ keyboxData }) {
         return response.json();
       })
       .then((data) => {
-        showSuccess(data);
         setEventsData(data);
       })
       .finally(() => {
