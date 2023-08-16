@@ -2,6 +2,7 @@ import {
   useSignInWithEmailAndPassword,
   useSignInWithGoogle,
 } from "react-firebase-hooks/auth";
+import { useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
@@ -25,14 +26,28 @@ import LeftSide from "src/components/LeftSide";
 import LeftSideMobile from "src/components/LeftSideMobile";
 import LoadingScreen from "src/components/LoadingScreen";
 
-import { GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  GoogleAuthProvider,
+  getAdditionalUserInfo,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
+import { signInValidationSchema } from "src/util/validation/signInValidationSchema";
 
 export default function SignIn() {
   const navigate = useNavigate();
 
   const { currentUser } = useAuthProvider();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(signInValidationSchema),
+  });
 
   const setUserDocumentInFirestore = async (user) => {
     // create user document in users collection
@@ -77,11 +92,8 @@ export default function SignIn() {
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
 
-  const handleSignInOnSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
-    signInWithEmailAndPassword(data.get("email"), data.get("password"));
+  const signInOnSubmit = async (data) => {
+    signInWithEmailAndPassword(data.email, data.password);
   };
 
   if (loading) {
@@ -113,7 +125,7 @@ export default function SignIn() {
         <Box
           component="form"
           noValidate
-          onSubmit={handleSignInOnSubmit}
+          onSubmit={handleSubmit(signInOnSubmit)}
           sx={{
             px: { xs: 3, md: 10 },
             width: { xs: 1, md: 1 / 2 },
@@ -139,6 +151,9 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              {...register("email")}
+              error={!!errors.email}
+              helperText={errors.email?.message}
             />
             <TextField
               margin="dense"
@@ -149,6 +164,9 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              {...register("password")}
+              error={!!errors.password}
+              helperText={errors.password?.message}
             />
             <Grid container>
               <FormControlLabel
