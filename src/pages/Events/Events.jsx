@@ -102,7 +102,7 @@ function Events() {
           <Refresh />
         </IconButton>
       </Grid>
-      <EventTable />
+      <EventTable keyboxData={selectedKeyboxData} />
     </>
   );
 }
