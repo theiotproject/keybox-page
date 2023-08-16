@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import {
   Button,
+  Grid,
+  Pagination,
   Paper,
   Skeleton,
   Table,
@@ -42,6 +44,7 @@ const CutstomRow = styled(TableRow)`
 
 function EventTable({ keyboxData }) {
   const [date, setDate] = useState();
+  const [page, setPage] = useState(1);
   const [isLoading, setLoading] = useState(false);
 
   const [eventsData, setEventsData] = useState();
@@ -57,7 +60,9 @@ function EventTable({ keyboxData }) {
     };
 
     await fetch(
-      `https://api.golioth.io/v1/projects/keybox/devices/${deviceId}/stream?interval=731h&encodedQuery=%7B%22fields%22%3A%20%5B%7B%22path%22%3A%20%22timestamp%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%20%22deviceId%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%22newCard%22%2C%22type%22%3A%20%22%22%7D%5D%7D&page=0`,
+      `https://api.golioth.io/v1/projects/keybox/devices/${deviceId}/stream?interval=731h&encodedQuery=%7B%22fields%22%3A%20%5B%7B%22path%22%3A%20%22timestamp%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%20%22deviceId%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%22newCard%22%2C%22type%22%3A%20%22%22%7D%5D%7D&page=${
+        page - 1
+      }&perPage=10`,
       myInit
     )
       .catch((error) => {
@@ -81,11 +86,19 @@ function EventTable({ keyboxData }) {
     fetchEventsData(keyboxData.keyboxId);
   };
 
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
   useEffect(() => {
     if (keyboxData) {
       getKeyboxEventsData();
     }
   }, [keyboxData]);
+
+  useEffect(() => {
+    getKeyboxEventsData();
+  }, [page]);
 
   return (
     <>
@@ -147,6 +160,26 @@ function EventTable({ keyboxData }) {
           </TableBody>
         </Table>
       </TableContainer>
+      <Grid container justifyContent={"right"} marginBottom={"2em"}>
+        {!eventsData && (
+          <Pagination
+            count={5}
+            variant="outlined"
+            shape="rounded"
+            size="large"
+          />
+        )}
+        {eventsData && (
+          <Pagination
+            count={Math.ceil(eventsData.total / 10)}
+            variant="outlined"
+            shape="rounded"
+            size="large"
+            onChange={handlePageChange}
+            page={page}
+          />
+        )}
+      </Grid>
     </>
   );
 }
