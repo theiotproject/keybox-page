@@ -94,12 +94,6 @@ function FirebaseEventsTable({ keyboxData }) {
     }
   }, [keyboxData]);
 
-  useEffect(() => {
-    if (keyboxData) {
-      getKeyboxEventsData();
-    }
-  }, [page]);
-
   return (
     <>
       <TableContainer component={CustomPaper} variant="outlined" sx={{ mb: 3 }}>
