@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Refresh } from "@mui/icons-material";
 import { Grid, IconButton, MenuItem, Select, Typography } from "@mui/material";
 
-import EventTable from "./components/EventTable";
+import FirebaseEventsTable from "./components/FirebaseEventsTable";
+import GoliothEventsTable from "./components/GoliothEventsTable";
 
 import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
@@ -14,6 +15,8 @@ function Events() {
 
   const [keyboxesData, setKeyboxesData] = useState();
   const [selectedKeyboxData, setSelectedKeyboxData] = useState();
+
+  const [eventType, setEventType] = useState("accessEvents");
 
   const getKeyboxesData = async () => {
     const userDocRef = doc(db, "users", currentUser.uid);
@@ -50,6 +53,10 @@ function Events() {
 
   const handleRefreshKeyboxes = () => {
     getKeyboxesData();
+  };
+
+  const handleChangeEventType = (event) => {
+    setEventType(event.target.value);
   };
 
   useEffect(() => {
@@ -95,6 +102,11 @@ function Events() {
             </MenuItem>
           </Select>
         )}
+        <Select defaultValue={eventType} onChange={handleChangeEventType}>
+          <MenuItem value="accessEvents">Access Events</MenuItem>
+          <MenuItem value="deviceUpdateEvents">Device Update Events</MenuItem>
+        </Select>
+
         <IconButton
           aria-label="refresh keyboxes"
           onClick={() => handleRefreshKeyboxes()}
@@ -102,7 +114,12 @@ function Events() {
           <Refresh />
         </IconButton>
       </Grid>
-      <EventTable keyboxData={selectedKeyboxData} />
+
+      {eventType === "accessEvents" ? (
+        <GoliothEventsTable keyboxData={selectedKeyboxData} />
+      ) : (
+        <FirebaseEventsTable keyboxData={selectedKeyboxData} />
+      )}
     </>
   );
 }

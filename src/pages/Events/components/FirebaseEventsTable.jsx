@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import {
-  Button,
   Grid,
   Pagination,
   Paper,
@@ -15,13 +14,23 @@ import {
   Tooltip,
 } from "@mui/material";
 
-import showError from "src/components/Toasts/ToastError";
-import showSuccess from "src/components/Toasts/ToastSuccess";
-
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  startAt,
+  where,
+} from "firebase/firestore";
+import { db } from "src/backend/db_config";
+import { useAuthProvider } from "src/contexts/AuthContext";
 
 // extend dayjs to use relativeTime formatter and locialized format
 dayjs.extend(relativeTime);
@@ -42,48 +51,37 @@ const CutstomRow = styled(TableRow)`
   background-color: rgba(0, 0, 0, 0.26);
 `;
 
-function EventTable({ keyboxData }) {
-  const [date, setDate] = useState();
+function FirebaseEventsTable({ keyboxData }) {
+  const { currentUser } = useAuthProvider();
   const [page, setPage] = useState(1);
   const [isLoading, setLoading] = useState(false);
 
   const [eventsData, setEventsData] = useState();
 
-  const fetchEventsData = async (deviceId) => {
+  const fetchUserEventsData = async (keyboxId) => {
     setLoading(true);
-    const myHeaders = new Headers();
-    myHeaders.append("X-API-Key", import.meta.env.VITE_GOLIOTH_API_KEY);
+    const userDocRef = doc(db, "users", currentUser.uid);
+    const keyboxesCollectionRef = collection(userDocRef, "keyboxes");
 
-    const myInit = {
-      method: "GET",
-      headers: myHeaders,
-    };
+    const keyboxDocQuery = query(
+      keyboxesCollectionRef,
+      where("keyboxId", "==", keyboxId)
+    );
+    const keyboxDocRefSnapshot = await getDocs(keyboxDocQuery);
+    const userEventsCollection = query(
+      collection(keyboxDocRefSnapshot.docs[0].ref, "userEvents"),
+      orderBy("timestamp", "desc")
+    );
 
-    await fetch(
-      `https://api.golioth.io/v1/projects/keybox/devices/${deviceId}/stream?interval=731h&encodedQuery=%7B%22fields%22%3A%20%5B%7B%22path%22%3A%20%22timestamp%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%20%22deviceId%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%22newCard%22%2C%22type%22%3A%20%22%22%7D%5D%7D&page=${
-        page - 1
-      }&perPage=10`,
-      myInit
-    )
-      .catch((error) => {
-        showError(
-          `Error while sending query to Golioth, check console for more info`
-        );
-        console.error(error);
-      })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setEventsData(data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    const userEventsSnapshots = await getDocs(userEventsCollection).finally(
+      () => setLoading(false)
+    );
+
+    setEventsData(userEventsSnapshots.docs);
   };
 
   const getKeyboxEventsData = () => {
-    fetchEventsData(keyboxData.keyboxId);
+    fetchUserEventsData(keyboxData.keyboxId);
   };
 
   const handlePageChange = (event, value) => {
@@ -110,6 +108,9 @@ function EventTable({ keyboxData }) {
             <CutstomRow>
               <CustomizedTableCell align="center">Date</CustomizedTableCell>
               <CustomizedTableCell align="center">Action</CustomizedTableCell>
+              <CustomizedTableCell align="center">
+                Keybox Id
+              </CustomizedTableCell>
               <CustomizedTableCell align="center">Slot Id</CustomizedTableCell>
               <CustomizedTableCell align="center">Card Id</CustomizedTableCell>
             </CutstomRow>
@@ -120,7 +121,10 @@ function EventTable({ keyboxData }) {
                 {[1, 2, 3].map((row, index) => (
                   <TableRow key={index}>
                     <CustomizedTableCell align="center">
-                      {date}
+                      <Skeleton animation="wave" />
+                    </CustomizedTableCell>
+                    <CustomizedTableCell align="center">
+                      <Skeleton animation="wave" />
                     </CustomizedTableCell>
                     <CustomizedTableCell align="center">
                       <Skeleton animation="wave" />
@@ -137,35 +141,42 @@ function EventTable({ keyboxData }) {
             ) : (
               <>
                 {eventsData &&
-                  eventsData.list?.length > 0 &&
-                  eventsData.list.map((event, index) => (
-                    <TableRow key={index}>
-                      <CustomizedTableCell align="center">
-                        <Tooltip title={dayjs(event.timestamp).format("lll")}>
-                          <span>{dayjs(event.timestamp).fromNow()}</span>
-                        </Tooltip>
-                      </CustomizedTableCell>
-                      <CustomizedTableCell align="center">
-                        {/* {event.action} */}
-                      </CustomizedTableCell>
-                      <CustomizedTableCell align="center">
-                        {/* {event.slotId} */}
-                      </CustomizedTableCell>
-                      <CustomizedTableCell align="center">
-                        {event.newCard}
-                      </CustomizedTableCell>
-                    </TableRow>
-                  ))}
-                {eventsData && eventsData.list?.length == 0 ? (
+                  eventsData.length > 0 &&
+                  eventsData
+                    .slice((page - 1) * 10, (page - 1) * 10 + 10)
+                    .map((event, index) => (
+                      <TableRow key={index}>
+                        <CustomizedTableCell align="center">
+                          <Tooltip
+                            title={dayjs
+                              .unix(event.data().timestamp.seconds)
+                              .format("lll")}
+                          >
+                            <span>
+                              {dayjs
+                                .unix(event.data().timestamp.seconds)
+                                .fromNow()}
+                            </span>
+                          </Tooltip>
+                        </CustomizedTableCell>
+                        <CustomizedTableCell align="center">
+                          {event.data().action}
+                        </CustomizedTableCell>
+                        <CustomizedTableCell align="center">
+                          {event.data().keyboxId}
+                        </CustomizedTableCell>
+                        <CustomizedTableCell align="center">
+                          {event.data().slotId}
+                        </CustomizedTableCell>
+                        <CustomizedTableCell align="center">
+                          {event.data().cardId}
+                        </CustomizedTableCell>
+                      </TableRow>
+                    ))}
+                {eventsData && eventsData.length == 0 && (
                   <TableRow>
-                    <CustomizedTableCell align="center" colSpan={4}>
+                    <CustomizedTableCell align="center" colSpan={5}>
                       No events in this keybox
-                    </CustomizedTableCell>
-                  </TableRow>
-                ) : (
-                  <TableRow>
-                    <CustomizedTableCell align="center" colSpan={4}>
-                      This keybox isn't registered in Golioth
                     </CustomizedTableCell>
                   </TableRow>
                 )}
@@ -183,9 +194,9 @@ function EventTable({ keyboxData }) {
             size="large"
           />
         )}
-        {eventsData && eventsData.list?.length > 0 ? (
+        {eventsData && eventsData.length > 0 ? (
           <Pagination
-            count={Math.ceil(eventsData.total / 10)}
+            count={Math.ceil(eventsData.length / 10)}
             variant="outlined"
             shape="rounded"
             size="large"
@@ -208,4 +219,4 @@ function EventTable({ keyboxData }) {
   );
 }
 
-export default EventTable;
+export default FirebaseEventsTable;
