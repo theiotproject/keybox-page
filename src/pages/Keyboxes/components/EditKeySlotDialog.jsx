@@ -22,11 +22,13 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
+import { addUserEvent } from "src/util/services/addUserEvent";
 import { editSlotValidationSchema } from "src/util/validation/editSlotValidationSchema";
 
 function EditKeySlotDialog({
@@ -92,6 +94,17 @@ function EditKeySlotDialog({
         toggleDialog();
         refreshKeyboxTable();
       });
+
+    const keyboxSnapshot = await getDoc(keyboxRef);
+
+    // send log to keybox Events
+    addUserEvent(
+      keyboxRef,
+      "key slot edited",
+      keyboxSnapshot.data().keyboxId,
+      slotId,
+      "-"
+    );
   };
 
   const handleDeleteSlot = async () => {
@@ -106,6 +119,17 @@ function EditKeySlotDialog({
         refreshKeyboxTable();
         toggleDialog();
       });
+
+    const keyboxSnapshot = await getDoc(keyboxRef);
+
+    // send log to keybox Events
+    addUserEvent(
+      keyboxRef,
+      "key slot deleted",
+      keyboxSnapshot.data().keyboxId,
+      slotId,
+      "-"
+    );
   };
 
   return (

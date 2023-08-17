@@ -10,7 +10,6 @@ import LeftSideMobile from "src/components/LeftSideMobile";
 import SignOutBtn from "src/components/SignOutBtn";
 
 import { useAuthProvider } from "src/contexts/AuthContext";
-import useKeyboxData from "src/util/services/useKeyboxData";
 
 function Home() {
   const { currentUser } = useAuthProvider();

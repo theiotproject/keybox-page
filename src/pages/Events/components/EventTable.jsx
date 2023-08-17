@@ -97,19 +97,20 @@ function EventTable({ keyboxData }) {
   }, [keyboxData]);
 
   useEffect(() => {
-    getKeyboxEventsData();
+    if (keyboxData) {
+      getKeyboxEventsData();
+    }
   }, [page]);
 
   return (
     <>
-      <Button onClick={() => getKeyboxEventsData()}>reload</Button>
       <TableContainer component={CustomPaper} variant="outlined" sx={{ mb: 3 }}>
         <Table aria-label="key slot table">
           <TableHead>
             <CutstomRow>
               <CustomizedTableCell align="center">Date</CustomizedTableCell>
-              <CustomizedTableCell align="center">Slot Id</CustomizedTableCell>
               <CustomizedTableCell align="center">Action</CustomizedTableCell>
+              <CustomizedTableCell align="center">Slot Id</CustomizedTableCell>
               <CustomizedTableCell align="center">Card Id</CustomizedTableCell>
             </CutstomRow>
           </TableHead>
@@ -136,7 +137,7 @@ function EventTable({ keyboxData }) {
             ) : (
               <>
                 {eventsData &&
-                  eventsData.list.length > 0 &&
+                  eventsData.list?.length > 0 &&
                   eventsData.list.map((event, index) => (
                     <TableRow key={index}>
                       <CustomizedTableCell align="center">
@@ -145,16 +146,29 @@ function EventTable({ keyboxData }) {
                         </Tooltip>
                       </CustomizedTableCell>
                       <CustomizedTableCell align="center">
-                        {/* {event.slotId} */}
+                        {/* {event.action} */}
                       </CustomizedTableCell>
                       <CustomizedTableCell align="center">
-                        {/* {event.action} */}
+                        {/* {event.slotId} */}
                       </CustomizedTableCell>
                       <CustomizedTableCell align="center">
                         {event.newCard}
                       </CustomizedTableCell>
                     </TableRow>
                   ))}
+                {eventsData && eventsData.list?.length == 0 ? (
+                  <TableRow>
+                    <CustomizedTableCell align="center" colSpan={4}>
+                      No events in this keybox
+                    </CustomizedTableCell>
+                  </TableRow>
+                ) : (
+                  <TableRow>
+                    <CustomizedTableCell align="center" colSpan={4}>
+                      This keybox isn't registered in Golioth
+                    </CustomizedTableCell>
+                  </TableRow>
+                )}
               </>
             )}
           </TableBody>
@@ -169,12 +183,22 @@ function EventTable({ keyboxData }) {
             size="large"
           />
         )}
-        {eventsData && (
+        {eventsData && eventsData.list?.length > 0 ? (
           <Pagination
             count={Math.ceil(eventsData.total / 10)}
             variant="outlined"
             shape="rounded"
             size="large"
+            onChange={handlePageChange}
+            page={page}
+          />
+        ) : (
+          <Pagination
+            count={0}
+            variant="outlined"
+            shape="rounded"
+            size="large"
+            disabled
             onChange={handlePageChange}
             page={page}
           />

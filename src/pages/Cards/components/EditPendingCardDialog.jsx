@@ -22,11 +22,13 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
+import { addUserEvent } from "src/util/services/addUserEvent";
 import { editCardValidationSchema } from "src/util/validation/editCardValidationSchema";
 
 import CustomFormSelect from "./CustomFormSelect";
@@ -90,6 +92,17 @@ function EditPendingCardDialog({
         setLoading(false);
         toggleDialog();
       });
+
+    const keyboxSnapshot = await getDoc(keyboxRef);
+
+    // send log to keybox Events
+    addUserEvent(
+      keyboxRef,
+      "pending card edited",
+      keyboxSnapshot.data().keyboxId,
+      "-",
+      cardData.id
+    );
   };
 
   const handleDeleteCard = async (cardId) => {
@@ -134,6 +147,17 @@ function EditPendingCardDialog({
         reset();
         toggleDialog();
       });
+
+    const keyboxSnapshot = await getDoc(keyboxRef);
+
+    // send log to keybox Events
+    addUserEvent(
+      keyboxRef,
+      "pending card deleted",
+      keyboxSnapshot.data().keyboxId,
+      "-",
+      cardData.id
+    );
   };
 
   useEffect(() => {

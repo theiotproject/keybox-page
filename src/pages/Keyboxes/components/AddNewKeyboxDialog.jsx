@@ -23,10 +23,12 @@ import {
   doc,
   getDocs,
   query,
+  serverTimestamp,
   where,
 } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
+import { addUserEvent } from "src/util/services/addUserEvent";
 import { addNewKeyboxValidationSchema } from "src/util/validation/addNewKeyboxValidationSchema";
 
 function AddNewKeyboxDialog({ open, toggleDialog, refreshKeyboxesData }) {
@@ -73,7 +75,7 @@ function AddNewKeyboxDialog({ open, toggleDialog, refreshKeyboxesData }) {
       keyboxName: data.keyboxName,
     };
 
-    addDoc(keyboxCollectionRef, addKeyboxQuery)
+    const keyboxRef = await addDoc(keyboxCollectionRef, addKeyboxQuery)
       .catch((error) => {
         showError("Error while adding new keybox, check console for more info");
         console.error(error);
@@ -84,6 +86,9 @@ function AddNewKeyboxDialog({ open, toggleDialog, refreshKeyboxesData }) {
         setLoading(false);
         toggleDialog();
       });
+
+    // send log to keybox Events
+    addUserEvent(keyboxRef, "new keybox", data.keyboxId, "-", "-");
   };
 
   return (

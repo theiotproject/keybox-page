@@ -24,6 +24,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   setDoc,
@@ -31,6 +32,7 @@ import {
 } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
+import { addUserEvent } from "src/util/services/addUserEvent";
 import { editKeyboxValidationSchema } from "src/util/validation/editKeyboxValidationSchema";
 
 function EditKeyboxDialog({
@@ -108,6 +110,17 @@ function EditKeyboxDialog({
         setLoading(false);
         toggleDialog();
       });
+
+    const keyboxSnapshot = await getDoc(keyboxRef);
+
+    // send log to keybox Events
+    addUserEvent(
+      keyboxRef,
+      "keybox edited",
+      keyboxSnapshot.data().keyboxId,
+      "-",
+      "-"
+    );
   };
 
   const handleDeleteKeybox = async () => {
@@ -124,6 +137,17 @@ function EditKeyboxDialog({
         toggleDialog();
         setLoading(false);
       });
+
+    const keyboxSnapshot = await getDoc(keyboxRef);
+
+    // send log to keybox Events
+    addUserEvent(
+      keyboxRef,
+      "keybox deleted",
+      keyboxSnapshot.data().keyboxId,
+      "-",
+      "-"
+    );
   };
 
   return (

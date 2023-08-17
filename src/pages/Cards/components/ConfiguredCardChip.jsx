@@ -11,11 +11,13 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
+import { addUserEvent } from "src/util/services/addUserEvent";
 
 import EditConfiguredCardDialog from "./EditConfiguredCardDialog";
 
@@ -78,6 +80,17 @@ function ConfiguredCardChip({ size = 1.6, cardData, refreshCards, ...props }) {
       .finally(() => {
         refreshCards();
       });
+
+    const keyboxSnapshot = await getDoc(keyboxRef);
+
+    // send log to keybox Events
+    addUserEvent(
+      keyboxRef,
+      "configured card deleted",
+      keyboxSnapshot.data().keyboxId,
+      "-",
+      cardData.id
+    );
   };
 
   useEffect(() => {

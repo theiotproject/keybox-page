@@ -11,11 +11,13 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
+import { addUserEvent } from "src/util/services/addUserEvent";
 
 import EditPendingCardDialog from "./EditPendingCardDialog";
 
@@ -77,6 +79,17 @@ function PendingCardChip({ cardData, size = 1.6, refreshCards, ...props }) {
       .finally(() => {
         refreshCards();
       });
+
+    const keyboxSnapshot = await getDoc(keyboxRef);
+
+    // send log to keybox Events
+    addUserEvent(
+      keyboxRef,
+      "pending card deleted",
+      keyboxSnapshot.data().keyboxId,
+      "-",
+      cardData.id
+    );
   };
 
   useEffect(() => {

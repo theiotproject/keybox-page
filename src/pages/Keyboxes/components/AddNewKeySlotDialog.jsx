@@ -21,11 +21,13 @@ import {
   collection,
   doc,
   documentId,
+  getDoc,
   getDocs,
   query,
   setDoc,
   where,
 } from "firebase/firestore";
+import { addUserEvent } from "src/util/services/addUserEvent";
 import { addNewSlotValidationSchema } from "src/util/validation/addNewSlotValidationSchema";
 
 function AddNewKeySlotDialog({
@@ -64,9 +66,7 @@ function AddNewKeySlotDialog({
 
     // Check if isSlotUnique has any docs (if yes keybox already exists)
     if (isSlotIdUnique.docs[0] || isSlotNameUnique.docs[0]) {
-      showWarning(
-        "Wystąpił błąd: Jest już taki keybox! (Nazwa lub id się powtarza!)"
-      );
+      showWarning("There is already this key slot (name or id is repeating)");
       setLoading(false);
       reset();
       return;
@@ -77,7 +77,7 @@ function AddNewKeySlotDialog({
       authorizedCards: [],
     };
 
-    setDoc(doc(keyboxRef, "slots", data.slotId), addKeyboxSlotQuery)
+    await setDoc(doc(keyboxRef, "slots", data.slotId), addKeyboxSlotQuery)
       .catch((error) => {
         showError("Error while adding new keybox, check console for more info");
         console.error(error);
@@ -88,6 +88,17 @@ function AddNewKeySlotDialog({
         toggleDialog();
         refreshKeyboxTable();
       });
+
+    const keyboxSnapshot = await getDoc(keyboxRef);
+
+    // send log to keybox Events
+    addUserEvent(
+      keyboxRef,
+      "new key slot",
+      keyboxSnapshot.data().keyboxId,
+      data.slotId,
+      "-"
+    );
   };
 
   return (
