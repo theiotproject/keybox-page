@@ -111,10 +111,9 @@ function Profile() {
       spacing={2}
       sx={{
         mt: 5,
-        ml: 5,
       }}
     >
-      <Grid item xs={4} lg={12} display="flex">
+      <Grid item xs={4} lg={12} display="flex" width={"100%"}>
         <Avatar
           alt="Your Avatar"
           src={currentUser.photoURL}
