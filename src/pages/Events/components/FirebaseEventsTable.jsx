@@ -180,34 +180,34 @@ function FirebaseEventsTable({ keyboxData }) {
         </Table>
       </TableContainer>
       <Grid container justifyContent={"right"} marginBottom={"2em"}>
-        {!eventsData && (
-          <Pagination
-            count={5}
-            variant="outlined"
-            shape="rounded"
-            size="large"
-          />
-        )}
-        {eventsData && eventsData.length > 0 ? (
-          <Pagination
-            count={Math.ceil(eventsData.length / 10)}
-            variant="outlined"
-            shape="rounded"
-            size="large"
-            onChange={handlePageChange}
-            page={page}
-          />
-        ) : (
-          <Pagination
-            count={0}
-            variant="outlined"
-            shape="rounded"
-            size="large"
-            disabled
-            onChange={handlePageChange}
-            page={page}
-          />
-        )}
+        {(() => {
+          if (eventsData) {
+            if (eventsData.list?.length > 0) {
+              return (
+                <Pagination
+                  count={Math.ceil(eventsData.total / 10)}
+                  variant="outlined"
+                  shape="rounded"
+                  size="large"
+                  onChange={handlePageChange}
+                  page={page}
+                />
+              );
+            } else if (eventsData.list?.length === 0) {
+              return (
+                <Pagination
+                  count={0}
+                  variant="outlined"
+                  shape="rounded"
+                  size="large"
+                  disabled
+                  onChange={handlePageChange}
+                  page={page}
+                />
+              );
+            }
+          }
+        })()}
       </Grid>
     </>
   );

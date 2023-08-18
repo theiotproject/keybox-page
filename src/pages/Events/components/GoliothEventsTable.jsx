@@ -114,9 +114,9 @@ function GoliothEventsTable({ keyboxData }) {
             </CutstomRow>
           </TableHead>
           <TableBody>
-            {isLoading ? (
-              <>
-                {[1, 2, 3].map((row, index) => (
+            {(() => {
+              if (isLoading) {
+                [1, 2, 3].map((row, index) => (
                   <TableRow key={index}>
                     <CustomizedTableCell align="center">
                       <Skeleton animation="wave" />
@@ -131,71 +131,80 @@ function GoliothEventsTable({ keyboxData }) {
                       <Skeleton animation="wave" />
                     </CustomizedTableCell>
                   </TableRow>
-                ))}
-              </>
-            ) : (
-              <>
-                {eventsData &&
-                  eventsData.list?.length > 0 &&
-                  eventsData.list.map((event, index) => (
-                    <TableRow key={index}>
-                      <CustomizedTableCell align="center">
-                        <Tooltip title={dayjs(event.timestamp).format("lll")}>
-                          <span>{dayjs(event.timestamp).fromNow()}</span>
-                        </Tooltip>
-                      </CustomizedTableCell>
-                      <CustomizedTableCell align="center">
-                        {/* {event.action} */}
-                      </CustomizedTableCell>
-                      <CustomizedTableCell align="center">
-                        {/* {event.slotId} */}
-                      </CustomizedTableCell>
-                      <CustomizedTableCell align="center">
-                        {event.newCard}
+                ));
+              } else {
+                if (eventsData.code != 13) {
+                  if (eventsData.list?.length > 0) {
+                    eventsData.list.map((event, index) => (
+                      <TableRow key={index}>
+                        <CustomizedTableCell align="center">
+                          <Tooltip title={dayjs(event.timestamp).format("lll")}>
+                            <span>{dayjs(event.timestamp).fromNow()}</span>
+                          </Tooltip>
+                        </CustomizedTableCell>
+                        <CustomizedTableCell align="center">
+                          {/* {event.action} */}
+                        </CustomizedTableCell>
+                        <CustomizedTableCell align="center">
+                          {/* {event.slotId} */}
+                        </CustomizedTableCell>
+                        <CustomizedTableCell align="center">
+                          {event.newCard}
+                        </CustomizedTableCell>
+                      </TableRow>
+                    ));
+                  } else {
+                    return (
+                      <TableRow>
+                        <CustomizedTableCell align="center" colSpan={4}>
+                          No events in this keybox
+                        </CustomizedTableCell>
+                      </TableRow>
+                    );
+                  }
+                } else {
+                  return (
+                    <TableRow>
+                      <CustomizedTableCell align="center" colSpan={4}>
+                        This keybox is not connected with any hardware
                       </CustomizedTableCell>
                     </TableRow>
-                  ))}
-                {eventsData && eventsData.list?.length == 0 && (
-                  <TableRow>
-                    <CustomizedTableCell align="center" colSpan={4}>
-                      No events in this keybox
-                    </CustomizedTableCell>
-                  </TableRow>
-                )}
-              </>
-            )}
+                  );
+                }
+              }
+            })()}
           </TableBody>
         </Table>
       </TableContainer>
       <Grid container justifyContent={"right"} marginBottom={"2em"}>
-        {!eventsData && (
-          <Pagination
-            count={5}
-            variant="outlined"
-            shape="rounded"
-            size="large"
-          />
-        )}
-        {eventsData && eventsData.list?.length > 0 ? (
-          <Pagination
-            count={Math.ceil(eventsData.total / 10)}
-            variant="outlined"
-            shape="rounded"
-            size="large"
-            onChange={handlePageChange}
-            page={page}
-          />
-        ) : (
-          <Pagination
-            count={0}
-            variant="outlined"
-            shape="rounded"
-            size="large"
-            disabled
-            onChange={handlePageChange}
-            page={page}
-          />
-        )}
+        {(() => {
+          if (eventsData) {
+            if (eventsData.list?.length > 0) {
+              return (
+                <Pagination
+                  count={Math.ceil(eventsData.total / 10)}
+                  variant="outlined"
+                  shape="rounded"
+                  size="large"
+                  onChange={handlePageChange}
+                  page={page}
+                />
+              );
+            } else {
+              return (
+                <Pagination
+                  count={0}
+                  variant="outlined"
+                  shape="rounded"
+                  size="large"
+                  disabled
+                  onChange={handlePageChange}
+                  page={page}
+                />
+              );
+            }
+          }
+        })()}
       </Grid>
     </>
   );
