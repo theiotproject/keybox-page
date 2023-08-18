@@ -6,9 +6,12 @@ import { Box, Skeleton, Stack, Typography } from "@mui/material";
 import {
   addDoc,
   collection,
+  doc,
+  documentId,
   getDoc,
   getDocs,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 
@@ -30,7 +33,7 @@ function PendingCardsBox({ refreshCards, ...props }) {
 
     // checks only for events from last minute
     const response = await fetch(
-      `https://api.golioth.io/v1/projects/keybox/devices/${keyboxId}/stream?interval=1h&encodedQuery=%7B%22fields%22%3A%20%5B%7B%22path%22%3A%20%22time%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%20%22deviceId%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%22newCard%22%2C%22type%22%3A%20%22%22%7D%5D%7D`,
+      `https://api.golioth.io/v1/projects/keybox/devices/${keyboxId}/stream?interval=5h&encodedQuery=%7B%22fields%22%3A%20%5B%7B%22path%22%3A%20%22time%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%20%22deviceId%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%22newCard%22%2C%22type%22%3A%20%22%22%7D%5D%7D`,
       myInit
     )
       .catch((error) => {
@@ -58,15 +61,35 @@ function PendingCardsBox({ refreshCards, ...props }) {
 
         const newCardData = {
           cardName: `newCard: ${cardId}`,
-          cardId: cardId,
           isPending: true,
         };
 
-        await addDoc(cardsCollectionRef, newCardData);
+        await setDoc(doc(cardsCollectionRef, cardId), newCardData);
       };
 
-      list.forEach((card) => {
-        // addNewCard(card.newCard);
+      list.forEach((card, index) => {
+        const checkIfCardIsAlreadyPending = async (card) => {
+          const cardsCollectionRef = collection(keyboxRef, "cards");
+          const isCardAlreadyPendingQuery = query(
+            cardsCollectionRef,
+            where(documentId(), "==", `${card.newCard}`)
+          );
+
+          const isCardAlreadyPendingSnapshot = await getDocs(
+            isCardAlreadyPendingQuery
+          );
+
+          const isCardAlreadyPending = isCardAlreadyPendingSnapshot.docs.length
+            ? true
+            : false;
+
+          return isCardAlreadyPending;
+        };
+
+        if (!checkIfCardIsAlreadyPending(card)) {
+          console.log("nowa");
+          addNewCard(card.newCard);
+        }
       });
     }
   };
@@ -93,8 +116,8 @@ function PendingCardsBox({ refreshCards, ...props }) {
 
   useEffect(() => {
     if (keyboxRef) {
-      checkForPendingCards(keyboxRef);
       getData();
+      checkForPendingCards(keyboxRef);
     }
   }, [keyboxRef]);
 
