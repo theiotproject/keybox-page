@@ -133,7 +133,7 @@ function GoliothEventsTable({ keyboxData }) {
                   </TableRow>
                 ));
               } else {
-                if (eventsData.code != 13) {
+                if (eventsData && !("code" in eventsData)) {
                   if (eventsData.list?.length > 0) {
                     eventsData.list.map((event, index) => (
                       <TableRow key={index}>
