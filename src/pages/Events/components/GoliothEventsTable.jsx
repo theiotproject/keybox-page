@@ -135,24 +135,30 @@ function GoliothEventsTable({ keyboxData }) {
               } else {
                 if (eventsData && !("code" in eventsData)) {
                   if (eventsData.list?.length > 0) {
-                    eventsData.list.map((event, index) => (
-                      <TableRow key={index}>
-                        <CustomizedTableCell align="center">
-                          <Tooltip title={dayjs(event.timestamp).format("lll")}>
-                            <span>{dayjs(event.timestamp).fromNow()}</span>
-                          </Tooltip>
-                        </CustomizedTableCell>
-                        <CustomizedTableCell align="center">
-                          {/* {event.action} */}
-                        </CustomizedTableCell>
-                        <CustomizedTableCell align="center">
-                          {/* {event.slotId} */}
-                        </CustomizedTableCell>
-                        <CustomizedTableCell align="center">
-                          {event.newCard}
-                        </CustomizedTableCell>
-                      </TableRow>
-                    ));
+                    return (
+                      <>
+                        {eventsData.list.map((event, index) => (
+                          <TableRow key={index}>
+                            <CustomizedTableCell align="center">
+                              <Tooltip
+                                title={dayjs(event.timestamp).format("lll")}
+                              >
+                                <span>{dayjs(event.timestamp).fromNow()}</span>
+                              </Tooltip>
+                            </CustomizedTableCell>
+                            <CustomizedTableCell align="center">
+                              {/* {event.action} */}
+                            </CustomizedTableCell>
+                            <CustomizedTableCell align="center">
+                              {/* {event.slotId} */}
+                            </CustomizedTableCell>
+                            <CustomizedTableCell align="center">
+                              {event.newCard}
+                            </CustomizedTableCell>
+                          </TableRow>
+                        ))}
+                      </>
+                    );
                   } else {
                     return (
                       <TableRow>
