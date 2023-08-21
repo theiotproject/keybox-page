@@ -34,6 +34,9 @@ import {
   where,
 } from "firebase/firestore";
 import { addUserEvent } from "src/util/services/addUserEvent";
+import { deleteCardInGolioth } from "src/util/services/deleteCardInGolioth";
+import { getAuthorizedSlotsFromGolioth } from "src/util/services/getAuthorizedSlotsFromGolioth";
+import { sendCardUpdateToGolioth } from "src/util/services/sendCardUpdateToGolioth";
 import { editCardValidationSchema } from "src/util/validation/editCardValidationSchema";
 
 import CustomFormSelect from "./CustomFormSelect";
@@ -68,22 +71,20 @@ function EditConfiguredCardDialog({
   };
 
   const getAuthorizedSlots = async (cardId) => {
-    const slotsColletionRef = collection(keyboxRef, "slots");
-    const cardApperedInSlotQuery = query(
-      slotsColletionRef,
-      where("authorizedCards", "array-contains", Number(cardId))
+    const keyboxData = await getDoc(keyboxRef);
+    const authorizedSlotsArray = await getAuthorizedSlotsFromGolioth(
+      keyboxData.data().keyboxId,
+      cardId
     );
 
-    const cardApperedInSlotSnapshot = await getDocs(cardApperedInSlotQuery);
-
-    const slotIdArray = cardApperedInSlotSnapshot.docs.map((slot) => slot.id);
-
-    if (slotIdArray.length > 0) setAuthorizedSlots(slotIdArray.join(", "));
+    if (authorizedSlotsArray.data.length > 0)
+      setAuthorizedSlots(authorizedSlotsArray.data.join(", "));
   };
 
   const handleEditCard = async (data) => {
     setLoading(true);
 
+    console.log(data, cardData.id);
     // user input
     const authorizedSlotsToArray = data.authorizedSlots
       .replaceAll(" ", "")
@@ -97,7 +98,6 @@ function EditConfiguredCardDialog({
     );
 
     const slotsSnapshot = await getDocs(slotsCollectionQuery);
-    // console.log(slotsSnapshot);
     const availableSlots = slotsSnapshot.docs.map((slot) => slot.id);
 
     const slotsAccessToDelete = availableSlots.filter(
@@ -107,7 +107,7 @@ function EditConfiguredCardDialog({
     // Adding slot access
     authorizedSlotsToArray.forEach((slotId) => {
       const editSlotData = {
-        authorizedCards: arrayUnion(Number(cardData.id)),
+        authorizedCards: arrayUnion(Number(data.cardId)),
       };
       updateDoc(doc(keyboxRef, "slots", slotId), editSlotData).catch(
         (error) => {
@@ -140,6 +140,25 @@ function EditConfiguredCardDialog({
       group: selectedGroup,
     };
 
+    const keyboxSnapshot = await getDoc(keyboxRef);
+
+    // send log to keybox Events
+    addUserEvent(
+      keyboxRef,
+      "configured card edited",
+      keyboxSnapshot.data().keyboxId,
+      "-",
+      cardData.id
+    );
+
+    const keyboxData = await getDoc(keyboxRef);
+
+    await sendCardUpdateToGolioth(
+      keyboxData.data().keyboxId,
+      cardData.id,
+      authorizedSlotsToArray
+    );
+
     updateDoc(doc(keyboxRef, "cards", cardData.id), editCardData)
       .catch((error) => {
         showError("Error while editing card, check console for more info");
@@ -151,17 +170,6 @@ function EditConfiguredCardDialog({
         setLoading(false);
         toggleDialog();
       });
-
-    const keyboxSnapshot = await getDoc(keyboxRef);
-
-    // send log to keybox Events
-    addUserEvent(
-      keyboxRef,
-      "configured card edited",
-      keyboxSnapshot.data().keyboxId,
-      "-",
-      cardData.id
-    );
   };
 
   const handleDeleteCard = async (cardId) => {
@@ -195,6 +203,20 @@ function EditConfiguredCardDialog({
       });
     }
 
+    const keyboxSnapshot = await getDoc(keyboxRef);
+
+    // send log to keybox Events
+    addUserEvent(
+      keyboxRef,
+      "configured card deleted",
+      keyboxSnapshot.data().keyboxId,
+      "-",
+      cardData.id
+    );
+
+    const keyboxData = await getDoc(keyboxRef);
+    await deleteCardInGolioth(keyboxData.data().keyboxId, cardId);
+
     deleteDoc(doc(keyboxRef, "cards", cardId))
       .catch((error) => {
         showError("Error while deleting card, check console for more info");
@@ -206,17 +228,6 @@ function EditConfiguredCardDialog({
         setLoading(false);
         toggleDialog();
       });
-
-    const keyboxSnapshot = await getDoc(keyboxRef);
-
-    // send log to keybox Events
-    addUserEvent(
-      keyboxRef,
-      "configured card deleted",
-      keyboxSnapshot.data().keyboxId,
-      "-",
-      cardData.id
-    );
   };
 
   useEffect(() => {

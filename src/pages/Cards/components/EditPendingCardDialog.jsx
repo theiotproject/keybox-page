@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 
 import showError from "src/components/Toasts/ToastError";
+import showSuccess from "src/components/Toasts/ToastSuccess";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -29,6 +30,7 @@ import {
   where,
 } from "firebase/firestore";
 import { addUserEvent } from "src/util/services/addUserEvent";
+import { sendCardUpdateToGolioth } from "src/util/services/sendCardUpdateToGolioth";
 import { editCardValidationSchema } from "src/util/validation/editCardValidationSchema";
 
 import CustomFormSelect from "./CustomFormSelect";
@@ -63,14 +65,14 @@ function EditPendingCardDialog({
 
     authorizedSlotsToArray.forEach((slotId) => {
       const editSlotData = {
-        authorizedCards: arrayUnion(Number(cardData.id)),
+        // Obgadaj czy na pewno warto zmieniac "," na "."
+        authorizedCards: arrayUnion(Number(cardData.id.replace(",", "."))),
       };
       updateDoc(doc(keyboxRef, "slots", slotId), editSlotData).catch(
         (error) => {
           showError(
-            "Error while editing authorized slots, check console for more info"
+            `Error while editing authorized slots, slot ${slotId} doesn't exist, but got authorized anyway, check console for more info`
           );
-          console.error(error);
         }
       );
     });
@@ -80,18 +82,13 @@ function EditPendingCardDialog({
       isPending: false,
       group: selectedGroup,
     };
+    const keyboxData = await getDoc(keyboxRef);
 
-    updateDoc(doc(keyboxRef, "cards", cardData.id), editCardData)
-      .catch((error) => {
-        showError("Error while editing card, check console for more info");
-        console.error(error);
-      })
-      .finally(() => {
-        reset();
-        refreshCards();
-        setLoading(false);
-        toggleDialog();
-      });
+    await sendCardUpdateToGolioth(
+      keyboxData.data().keyboxId,
+      cardData.id,
+      authorizedSlotsToArray
+    );
 
     const keyboxSnapshot = await getDoc(keyboxRef);
 
@@ -103,6 +100,19 @@ function EditPendingCardDialog({
       "-",
       cardData.id
     );
+
+    updateDoc(doc(keyboxRef, "cards", cardData.id), editCardData)
+      .catch((error) => {
+        showError("Error while editing card, check console for more info");
+        console.error(error);
+        return;
+      })
+      .finally(() => {
+        reset();
+        refreshCards();
+        setLoading(false);
+        toggleDialog();
+      });
   };
 
   const handleDeleteCard = async (cardId) => {

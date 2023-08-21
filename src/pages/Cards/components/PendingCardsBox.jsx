@@ -87,7 +87,6 @@ function PendingCardsBox({ refreshCards, ...props }) {
         const isCardAlreadyPending = await checkIfCardIsAlreadyPending(card);
 
         if (!isCardAlreadyPending) {
-          console.log("nowa");
           addNewCard(card.newCard);
         }
       });

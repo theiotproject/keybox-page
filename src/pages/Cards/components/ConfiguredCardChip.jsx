@@ -18,6 +18,7 @@ import {
   where,
 } from "firebase/firestore";
 import { addUserEvent } from "src/util/services/addUserEvent";
+import { deleteCardInGolioth } from "src/util/services/deleteCardInGolioth";
 
 import EditConfiguredCardDialog from "./EditConfiguredCardDialog";
 
@@ -91,6 +92,9 @@ function ConfiguredCardChip({ size = 1.6, cardData, refreshCards, ...props }) {
       "-",
       cardData.id
     );
+
+    const keyboxData = await getDoc(keyboxRef);
+    await deleteCardInGolioth(keyboxData.data().keyboxId, cardId);
   };
 
   useEffect(() => {
