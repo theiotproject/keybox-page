@@ -32,6 +32,7 @@ function Keyboxes() {
 
   const [keyboxesData, setKeyboxesData] = useState();
   const [selectedKeyboxData, setSelectedKeyboxData] = useState();
+  const [selectedKeyboxName, setSelectedKeyboxName] = useState("");
 
   const [editKeyboxDialogOpen, setEditKeyboxDialogOpen] = useState(false);
 
@@ -76,10 +77,12 @@ function Keyboxes() {
 
   const handleChangeKeybox = (event) => {
     getKeyboxData(event.target.value);
+    setSelectedKeyboxName(event.target.value);
   };
 
-  const handleRefreshKeyboxes = () => {
-    getKeyboxesData();
+  const handleRefreshKeyboxes = (lastSelectedKeybox) => {
+    setSelectedKeyboxName(lastSelectedKeybox);
+    getKeyboxesData(lastSelectedKeybox);
   };
 
   const deleteSelectedKeybox = async (keyboxRef) => {
@@ -101,9 +104,13 @@ function Keyboxes() {
 
   useEffect(() => {
     if (keyboxesData && keyboxesData.length > 0) {
-      getKeyboxData(keyboxesData[0].data().keyboxName);
+      if (selectedKeyboxName === "") {
+        getKeyboxData(keyboxesData[0].data().keyboxName);
+      } else {
+        getKeyboxData(selectedKeyboxName);
+      }
     }
-  }, [keyboxesData]);
+  }, [keyboxesData, selectedKeyboxName]);
 
   return (
     <>
@@ -157,7 +164,7 @@ function Keyboxes() {
         </Button>
         <IconButton
           aria-label="refresh keyboxes"
-          onClick={() => handleRefreshKeyboxes()}
+          onClick={() => handleRefreshKeyboxes(selectedKeyboxName)}
         >
           <Refresh />
         </IconButton>

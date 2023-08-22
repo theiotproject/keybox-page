@@ -22,6 +22,7 @@ function Cards() {
 
   const [keyboxesData, setKeyboxesData] = useState();
   const [selectedKeyboxData, setSelectedKeyboxData] = useState();
+  const [selectedKeyboxName, setSelectedKeyboxName] = useState("");
 
   const getKeyboxesData = async () => {
     const userDocRef = doc(db, "users", currentUser.uid);
@@ -54,10 +55,12 @@ function Cards() {
 
   const handleChangeKeybox = (event) => {
     getKeyboxData(event.target.value);
+    setSelectedKeyboxName(event.target.value);
   };
 
-  const handleRefreshKeyboxes = () => {
-    getKeyboxesData();
+  const handleRefreshKeyboxes = (lastSelectedKeybox) => {
+    setSelectedKeyboxName(lastSelectedKeybox);
+    getKeyboxesData(lastSelectedKeybox);
   };
 
   useEffect(() => {
@@ -66,9 +69,13 @@ function Cards() {
 
   useEffect(() => {
     if (keyboxesData && keyboxesData.length > 0) {
-      getKeyboxData(keyboxesData[0].data().keyboxName);
+      if (selectedKeyboxName === "") {
+        getKeyboxData(keyboxesData[0].data().keyboxName);
+      } else {
+        getKeyboxData(selectedKeyboxName);
+      }
     }
-  }, [keyboxesData]);
+  }, [keyboxesData, selectedKeyboxName]);
 
   return (
     <>
@@ -105,7 +112,7 @@ function Cards() {
         )}
         <IconButton
           aria-label="refresh keyboxes"
-          onClick={() => handleRefreshKeyboxes()}
+          onClick={() => handleRefreshKeyboxes(selectedKeyboxName)}
         >
           <Refresh />
         </IconButton>

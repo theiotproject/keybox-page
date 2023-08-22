@@ -15,6 +15,7 @@ function Events() {
 
   const [keyboxesData, setKeyboxesData] = useState();
   const [selectedKeyboxData, setSelectedKeyboxData] = useState();
+  const [selectedKeyboxName, setSelectedKeyboxName] = useState("");
 
   const [eventType, setEventType] = useState("accessEvents");
 
@@ -49,10 +50,12 @@ function Events() {
 
   const handleChangeKeybox = (event) => {
     getKeyboxData(event.target.value);
+    setSelectedKeyboxName(event.target.value);
   };
 
-  const handleRefreshKeyboxes = () => {
-    getKeyboxesData();
+  const handleRefreshKeyboxes = (lastSelectedKeybox) => {
+    setSelectedKeyboxName(lastSelectedKeybox);
+    getKeyboxesData(lastSelectedKeybox);
   };
 
   const handleChangeEventType = (event) => {
@@ -65,9 +68,13 @@ function Events() {
 
   useEffect(() => {
     if (keyboxesData && keyboxesData.length > 0) {
-      getKeyboxData(keyboxesData[0].data().keyboxName);
+      if (selectedKeyboxName === "") {
+        getKeyboxData(keyboxesData[0].data().keyboxName);
+      } else {
+        getKeyboxData(selectedKeyboxName);
+      }
     }
-  }, [keyboxesData]);
+  }, [keyboxesData, selectedKeyboxName]);
 
   return (
     <>
@@ -109,7 +116,7 @@ function Events() {
 
         <IconButton
           aria-label="refresh keyboxes"
-          onClick={() => handleRefreshKeyboxes()}
+          onClick={() => handleRefreshKeyboxes(selectedKeyboxName)}
         >
           <Refresh />
         </IconButton>
