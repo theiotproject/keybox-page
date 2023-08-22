@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { CreditCard } from "@mui/icons-material";
-import { Chip } from "@mui/material";
+import { Chip, CircularProgress } from "@mui/material";
 
 import showError from "src/components/Toasts/ToastError";
 
@@ -38,12 +38,14 @@ function PendingCardChip({ cardData, size = 1.6, refreshCards, ...props }) {
 
   const [open, setOpen] = useState(false);
   const [keyboxRef, setKeyboxRef] = useState();
+  const [isCardDeleteLoading, setCardDeleteLoading] = useState(false);
 
   const handleDialogToggle = () => {
     setOpen(!open);
   };
 
   const handleDeleteCard = async (cardId) => {
+    setCardDeleteLoading(true);
     const slotsColletionRef = collection(keyboxRef, "slots");
     const cardApperedInSlotQuery = query(
       slotsColletionRef,
@@ -90,6 +92,7 @@ function PendingCardChip({ cardData, size = 1.6, refreshCards, ...props }) {
       "-",
       cardData.id
     );
+    setCardDeleteLoading(false);
   };
 
   useEffect(() => {
@@ -103,12 +106,20 @@ function PendingCardChip({ cardData, size = 1.6, refreshCards, ...props }) {
           height: `${size * 32}px`,
           display: "flex",
           justifyContent: "space-between",
+          width: {
+            md: "48%",
+            lg: "31%",
+            xl: "23%",
+          },
         }}
-        label={cardData.data().cardName}
+        label={
+          isCardDeleteLoading ? <CircularProgress /> : cardData.data().cardName
+        }
         variant="outlined"
         onClick={handleDialogToggle}
         onDelete={() => handleDeleteCard(cardData.id)}
         icon={<CreditCard />}
+        disabled={isCardDeleteLoading}
       />
       <EditPendingCardDialog
         open={open}

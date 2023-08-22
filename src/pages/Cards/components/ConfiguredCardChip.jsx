@@ -108,6 +108,11 @@ function ConfiguredCardChip({ size = 1.6, cardData, refreshCards, ...props }) {
           height: `${size * 32}px`,
           display: "flex",
           justifyContent: "space-between",
+          width: {
+            md: "48%",
+            lg: "31%",
+            xl: "23%",
+          },
         }}
         label={cardData.data().cardName}
         variant="outlined"

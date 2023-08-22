@@ -1,7 +1,16 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 
-import { Box, Skeleton, Stack, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Skeleton,
+  Stack,
+  Typography,
+} from "@mui/material";
 
 import {
   addDoc,
@@ -21,6 +30,7 @@ function PendingCardsBox({ refreshCards, ...props }) {
   const [keyboxRef, setKeyboxRef] = useState();
   const [data, setData] = useState([]);
   const [isLoadingData, setLoadingData] = useState(false);
+  const [checkNewCardsLoading, setCheckNewCardsLoading] = useState(false);
 
   const fetchPendingCards = async (keyboxId) => {
     const myHeaders = new Headers();
@@ -33,7 +43,7 @@ function PendingCardsBox({ refreshCards, ...props }) {
 
     // checks only for events from last hour
     const response = await fetch(
-      `https://api.golioth.io/v1/projects/keybox/devices/${keyboxId}/stream?interval=1h&encodedQuery=%7B%22fields%22%3A%20%5B%7B%22path%22%3A%20%22time%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%20%22deviceId%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%22newCard%22%2C%22type%22%3A%20%22%22%7D%5D%7D`,
+      `https://api.golioth.io/v1/projects/keybox/devices/${keyboxId}/stream?interval=3h&encodedQuery=%7B%20%20%20%22fields%22%3A%20%5B%20%20%20%20%20%7B%20%20%20%20%20%20%20%22path%22%3A%20%22time%22%2C%20%20%20%20%20%20%20%22type%22%3A%20%22%22%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22path%22%3A%20%22deviceId%22%2C%20%20%20%20%20%20%20%22type%22%3A%20%22%22%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22path%22%3A%20%22timestamp%22%2C%20%20%20%20%20%20%20%22type%22%3A%20%22%22%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22path%22%3A%20%22newCard%22%2C%20%20%20%20%20%20%20%22type%22%3A%20%22%22%20%20%20%20%20%7D%20%20%20%5D%2C%20%20%20%22filters%22%3A%20%5B%20%20%20%20%20%7B%20%20%20%20%20%20%20%22path%22%3A%20%22newCard%22%2C%20%20%20%20%20%20%20%22op%22%3A%20%22%3C%3E%22%2C%20%20%20%20%20%20%20%22value%22%3A%20%22null%22%20%20%20%20%20%7D%20%20%20%5D%20%7D`,
       myInit
     )
       .catch((error) => {
@@ -56,16 +66,16 @@ function PendingCardsBox({ refreshCards, ...props }) {
     const { list } = await fetchPendingCards(keyboxDoc.data().keyboxId);
 
     if (list && list.length > 0) {
-      const addNewCard = async (cardId) => {
+      const addNewCard = async (cardEvent) => {
         const cardsCollectionRef = collection(keyboxRef, "cards");
 
         const newCardData = {
-          cardName: `newCard: ${cardId.split(",")[1]}`,
+          cardName: `newCard: ${cardEvent.split(",")[1]}`,
           isPending: true,
         };
 
         await setDoc(
-          doc(cardsCollectionRef, cardId.split(",")[1]),
+          doc(cardsCollectionRef, cardEvent.split(",")[1]),
           newCardData
         );
       };
@@ -119,7 +129,6 @@ function PendingCardsBox({ refreshCards, ...props }) {
 
   useEffect(() => {
     if (keyboxRef) {
-      checkForPendingCards(keyboxRef);
       getData();
     }
   }, [keyboxRef]);
@@ -134,9 +143,27 @@ function PendingCardsBox({ refreshCards, ...props }) {
         marginBottom: 3,
       }}
     >
-      <Typography component="h2" variant="h1" sx={{ fontSize: 30, mb: 3 }}>
-        Pending
-      </Typography>
+      <Grid
+        container
+        flexWrap
+        sx={{ justifyContent: "space-between", alignItems: "center", mb: 3 }}
+      >
+        <Typography component="h2" variant="h1" sx={{ fontSize: 30 }}>
+          Pending
+        </Typography>
+        <LoadingButton
+          onClick={async () => {
+            setCheckNewCardsLoading(true);
+            await checkForPendingCards(keyboxRef);
+            refreshCards();
+            setCheckNewCardsLoading(false);
+          }}
+          loading={checkNewCardsLoading}
+        >
+          Check for new cards
+        </LoadingButton>
+      </Grid>
+
       {isLoadingData ? (
         <>
           <Skeleton animation="wave" />
@@ -149,9 +176,9 @@ function PendingCardsBox({ refreshCards, ...props }) {
             flexDirection: {
               xs: "column",
               md: "row",
-              gap: "8px",
-              flexWrap: "wrap",
             },
+            gap: "8px",
+            flexWrap: "wrap",
           }}
         >
           {data.length > 0 ? (

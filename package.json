@@ -19,6 +19,7 @@
     "@fontsource/roboto": "^5.0.3",
     "@hookform/resolvers": "^3.1.1",
     "@mui/icons-material": "^5.13.7",
+    "@mui/lab": "^5.0.0-alpha.140",
     "@mui/material": "^5.13.7",
     "dayjs": "^1.11.9",
     "dotenv-cli": "^7.2.1",
