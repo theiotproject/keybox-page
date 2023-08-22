@@ -55,7 +55,7 @@ function PendingCardsBox({ refreshCards, ...props }) {
 
     const { list } = await fetchPendingCards(keyboxDoc.data().keyboxId);
 
-    if (list.length > 0) {
+    if (list && list.length > 0) {
       const addNewCard = async (cardId) => {
         const cardsCollectionRef = collection(keyboxRef, "cards");
 
