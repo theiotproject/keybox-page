@@ -60,19 +60,23 @@ function PendingCardsBox({ refreshCards, ...props }) {
         const cardsCollectionRef = collection(keyboxRef, "cards");
 
         const newCardData = {
-          cardName: `newCard: ${cardId}`,
+          cardName: `newCard: ${cardId.split(",")[1]}`,
           isPending: true,
         };
 
-        await setDoc(doc(cardsCollectionRef, cardId), newCardData);
+        await setDoc(
+          doc(cardsCollectionRef, cardId.split(",")[1]),
+          newCardData
+        );
       };
 
       list.forEach(async (card, index) => {
         const checkIfCardIsAlreadyPending = async (card) => {
           const cardsCollectionRef = collection(keyboxRef, "cards");
+
           const isCardAlreadyPendingQuery = query(
             cardsCollectionRef,
-            where(documentId(), "==", card.newCard)
+            where(documentId(), "==", card.newCard.split(",")[1])
           );
 
           const isCardAlreadyPending = await getDocs(isCardAlreadyPendingQuery)
@@ -115,8 +119,8 @@ function PendingCardsBox({ refreshCards, ...props }) {
 
   useEffect(() => {
     if (keyboxRef) {
-      getData();
       checkForPendingCards(keyboxRef);
+      getData();
     }
   }, [keyboxRef]);
 

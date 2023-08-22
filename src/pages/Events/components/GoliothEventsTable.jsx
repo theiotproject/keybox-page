@@ -59,7 +59,7 @@ function GoliothEventsTable({ keyboxData }) {
     };
 
     await fetch(
-      `https://api.golioth.io/v1/projects/keybox/devices/${deviceId}/stream?interval=731h&encodedQuery=%7B%22fields%22%3A%20%5B%7B%22path%22%3A%20%22timestamp%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%20%22deviceId%22%2C%22type%22%3A%20%22%22%7D%2C%7B%22path%22%3A%22newCard%22%2C%22type%22%3A%20%22%22%7D%5D%7D&page=${
+      `https://api.golioth.io/v1/projects/keybox/devices/${deviceId}/stream?interval=731h&encodedQuery=%7B%20%20%20%22fields%22%3A%20%5B%20%20%20%20%20%7B%20%20%20%20%20%20%20%22path%22%3A%20%22time%22%2C%20%20%20%20%20%20%20%22type%22%3A%20%22%22%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22path%22%3A%20%22deviceId%22%2C%20%20%20%20%20%20%20%22type%22%3A%20%22%22%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22path%22%3A%20%22timestamp%22%2C%20%20%20%20%20%20%20%22type%22%3A%20%22%22%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22path%22%3A%20%22newCard%22%2C%20%20%20%20%20%20%20%22type%22%3A%20%22%22%20%20%20%20%20%7D%2C%20%20%20%20%20%7B%20%20%20%20%20%20%20%22path%22%3A%20%22slotOpen%22%2C%20%20%20%20%20%20%20%22type%22%3A%20%22%22%20%20%20%20%20%7D%20%20%20%5D%2C%20%20%20%22filters%22%3A%20%5B%5D%20%7D&page=${
         page - 1
       }&perPage=10`,
       myInit
@@ -147,13 +147,15 @@ function GoliothEventsTable({ keyboxData }) {
                               </Tooltip>
                             </CustomizedTableCell>
                             <CustomizedTableCell align="center">
-                              {/* {event.action} */}
+                              {event.newCard && "New Card Scanned"}
+                              {event.slotOpen && "Slot Opened"}
                             </CustomizedTableCell>
                             <CustomizedTableCell align="center">
-                              {/* {event.slotId} */}
+                              {event.slotOpen && event.slotOpen.split(",")[2]}
                             </CustomizedTableCell>
                             <CustomizedTableCell align="center">
-                              {event.newCard}
+                              {event.newCard && event.newCard.split(",")[1]}
+                              {event.slotOpen && event.slotOpen.split(",")[1]}
                             </CustomizedTableCell>
                           </TableRow>
                         ))}
