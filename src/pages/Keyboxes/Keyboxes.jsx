@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Add, Delete, Refresh } from "@mui/icons-material";
 import {
@@ -29,6 +30,9 @@ import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Keyboxes() {
   const { currentUser } = useAuthProvider();
+
+  const { keyboxParam } = useParams();
+  const navigate = useNavigate();
 
   const [keyboxesData, setKeyboxesData] = useState();
   const [selectedKeyboxData, setSelectedKeyboxData] = useState();
@@ -99,6 +103,7 @@ function Keyboxes() {
   };
 
   useEffect(() => {
+    if (keyboxParam) setSelectedKeyboxName(keyboxParam);
     getKeyboxesData();
   }, []);
 

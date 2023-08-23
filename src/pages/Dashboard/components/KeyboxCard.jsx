@@ -4,8 +4,11 @@ import { useForm } from "react-hook-form";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Button,
+  CardActions,
   CircularProgress,
+  Divider,
   IconButton,
+  Skeleton,
   Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -16,27 +19,23 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
 
 import showError from "src/components/Toasts/ToastError";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import { deleteDoc, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  setDoc,
+} from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 import { editKeyboxValidationSchema } from "src/util/validation/editKeyboxValidationSchema";
 
 function KeyboxCard({ ...props }) {
-  const [open, setOpen] = React.useState(false);
-  const [isLoading, setLoading] = useState(false);
-  const { currentUser } = useAuthProvider();
-
-  const handleDialogToggle = () => {
-    setOpen(!open);
-  };
-
   const {
     register,
     handleSubmit,
@@ -45,70 +44,50 @@ function KeyboxCard({ ...props }) {
     resolver: yupResolver(editKeyboxValidationSchema),
   });
 
-  const handleEditKeybox = async (data) => {
+  const [slotsData, setSlotsData] = useState();
+  const [isLoading, setLoading] = useState(false);
+
+  const getSlotsData = async (docRef) => {
     setLoading(true);
-    const userDocRef = doc(db, "users", currentUser.uid);
-    const keyboxDocRef = doc(userDocRef, "keyboxes", props.docId);
+    const slotsCollectionRef = collection(docRef, "slots");
+    const slotsData = await getDocs(slotsCollectionRef);
 
-    // Back off from sending reqeuest if user haven't changed anything
-    if (data.keyboxName == props.keyboxName) {
-      setLoading(false);
-      handleDialogToggle(false);
-      return;
-    }
-
-    const editKeyboxQuery = {
-      keyboxId: props.keyboxId,
-      keyboxName: data.keyboxName,
-    };
-
-    setDoc(keyboxDocRef, editKeyboxQuery)
-      .catch((error) => {
-        showError("Error while updating keybox, check console for more info");
-        console.error(error);
-      })
-      .finally(() => {
-        setLoading(false);
-        handleDialogToggle();
-      });
+    setSlotsData(slotsData.docs);
+    setLoading(false);
   };
 
-  const handleDeleteKeybox = async () => {
-    setLoading(true);
-    const userDocRef = doc(db, "users", currentUser.uid);
-    const keyboxDocRef = doc(userDocRef, "keyboxes", props.docId);
-    deleteDoc(keyboxDocRef)
-      .catch((error) => {
-        showError("Error while deleting keybox, check console for more info");
-        console.error(error);
-      })
-      .finally(() => {
-        setLoading(false);
-        handleDialogToggle();
-      });
-  };
+  useEffect(() => {
+    if (props.docRef) getSlotsData(props.docRef);
+  }, [props.docRef]);
 
   return (
     <>
       <Card
         sx={{
-          width: 275,
-          maxWidth: { sx: "100%", sm: 275 },
+          minWidth: "275px",
           backgroundColor: "#FFF",
           height: "18rem",
           border: "1px solid #B6B6BB",
           alignContent: "center",
           m: 2,
+          position: "relative",
         }}
       >
-        <CardContent sx={{ height: "100%" }}>
+        <CardContent
+          sx={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Typography
             variant="h1"
             sx={{
-              fontSize: 20,
+              fontSize: 32,
               textOverflow: "ellipsis",
               overflow: "hidden",
               whiteSpace: "nowrap",
+              marginBottom: 4,
             }}
           >
             {props.keyboxName}
@@ -120,100 +99,61 @@ function KeyboxCard({ ...props }) {
               alignItems: "center",
               justifyContent: "space-between",
               flexDirection: "column",
-              height: "85%",
             }}
           >
-            <Card
+            <Box
               sx={{
                 width: "100%",
-                p: 0.5,
-                pl: 1.5,
-                mt: 1,
-                boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.20)",
               }}
             >
+              <Typography sx={{ fontSize: 18 }}>
+                active slots: {slotsData ? slotsData.length : <Skeleton />}
+              </Typography>
+              <Divider sx={{ border: "1px solid gray", marginY: 1.5 }} />
               <Typography
                 sx={{
-                  color: "#5A5A5F",
-                  fontSize: "1rem",
-                  textOverflow: "ellipsis",
                   overflow: "hidden",
-                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  display: "-webkit-box",
+                  WebkitLineClamp: "2",
+                  WebkitBoxOrient: "vertical",
+                  fontSize: 18,
                 }}
               >
-                id number
+                {isLoading && <Skeleton />}
+                {slotsData &&
+                  slotsData.length > 0 &&
+                  slotsData.map((slot, index) => {
+                    if (index == slotsData.length - 1) {
+                      return slot.data().slotName;
+                    } else {
+                      return slot.data().slotName + ", ";
+                    }
+                  })}
               </Typography>
-              <Typography
-                sx={{
-                  color: "primary.main",
-                  fontSize: "1.7rem",
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {props.keyboxId}
-              </Typography>
-            </Card>
-
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+            }}
+          >
             <Button
               variant="outlined"
-              onClick={handleDialogToggle}
-              sx={{ mt: 3, border: 1.5 }}
+              sx={{
+                position: "absolute",
+                bottom: "1.5em",
+                left: "50%",
+                translate: "-50%",
+                width: "55%",
+              }}
+              href={`/keyboxes/${props.keyboxName}`}
             >
-              Edit keybox
+              Manage Keybox
             </Button>
           </Box>
         </CardContent>
       </Card>
-      {isLoading ? (
-        <Dialog open={isLoading}>
-          <DialogTitle>Edit keybox</DialogTitle>
-          <DialogContent sx={{ display: "grid", placeItems: "center" }}>
-            <CircularProgress />
-          </DialogContent>
-        </Dialog>
-      ) : (
-        <Dialog open={open} onClose={handleDialogToggle}>
-          <DialogTitle>Edit keybox</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Here you can change the keybox name!
-            </DialogContentText>
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit(handleEditKeybox)}
-            >
-              <TextField
-                autoFocus
-                margin="dense"
-                id="keyboxName"
-                name="keyboxName"
-                label="Keybox Name"
-                defaultValue={props.keyboxName}
-                {...register("keyboxName")}
-                error={!!errors.keyboxName}
-                helperText={errors.keyboxName?.message}
-                fullWidth
-                variant="standard"
-                sx={{ mt: 2 }}
-              />
-              <DialogActions>
-                <IconButton aria-label="delete" onClick={handleDeleteKeybox}>
-                  <DeleteIcon />
-                </IconButton>
-                <Button variant="outlined" onClick={handleDialogToggle}>
-                  Cancel
-                </Button>
-                <Button variant="contained" type="submit">
-                  Submit
-                </Button>
-              </DialogActions>
-            </Box>
-          </DialogContent>
-        </Dialog>
-      )}
     </>
   );
 }

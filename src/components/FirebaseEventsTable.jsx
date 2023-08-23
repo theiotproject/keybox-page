@@ -36,11 +36,6 @@ import { useAuthProvider } from "src/contexts/AuthContext";
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 
-const CustomizedTableCell = styled(TableCell)`
-  font-size: 1.3rem;
-  border-bottom: 1px solid black;
-`;
-
 const CustomPaper = styled(Paper)`
   border: 0;
   border: 1px solid black;
@@ -51,7 +46,13 @@ const CutstomRow = styled(TableRow)`
   background-color: rgba(0, 0, 0, 0.26);
 `;
 
-function FirebaseEventsTable({ keyboxData }) {
+function FirebaseEventsTable({ keyboxData, disablePagination, compact }) {
+  const CustomizedTableCell = styled(TableCell)`
+    border-bottom: 1px solid black;
+    ${compact ? "font-size: 1rem;" : "font-size: 1.3rem;"}
+    ${compact && "padding: 0.5rem 1rem;"}
+  `;
+
   const { currentUser } = useAuthProvider();
   const [page, setPage] = useState(1);
   const [isLoading, setLoading] = useState(false);
@@ -67,17 +68,31 @@ function FirebaseEventsTable({ keyboxData }) {
       keyboxesCollectionRef,
       where("keyboxId", "==", keyboxId)
     );
+
     const keyboxDocRefSnapshot = await getDocs(keyboxDocQuery);
-    const userEventsCollection = query(
-      collection(keyboxDocRefSnapshot.docs[0].ref, "userEvents"),
-      orderBy("timestamp", "desc")
-    );
 
-    const userEventsSnapshots = await getDocs(userEventsCollection).finally(
-      () => setLoading(false)
-    );
+    if (disablePagination) {
+      const userEventsCollection = query(
+        collection(keyboxDocRefSnapshot.docs[0].ref, "userEvents"),
+        orderBy("timestamp", "desc"),
+        limit(10)
+      );
+      const userEventsSnapshots = await getDocs(userEventsCollection).finally(
+        () => setLoading(false)
+      );
 
-    setEventsData(userEventsSnapshots.docs);
+      setEventsData(userEventsSnapshots.docs);
+    } else {
+      const userEventsCollection = query(
+        collection(keyboxDocRefSnapshot.docs[0].ref, "userEvents"),
+        orderBy("timestamp", "desc")
+      );
+      const userEventsSnapshots = await getDocs(userEventsCollection).finally(
+        () => setLoading(false)
+      );
+
+      setEventsData(userEventsSnapshots.docs);
+    }
   };
 
   const getKeyboxEventsData = () => {
@@ -179,13 +194,19 @@ function FirebaseEventsTable({ keyboxData }) {
           </TableBody>
         </Table>
       </TableContainer>
-      <Grid container justifyContent={"right"} marginBottom={"2em"}>
+      <Grid
+        container
+        justifyContent={"right"}
+        marginBottom={"2em"}
+        sx={disablePagination && { display: "none" }}
+      >
         {(() => {
           if (eventsData) {
-            if (eventsData.list?.length > 0) {
+            if (eventsData.length > 0) {
+              console.log("odswiezylem sie");
               return (
                 <Pagination
-                  count={Math.ceil(eventsData.total / 10)}
+                  count={Math.ceil(eventsData.length / 10)}
                   variant="outlined"
                   shape="rounded"
                   size="large"
@@ -193,7 +214,7 @@ function FirebaseEventsTable({ keyboxData }) {
                   page={page}
                 />
               );
-            } else if (eventsData.list?.length === 0) {
+            } else if (eventsData.length === 0) {
               return (
                 <Pagination
                   count={0}

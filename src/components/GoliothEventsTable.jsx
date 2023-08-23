@@ -27,11 +27,6 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 
-const CustomizedTableCell = styled(TableCell)`
-  font-size: 1.3rem;
-  border-bottom: 1px solid black;
-`;
-
 const CustomPaper = styled(Paper)`
   border: 0;
   border: 1px solid black;
@@ -42,7 +37,12 @@ const CutstomRow = styled(TableRow)`
   background-color: rgba(0, 0, 0, 0.26);
 `;
 
-function GoliothEventsTable({ keyboxData }) {
+function GoliothEventsTable({ keyboxData, disablePagination, compact }) {
+  const CustomizedTableCell = styled(TableCell)`
+    border-bottom: 1px solid black;
+    ${compact ? "font-size: 1rem;" : "font-size: 1.3rem;"}
+    ${compact && "padding: 0.5rem 1rem;"}
+  `;
   const [page, setPage] = useState(1);
   const [isLoading, setLoading] = useState(false);
 
@@ -184,7 +184,12 @@ function GoliothEventsTable({ keyboxData }) {
           </TableBody>
         </Table>
       </TableContainer>
-      <Grid container justifyContent={"right"} marginBottom={"2em"}>
+      <Grid
+        container
+        justifyContent={"right"}
+        marginBottom={"2em"}
+        sx={disablePagination && { display: "none" }}
+      >
         {(() => {
           if (eventsData) {
             if (eventsData.list?.length > 0) {

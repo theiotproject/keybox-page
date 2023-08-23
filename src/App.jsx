@@ -15,7 +15,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "src/backend/db_config";
 import { AuthProvider } from "src/contexts/AuthContext";
 import Cards from "src/pages/Cards/Cards";
-import Dashboard from "src/pages/Dashboard/Dashboard";
 import Error from "src/pages/Error/Error";
 import Home from "src/pages/Home/Home";
 import Keyboxes from "src/pages/Keyboxes/Keyboxes";
@@ -30,7 +29,7 @@ import Unverified from "src/pages/Unverified/Unverified";
 import Profile from "src/pages/profile/Profile";
 import theme from "src/theme";
 
-import Dashboard2 from "./pages/Dashboard/Dashboard2";
+import Dashboard from "./pages/Dashboard/Dashboard";
 import Events from "./pages/Events/Events";
 
 function App() {
@@ -60,7 +59,7 @@ function App() {
             >
               <Route path="*" element={<NotFound />} />
               <Route path="signout" element={<SignOut />} />
-              <Route path="" element={<Home />} />
+              <Route path="" element={<SignIn />} />
               <Route path="signin" element={<SignIn />} />
               <Route
                 path="signin/changepassword"
@@ -111,7 +110,18 @@ function App() {
                 }
               />
               <Route
-                path="keyboxes"
+                path="keyboxes/"
+                element={
+                  <ProtectedRoute
+                    isSignedIn={currentUser}
+                    isEmailVerified={currentUser?.emailVerified}
+                  >
+                    <Keyboxes />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="keyboxes/:keyboxParam"
                 element={
                   <ProtectedRoute
                     isSignedIn={currentUser}
@@ -145,6 +155,17 @@ function App() {
               />
               <Route
                 path="events"
+                element={
+                  <ProtectedRoute
+                    isSignedIn={currentUser}
+                    isEmailVerified={currentUser?.emailVerified}
+                  >
+                    <Events />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="events/:keyboxParam"
                 element={
                   <ProtectedRoute
                     isSignedIn={currentUser}

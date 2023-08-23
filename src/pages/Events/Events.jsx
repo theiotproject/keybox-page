@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { Refresh } from "@mui/icons-material";
 import { Grid, IconButton, MenuItem, Select, Typography } from "@mui/material";
 
-import FirebaseEventsTable from "./components/FirebaseEventsTable";
-import GoliothEventsTable from "./components/GoliothEventsTable";
+import FirebaseEventsTable from "src/components/FirebaseEventsTable";
+import GoliothEventsTable from "src/components/GoliothEventsTable";
 
 import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
@@ -12,6 +13,7 @@ import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Events() {
   const { currentUser } = useAuthProvider();
+  const { keyboxParam } = useParams();
 
   const [keyboxesData, setKeyboxesData] = useState();
   const [selectedKeyboxData, setSelectedKeyboxData] = useState();
@@ -63,6 +65,7 @@ function Events() {
   };
 
   useEffect(() => {
+    if (keyboxParam) setSelectedKeyboxName(keyboxParam);
     getKeyboxesData();
   }, []);
 

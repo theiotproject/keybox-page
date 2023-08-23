@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { CreditCard } from "@mui/icons-material";
-import { Chip } from "@mui/material";
+import { Chip, CircularProgress } from "@mui/material";
 
 import showError from "src/components/Toasts/ToastError";
 
@@ -40,12 +40,14 @@ function ConfiguredCardChip({ size = 1.6, cardData, refreshCards, ...props }) {
 
   const [keyboxRef, setKeyboxRef] = useState();
   const [open, setOpen] = useState(false);
+  const [isCardDeleteLoading, setCardDeleteLoading] = useState(false);
 
   const handleDialogToggle = () => {
     setOpen(!open);
   };
 
   const handleDeleteCard = async (cardId) => {
+    setCardDeleteLoading(true);
     const slotsColletionRef = collection(keyboxRef, "slots");
     const cardApperedInSlotQuery = query(
       slotsColletionRef,
@@ -95,6 +97,7 @@ function ConfiguredCardChip({ size = 1.6, cardData, refreshCards, ...props }) {
 
     const keyboxData = await getDoc(keyboxRef);
     await deleteCardInGolioth(keyboxData.data().keyboxId, cardId);
+    setCardDeleteLoading(false);
   };
 
   useEffect(() => {
@@ -114,7 +117,9 @@ function ConfiguredCardChip({ size = 1.6, cardData, refreshCards, ...props }) {
             xl: "23%",
           },
         }}
-        label={cardData.data().cardName}
+        label={
+          isCardDeleteLoading ? <CircularProgress /> : cardData.data().cardName
+        }
         variant="outlined"
         onClick={handleDialogToggle}
         onDelete={() => handleDeleteCard(cardData.id)}
