@@ -52,7 +52,7 @@ function Dashboard() {
             sx={{
               display: "flex",
               flexDirection: "row",
-              overflowX: "scroll",
+              overflowX: "auto",
               maxHeight: "fit-content",
             }}
           >
