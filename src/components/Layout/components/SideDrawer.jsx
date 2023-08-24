@@ -111,7 +111,6 @@ export default function SideDrawer() {
     <GridViewOutlined />,
     <CreditCardOutlined />,
     <ListAltOutlined />,
-    <SettingsOutlinedIcon />,
     <HelpOutlineOutlinedIcon />,
   ];
 
@@ -121,8 +120,7 @@ export default function SideDrawer() {
     "/keyboxes",
     "/cards",
     "/events",
-    "/settings",
-    "/faq",
+    "/help",
   ];
 
   return (
@@ -166,8 +164,7 @@ export default function SideDrawer() {
                 "Key Boxes",
                 "Cards",
                 "Events",
-                "Settings",
-                "FAQ",
+                "Help",
               ].map((text, index) => (
                 <ListItem key={text} disablePadding sx={{ display: "block" }}>
                   <ListItemButton
