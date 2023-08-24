@@ -229,7 +229,7 @@ function KeySlotsTable(props) {
           onClick={() => handleAddNewSlotDialogToggle()}
         >
           <Add sx={{ fontSize: "2rem" }} />
-          Dodaj nowy
+          Add new
         </Button>
       </Grid>
       <AddNewKeySlotDialog
