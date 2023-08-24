@@ -186,12 +186,7 @@ export default function SignIn() {
               error={!!errors.password}
               helperText={errors.password?.message}
             />
-            <Grid container>
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
-            </Grid>
+
             <Box
               sx={{
                 display: "flex",

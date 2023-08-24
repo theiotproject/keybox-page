@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Add, AddCard, Close } from "@mui/icons-material";
+import { Add, AddCard, Close, Delete } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -270,13 +270,12 @@ function EditPendingCardDialog({
               >
                 <Button
                   aria-label="delete"
-                  startIcon={<Close />}
                   color="error"
                   variant="contained"
                   sx={{ width: "100%", marginY: "2em" }}
                   onClick={() => handleDeleteCard(cardData.id)}
                 >
-                  Dismiss Card
+                  <Delete />
                 </Button>
                 <Button
                   variant="contained"

@@ -340,13 +340,12 @@ function EditConfiguredCardDialog({
               >
                 <Button
                   aria-label="delete"
-                  startIcon={<DeleteIcon />}
                   color="error"
                   variant="contained"
                   sx={{ width: "100%", marginY: "2em" }}
                   onClick={() => handleDeleteCard(cardData.id)}
                 >
-                  Delete Card
+                  <DeleteIcon />
                 </Button>
                 {!isCardEditMode ? (
                   <Button

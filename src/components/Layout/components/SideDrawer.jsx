@@ -119,8 +119,8 @@ export default function SideDrawer() {
     "/dashboard",
     "/profile",
     "/keyboxes",
-    "cards",
-    "events",
+    "/cards",
+    "/events",
     "/settings",
     "/faq",
   ];
