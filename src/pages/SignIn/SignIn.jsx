@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   useSignInWithEmailAndPassword,
   useSignInWithGoogle,
@@ -25,11 +26,13 @@ import ErrorMsg from "src/components/ErrorMsg";
 import LeftSide from "src/components/LeftSide";
 import LeftSideMobile from "src/components/LeftSideMobile";
 import LoadingScreen from "src/components/LoadingScreen";
+import showError from "src/components/Toasts/ToastError";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   GoogleAuthProvider,
   getAdditionalUserInfo,
+  signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "src/backend/db_config";
@@ -41,10 +44,14 @@ export default function SignIn() {
 
   const { currentUser } = useAuthProvider();
 
+  const [user, setUser] = useState();
+  const [loading, setLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(signInValidationSchema),
   });
@@ -89,21 +96,32 @@ export default function SignIn() {
       });
   };
 
-  const [signInWithEmailAndPassword, user, loading, error] =
-    useSignInWithEmailAndPassword(auth);
-
   const signInOnSubmit = async (data) => {
-    signInWithEmailAndPassword(data.email, data.password);
+    setLoading(true);
+    await signInWithEmailAndPassword(auth, data.email, data.password)
+      .then((userCredential) => {
+        setUser(userCredential.user);
+      })
+      .catch((error) => {
+        if (error.message === "Firebase: Error (auth/user-not-found).") {
+          showError(
+            "There is no user with this credentials in our database, create an account."
+          );
+        } else {
+          showError(
+            "An error with sign in has occured, check console for more info"
+          );
+          console.error(error);
+        }
+        reset();
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   if (loading) {
     return <LoadingScreen />;
-  }
-
-  if (error) {
-    return (
-      <ErrorMsg errorMessage="Wystąpił nieznany błąd z bazą danych, sprawdź konsolę po więcej informacji" />
-    );
   }
 
   if (currentUser || user) {
