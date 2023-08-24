@@ -123,56 +123,66 @@ function Keyboxes() {
         Manage your KeyBox
       </Typography>
 
-      <Grid container direction="row" my={4} gap={2}>
-        <IconButton
-          aria-label="add new keybox"
-          onClick={() => toggleAddNewKeyboxDialog()}
-        >
-          <Add />
-        </IconButton>
-        <IconButton
-          aria-label="delete selected keybox"
-          onClick={() => deleteSelectedKeybox(selectedKeyboxData.keyboxRef)}
-          disabled={keyboxesData && !keyboxesData.length > 0}
-        >
-          <Delete />
-        </IconButton>
-        {keyboxesData && keyboxesData.length > 0 && selectedKeyboxData ? (
-          <Select
-            labelId="selectKeyboxLabel"
-            id="selectKeybox"
-            value={selectedKeyboxData.keyboxName}
-            label="Select your keybox"
-            onChange={handleChangeKeybox}
+      <Grid container columnSpacing={2} my={4} alignItems={"center"}>
+        <Grid item>
+          <IconButton
+            aria-label="add new keybox"
+            onClick={() => toggleAddNewKeyboxDialog()}
           >
-            {keyboxesData.map((keybox, index) => (
-              <MenuItem key={index} value={keybox.data().keyboxName}>
-                {keybox.data().keyboxName}
+            <Add />
+          </IconButton>
+        </Grid>
+        <Grid item>
+          <IconButton
+            aria-label="delete selected keybox"
+            onClick={() => deleteSelectedKeybox(selectedKeyboxData.keyboxRef)}
+            disabled={keyboxesData && !keyboxesData.length > 0}
+          >
+            <Delete />
+          </IconButton>
+        </Grid>
+        <Grid item>
+          {keyboxesData && keyboxesData.length > 0 && selectedKeyboxData ? (
+            <Select
+              labelId="selectKeyboxLabel"
+              id="selectKeybox"
+              value={selectedKeyboxData.keyboxName}
+              label="Select your keybox"
+              onChange={handleChangeKeybox}
+            >
+              {keyboxesData.map((keybox, index) => (
+                <MenuItem key={index} value={keybox.data().keyboxName}>
+                  {keybox.data().keyboxName}
+                </MenuItem>
+              ))}
+            </Select>
+          ) : (
+            <Select
+              labelId="selectKeyboxLabel"
+              id="selectKeybox"
+              value=""
+              displayEmpty
+              label="Select your keybox"
+            >
+              <MenuItem value="">
+                <em>No keybox found</em>
               </MenuItem>
-            ))}
-          </Select>
-        ) : (
-          <Select
-            labelId="selectKeyboxLabel"
-            id="selectKeybox"
-            value=""
-            displayEmpty
-            label="Select your keybox"
+            </Select>
+          )}
+        </Grid>
+        <Grid item>
+          <Button variant="outlined" onClick={toggleEditKeyboxDialog}>
+            Edit Keybox
+          </Button>
+        </Grid>
+        <Grid item>
+          <IconButton
+            aria-label="refresh keyboxes"
+            onClick={() => handleRefreshKeyboxes(selectedKeyboxName)}
           >
-            <MenuItem value="">
-              <em>No keybox found</em>
-            </MenuItem>
-          </Select>
-        )}
-        <Button variant="outlined" onClick={toggleEditKeyboxDialog}>
-          Edit Keybox
-        </Button>
-        <IconButton
-          aria-label="refresh keyboxes"
-          onClick={() => handleRefreshKeyboxes(selectedKeyboxName)}
-        >
-          <Refresh />
-        </IconButton>
+            <Refresh />
+          </IconButton>
+        </Grid>
       </Grid>
 
       <Typography
