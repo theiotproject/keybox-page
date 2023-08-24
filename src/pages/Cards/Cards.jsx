@@ -82,40 +82,44 @@ function Cards() {
       <Typography component="h1" variant="h1" sx={{ fontSize: 50, m: 5 }}>
         Manage Cards
       </Typography>
-      <Grid container direction="row" my={4} gap={2}>
-        {selectedKeyboxData ? (
-          <Select
-            labelId="selectKeyboxLabel"
-            id="selectKeybox"
-            value={selectedKeyboxData.keyboxName}
-            label="Select your keybox"
-            onChange={handleChangeKeybox}
-          >
-            {keyboxesData.map((keybox, index) => (
-              <MenuItem key={index} value={keybox.data().keyboxName}>
-                {keybox.data().keyboxName}
+      <Grid container my={4} columnGap={2} alignItems={"center"}>
+        <Grid item>
+          {selectedKeyboxData ? (
+            <Select
+              labelId="selectKeyboxLabel"
+              id="selectKeybox"
+              value={selectedKeyboxData.keyboxName}
+              label="Select your keybox"
+              onChange={handleChangeKeybox}
+            >
+              {keyboxesData.map((keybox, index) => (
+                <MenuItem key={index} value={keybox.data().keyboxName}>
+                  {keybox.data().keyboxName}
+                </MenuItem>
+              ))}
+            </Select>
+          ) : (
+            <Select
+              labelId="selectKeyboxLabel"
+              id="selectKeybox"
+              value=""
+              displayEmpty
+              label="Select your keybox"
+            >
+              <MenuItem value="">
+                <em>No keybox found</em>
               </MenuItem>
-            ))}
-          </Select>
-        ) : (
-          <Select
-            labelId="selectKeyboxLabel"
-            id="selectKeybox"
-            value=""
-            displayEmpty
-            label="Select your keybox"
+            </Select>
+          )}
+        </Grid>
+        <Grid item>
+          <IconButton
+            aria-label="refresh keyboxes"
+            onClick={() => handleRefreshKeyboxes(selectedKeyboxName)}
           >
-            <MenuItem value="">
-              <em>No keybox found</em>
-            </MenuItem>
-          </Select>
-        )}
-        <IconButton
-          aria-label="refresh keyboxes"
-          onClick={() => handleRefreshKeyboxes(selectedKeyboxName)}
-        >
-          <Refresh />
-        </IconButton>
+            <Refresh />
+          </IconButton>
+        </Grid>
       </Grid>
       {/* pending cards box */}
       {selectedKeyboxData && (

@@ -84,45 +84,50 @@ function Events() {
       <Typography component="h1" variant="h1" sx={{ fontSize: 50, m: 5 }}>
         Events
       </Typography>
-      <Grid container direction="row" my={4} gap={2}>
-        {selectedKeyboxData ? (
-          <Select
-            labelId="selectKeyboxLabel"
-            id="selectKeybox"
-            value={selectedKeyboxData.keyboxName}
-            label="Select your keybox"
-            onChange={handleChangeKeybox}
-          >
-            {keyboxesData.map((keybox, index) => (
-              <MenuItem key={index} value={keybox.data().keyboxName}>
-                {keybox.data().keyboxName}
+      <Grid container my={4} columnGap={2} alignItems={"center"}>
+        <Grid item>
+          {selectedKeyboxData ? (
+            <Select
+              labelId="selectKeyboxLabel"
+              id="selectKeybox"
+              value={selectedKeyboxData.keyboxName}
+              label="Select your keybox"
+              onChange={handleChangeKeybox}
+            >
+              {keyboxesData.map((keybox, index) => (
+                <MenuItem key={index} value={keybox.data().keyboxName}>
+                  {keybox.data().keyboxName}
+                </MenuItem>
+              ))}
+            </Select>
+          ) : (
+            <Select
+              labelId="selectKeyboxLabel"
+              id="selectKeybox"
+              value=""
+              displayEmpty
+              label="Select your keybox"
+            >
+              <MenuItem value="">
+                <em>No keybox found</em>
               </MenuItem>
-            ))}
+            </Select>
+          )}
+        </Grid>
+        <Grid item>
+          <Select defaultValue={eventType} onChange={handleChangeEventType}>
+            <MenuItem value="accessEvents">Access Events</MenuItem>
+            <MenuItem value="deviceUpdateEvents">Device Update Events</MenuItem>
           </Select>
-        ) : (
-          <Select
-            labelId="selectKeyboxLabel"
-            id="selectKeybox"
-            value=""
-            displayEmpty
-            label="Select your keybox"
+        </Grid>
+        <Grid item>
+          <IconButton
+            aria-label="refresh keyboxes"
+            onClick={() => handleRefreshKeyboxes(selectedKeyboxName)}
           >
-            <MenuItem value="">
-              <em>No keybox found</em>
-            </MenuItem>
-          </Select>
-        )}
-        <Select defaultValue={eventType} onChange={handleChangeEventType}>
-          <MenuItem value="accessEvents">Access Events</MenuItem>
-          <MenuItem value="deviceUpdateEvents">Device Update Events</MenuItem>
-        </Select>
-
-        <IconButton
-          aria-label="refresh keyboxes"
-          onClick={() => handleRefreshKeyboxes(selectedKeyboxName)}
-        >
-          <Refresh />
-        </IconButton>
+            <Refresh />
+          </IconButton>
+        </Grid>
       </Grid>
 
       {eventType === "accessEvents" ? (
