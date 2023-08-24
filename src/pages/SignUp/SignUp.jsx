@@ -273,6 +273,7 @@ export default function SignUp() {
               variant="body2"
               component={RouterLink}
               underline="hover"
+              sx={{ fontSize: ".9rem" }}
             >
               Already have an account? Sign in
             </Link>

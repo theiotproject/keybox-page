@@ -216,6 +216,7 @@ export default function SignIn() {
                   href="signin/changepassword"
                   variant="body2"
                   underline="hover"
+                  sx={{ fontSize: ".9rem" }}
                 >
                   Forgot password?
                 </Link>
@@ -226,8 +227,9 @@ export default function SignIn() {
                   variant="body2"
                   component={RouterLink}
                   underline="hover"
+                  sx={{ fontSize: ".9rem" }}
                 >
-                  {"Don't have an account? Sign Up"}
+                  Don't have an account? Sign Up
                 </Link>
               </Grid>
             </Grid>
