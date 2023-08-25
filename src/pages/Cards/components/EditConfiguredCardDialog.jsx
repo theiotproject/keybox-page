@@ -34,9 +34,7 @@ import {
   where,
 } from "firebase/firestore";
 import { addUserEvent } from "src/util/services/addUserEvent";
-import { deleteCardInGolioth } from "src/util/services/deleteCardInGolioth";
-import { getAuthorizedSlotsFromGolioth } from "src/util/services/getAuthorizedSlotsFromGolioth";
-import { sendCardUpdateToGolioth } from "src/util/services/sendCardUpdateToGolioth";
+import { updateSlotsPrivilagesToGoliothState } from "src/util/services/updateSlotsPrivilagesToGoliothState";
 import { editCardValidationSchema } from "src/util/validation/editCardValidationSchema";
 
 import CustomFormSelect from "./CustomFormSelect";
@@ -70,21 +68,20 @@ function EditConfiguredCardDialog({
     reset();
   };
 
-  const getAuthorizedSlots = async (cardId) => {
-    const keyboxData = await getDoc(keyboxRef);
-    const authorizedSlotsArray = await getAuthorizedSlotsFromGolioth(
-      keyboxData.data().keyboxId,
-      cardId
-    );
+  // const getAuthorizedSlots = async (cardId) => {
+  //   const keyboxData = await getDoc(keyboxRef);
+  //   const authorizedSlotsArray = await getAuthorizedSlotsFromGolioth(
+  //     keyboxData.data().keyboxId,
+  //     cardId
+  //   );
 
-    if (authorizedSlotsArray.data.length > 0)
-      setAuthorizedSlots(authorizedSlotsArray.data.join(", "));
-  };
+  //   if (authorizedSlotsArray.data.length > 0)
+  //     setAuthorizedSlots(authorizedSlotsArray.data.join(", "));
+  // };
 
   const handleEditCard = async (data) => {
     setLoading(true);
 
-    console.log(data, cardData.id);
     // user input
     const authorizedSlotsToArray = data.authorizedSlots
       .replaceAll(" ", "")
@@ -151,13 +148,7 @@ function EditConfiguredCardDialog({
       cardData.id
     );
 
-    const keyboxData = await getDoc(keyboxRef);
-
-    await sendCardUpdateToGolioth(
-      keyboxData.data().keyboxId,
-      cardData.id,
-      authorizedSlotsToArray
-    );
+    await updateSlotsPrivilagesToGoliothState(keyboxRef);
 
     updateDoc(doc(keyboxRef, "cards", cardData.id), editCardData)
       .catch((error) => {
@@ -214,8 +205,7 @@ function EditConfiguredCardDialog({
       cardData.id
     );
 
-    const keyboxData = await getDoc(keyboxRef);
-    await deleteCardInGolioth(keyboxData.data().keyboxId, cardId);
+    await await updateSlotsPrivilagesToGoliothState(keyboxRef);
 
     deleteDoc(doc(keyboxRef, "cards", cardId))
       .catch((error) => {
@@ -234,11 +224,7 @@ function EditConfiguredCardDialog({
     setKeyboxRef(props.keyboxRef);
   }, [props.keyboxRef]);
 
-  useEffect(() => {
-    if (keyboxRef) {
-      getAuthorizedSlots(cardData.id);
-    }
-  }, [cardData, keyboxRef]);
+  useEffect(() => {}, [cardData, keyboxRef]);
 
   return (
     <>
@@ -384,7 +370,6 @@ function EditConfiguredCardDialog({
                     variant="outlined"
                     onClick={() => {
                       toggleDialog();
-                      getAuthorizedSlots(cardData.id);
                     }}
                     sx={{
                       gridColumn: { sm: "1/-1" },

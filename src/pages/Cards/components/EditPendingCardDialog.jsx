@@ -30,7 +30,7 @@ import {
   where,
 } from "firebase/firestore";
 import { addUserEvent } from "src/util/services/addUserEvent";
-import { sendCardUpdateToGolioth } from "src/util/services/sendCardUpdateToGolioth";
+import { updateSlotsPrivilagesToGoliothState } from "src/util/services/updateSlotsPrivilagesToGoliothState";
 import { editCardValidationSchema } from "src/util/validation/editCardValidationSchema";
 
 import CustomFormSelect from "./CustomFormSelect";
@@ -63,12 +63,11 @@ function EditPendingCardDialog({
       .replaceAll(" ", "")
       .split(",");
 
-    authorizedSlotsToArray.forEach((slotId) => {
+    authorizedSlotsToArray.forEach(async (slotId) => {
       const editSlotData = {
-        // Obgadaj czy na pewno warto zmieniac "," na "."
         authorizedCards: arrayUnion(Number(cardData.id.replace(",", "."))),
       };
-      updateDoc(doc(keyboxRef, "slots", slotId), editSlotData).catch(
+      await updateDoc(doc(keyboxRef, "slots", slotId), editSlotData).catch(
         (error) => {
           showError(
             `Error while editing authorized slots, slot ${slotId} doesn't exist, but got authorized anyway, check console for more info`
@@ -82,13 +81,8 @@ function EditPendingCardDialog({
       isPending: false,
       group: selectedGroup,
     };
-    const keyboxData = await getDoc(keyboxRef);
 
-    await sendCardUpdateToGolioth(
-      keyboxData.data().keyboxId,
-      cardData.id,
-      authorizedSlotsToArray
-    );
+    await updateSlotsPrivilagesToGoliothState(keyboxRef);
 
     const keyboxSnapshot = await getDoc(keyboxRef);
 

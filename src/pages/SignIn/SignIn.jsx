@@ -105,7 +105,7 @@ export default function SignIn() {
       .catch((error) => {
         if (error.message === "Firebase: Error (auth/user-not-found).") {
           showError(
-            "There is no user with this credentials in our database, create an account."
+            "Sorry, we couldn't find this email in our database. If you don't have an account SignUp"
           );
         } else {
           showError(
