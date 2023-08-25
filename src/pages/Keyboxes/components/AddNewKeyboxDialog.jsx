@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { Add, GridViewOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -11,6 +12,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  Typography,
 } from "@mui/material";
 
 import showError from "src/components/Toasts/ToastError";
@@ -24,6 +26,7 @@ import {
   getDocs,
   query,
   serverTimestamp,
+  setDoc,
   where,
 } from "firebase/firestore";
 import { db } from "src/backend/db_config";
@@ -70,25 +73,43 @@ function AddNewKeyboxDialog({ open, toggleDialog, refreshKeyboxesData }) {
       return;
     }
 
-    const addKeyboxQuery = {
+    const addKeyboxData = {
       keyboxId: data.keyboxId,
       keyboxName: data.keyboxName,
     };
 
-    const keyboxRef = await addDoc(keyboxCollectionRef, addKeyboxQuery)
-      .catch((error) => {
+    const keyboxRef = await addDoc(keyboxCollectionRef, addKeyboxData).catch(
+      (error) => {
         showError("Error while adding new keybox, check console for more info");
         console.error(error);
-      })
-      .finally(() => {
-        refreshKeyboxesData();
-        reset();
-        setLoading(false);
-        toggleDialog();
-      });
+      }
+    );
+
+    await setDoc(doc(keyboxRef, "slots", "1"), {
+      slotName: data.keySlotName1 ? data.keySlotName1 : "KeySlot #1",
+      authorizedCards: [],
+    });
+
+    await setDoc(doc(keyboxRef, "slots", "2"), {
+      slotName: data.keySlotName2 ? data.keySlotName2 : "KeySlot #2",
+      authorizedCards: [],
+    });
+
+    await setDoc(doc(keyboxRef, "slots", "3"), {
+      slotName: data.keySlotName3 ? data.keySlotName3 : "KeySlot #3",
+      authorizedCards: [],
+    }).finally(() => {
+      refreshKeyboxesData();
+      reset();
+      setLoading(false);
+      toggleDialog();
+    });
 
     // send log to keybox Events
     addUserEvent(keyboxRef, "new keybox", data.keyboxId, "-", "-");
+    addUserEvent(keyboxRef, "new key slot", data.keyboxId, 1, "-");
+    addUserEvent(keyboxRef, "new key slot", data.keyboxId, 2, "-");
+    addUserEvent(keyboxRef, "new key slot", data.keyboxId, 3, "-");
   };
 
   return (
@@ -101,117 +122,135 @@ function AddNewKeyboxDialog({ open, toggleDialog, refreshKeyboxesData }) {
           </DialogContent>
         </Dialog>
       ) : (
-        <Dialog open={open} onClose={toggleDialog}>
+        <Dialog
+          open={open}
+          onClose={() => {
+            toggleDialog();
+            reset();
+          }}
+        >
           <DialogTitle
             sx={{
-              fontSize: "2rem",
+              fontSize: "30px",
+              lineHeight: "30px",
+              fontWeight: "bold",
+              fontFamily: "Poppins",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
+              color: "gray",
+              marginY: "1em",
             }}
           >
             Add new KeyBox
-            <
           </DialogTitle>
-          <DialogContent
-            sx={{
-              marginX: { xs: "unset", sm: "4em" },
-            }}
-          >
+          <DialogContent>
             <Box
               component="form"
               noValidate
               sx={{
                 display: "grid",
                 placeItems: "center",
+                rowGap: "1em",
+                paddingX: "1.75em",
               }}
-              onSubmit={handleSubmit(handleEditCard)}
+              onSubmit={handleSubmit(handleAddNewKeybox)}
             >
               <TextField
                 autoFocus
-                margin="dense"
-                id="cardId"
-                name="cardId"
-                label="Card Id"
-                defaultValue={cardData.id}
-                {...register("cardId")}
-                error={!!errors.cardId}
-                helperText={errors.cardId?.message}
+                id="keyboxId"
+                name="keyboxId"
+                label={
+                  <div>
+                    KeyBox Id{" "}
+                    <Typography component="small" sx={{ fontSize: "12px" }}>
+                      *provided by the team
+                    </Typography>
+                  </div>
+                }
+                {...register("keyboxId")}
+                error={!!errors.keyboxId}
+                helperText={errors.keyboxId?.message}
                 fullWidth
-                variant="outlined"
-                sx={{ mt: 2, width: "100%" }}
-                disabled
+                variant="standard"
               />
               <TextField
-                autoFocus
-                margin="dense"
-                id="cardName"
-                name="cardName"
-                label="Card Name"
-                defaultValue={cardData.data().cardName}
-                {...register("cardName")}
-                error={!!errors.cardName}
-                helperText={errors.cardName?.message}
+                id="keyboxName"
+                name="keyboxName"
+                label="KeyBox Name"
+                {...register("keyboxName")}
+                error={!!errors.keyboxName}
+                helperText={errors.keyboxName?.message}
                 fullWidth
-                variant="outlined"
-                sx={{ mt: 2, width: "100%" }}
+                variant="standard"
               />
 
-              <CustomFormSelect
-                selectedValue={cardData.data().group}
-                setSelectedGroup={setSelectedGroup}
-                selectedGroup={selectedGroup}
-              />
-
-              <TextField
-                id="authorizedSlots"
-                name="authorizedSlots"
-                label="Authorized Slots"
-                {...register("authorizedSlots")}
-                error={!!errors.authorizedSlots}
-                helperText={errors.authorizedSlots?.message}
-                variant="outlined"
-                sx={{ mt: 2 }}
-                fullWidth
-              />
-              <em>Comma seperated</em>
-
-              <DialogActions
+              <Typography
                 sx={{
-                  display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                  columnGap: ".5em",
+                  fontSize: "20px",
+                  lineHeight: "30px",
+                  fontWeight: "bold",
+                  fontFamily: "Poppins",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  color: "gray",
+                  marginTop: "70px",
                 }}
-                disableSpacing
               >
-                <Button
-                  aria-label="delete"
-                  color="error"
-                  variant="contained"
-                  sx={{ width: "100%", marginY: "2em" }}
-                  onClick={() => handleDeleteCard(cardData.id)}
-                >
-                  <Delete />
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{ width: "100%", marginY: "2em" }}
-                  startIcon={<Add />}
-                  type="submit"
-                >
-                  Add Card
-                </Button>
-
+                KeySlot Names
+              </Typography>
+              <TextField
+                id="keySlotName1"
+                name="keySlotName1"
+                label="KeySlotName #1"
+                {...register("keySlotName1")}
+                error={!!errors.keySlotName1}
+                helperText={errors.keySlotName1?.message}
+                fullWidth
+                variant="standard"
+              />
+              <TextField
+                id="keySlotName2"
+                name="keySlotName2"
+                label="KeySlotName #2"
+                {...register("keySlotName2")}
+                error={!!errors.keySlotName2}
+                helperText={errors.keySlotName2?.message}
+                fullWidth
+                variant="standard"
+              />
+              <TextField
+                id="keySlotName3"
+                name="keySlotName3"
+                label="KeySlotName #3"
+                {...register("keySlotName3")}
+                error={!!errors.keySlotName3}
+                helperText={errors.keySlotName3?.message}
+                fullWidth
+                variant="standard"
+              />
+              <DialogActions sx={{ marginTop: "1em", gap: ".75em" }}>
                 <Button
                   variant="outlined"
-                  onClick={toggleDialog}
+                  onClick={() => {
+                    toggleDialog();
+                    reset();
+                  }}
                   sx={{
-                    gridColumn: { sm: "1/-1" },
-                    width: "100%",
+                    padding: ".5em 2em",
                   }}
                 >
                   Close
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{ padding: ".5em 2em" }}
+                  type="submit"
+                >
+                  Submit
                 </Button>
               </DialogActions>
             </Box>

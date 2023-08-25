@@ -214,7 +214,7 @@ function KeySlotsTable(props) {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* Add new slot button */}
+      {/* Add new slot button
       <Grid
         sx={{
           display: "flex",
@@ -231,7 +231,7 @@ function KeySlotsTable(props) {
           <Add sx={{ fontSize: "2rem" }} />
           Add new
         </Button>
-      </Grid>
+      </Grid> */}
       <AddNewKeySlotDialog
         open={addNewSlotDialogOpen}
         toggleDialog={handleAddNewSlotDialogToggle}

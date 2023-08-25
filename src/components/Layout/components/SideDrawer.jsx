@@ -169,7 +169,7 @@ export default function SideDrawer() {
                 <ListItem key={text} disablePadding sx={{ display: "block" }}>
                   <ListItemButton
                     href={links[index]}
-                    target={index === links.length - 1 && "_blank"}
+                    target={index === links.length - 1 ? "_blank" : "_self"}
                     sx={{
                       minHeight: 48,
                       justifyContent: open ? "initial" : "center",
