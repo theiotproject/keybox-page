@@ -3,7 +3,7 @@ import { useSignOut } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, IconButton } from "@mui/material";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -26,65 +26,47 @@ function SignOutBtn() {
   };
 
   return (
-    <ListItem
-      key={"Log Out"}
-      disablePadding
-      sx={{
-        display: "block",
-        backgroundColor: "primary.main",
-        width: "10rem",
-        borderRadius: 30,
-      }}
-    >
-      <ListItemButton
-        onClick={handleTogglePopUp}
+    <>
+      <Button
+        aria-label="sign out"
         sx={{
-          justifyContent: open ? "initial" : "center",
-          px: 2.5,
+          background: "#00618A",
+          padding: ".5rem",
+          position: "absolute",
+          right: "10px",
+          bottom: "10px",
+          ":hover": { background: "hsl(197.8,100%,25.1%)" },
         }}
+        onClick={handleTogglePopUp}
       >
-        <ListItemIcon
-          sx={{
-            minWidth: 0,
-            mr: open ? 3 : "auto",
-            justifyContent: "center",
-          }}
-        >
-          {<LogoutOutlinedIcon sx={{ color: "white" }} />}
-        </ListItemIcon>
-        <ListItemText
-          primary="Log Out"
-          sx={{ opacity: open ? 1 : 1, color: "white", ml: 2 }}
-        >
-          Log out
-        </ListItemText>
+        <LogoutOutlinedIcon sx={{ color: "white" }} />
+      </Button>
 
-        <Dialog open={open} onClose={handleTogglePopUp}>
-          <DialogTitle>Are you sure you want to log out?</DialogTitle>
-          <DialogActions>
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+      <Dialog open={open} onClose={handleTogglePopUp}>
+        <DialogTitle>Are you sure you want to log out?</DialogTitle>
+        <DialogActions>
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              variant="outlined"
+              onClick={handleTogglePopUp}
+              sx={{ m: 1 }}
             >
-              <Button
-                variant="outlined"
-                onClick={handleTogglePopUp}
-                sx={{ m: 1 }}
-              >
-                Cancel
-              </Button>
-              <Button variant="contained" onClick={handleSignOut} sx={{ m: 1 }}>
-                Log Out
-              </Button>
-            </Box>
-          </DialogActions>
-        </Dialog>
-      </ListItemButton>
-    </ListItem>
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={handleSignOut} sx={{ m: 1 }}>
+              Log Out
+            </Button>
+          </Box>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
 

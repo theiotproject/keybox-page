@@ -5,8 +5,10 @@ import {
 } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 
-import { Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
+import LeftSide from "src/components/LeftSide";
+import LeftSideMobile from "src/components/LeftSideMobile";
 import SignOutBtn from "src/components/SignOutBtn";
 
 import { auth } from "src/backend/db_config";
@@ -35,7 +37,7 @@ function Unverified() {
       } else {
         window.location.reload();
       }
-    }, 10000);
+    }, 20000);
 
     // console.log(currentUser);
     return () => clearInterval(isUserVerifiedInterval);
@@ -58,24 +60,65 @@ function Unverified() {
 
   return (
     <>
-      <Typography variant="body1">
-        Nie zweryfikowałeś jeszcze swojego maila, zrób to aby uzyskać pełen
-        dostęp do strony...
-      </Typography>
-      <Button
-        variant="contained"
-        onClick={async () => {
-          const success = await sendEmailVerification();
-          if (success) {
-            alert("Sent email");
-          }
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: "center",
         }}
       >
-        Wyślij ponownie
-      </Button>
-      <Button variant="contained" onClick={() => window.location.reload()}>
-        Gotowe
-      </Button>
+        <LeftSide />
+        <LeftSideMobile />
+        <Box
+          sx={{
+            display: "flex",
+            height: "100%",
+            flexDirection: "column",
+            justifyContent: "flex-start",
+            gap: "2em",
+            paddingX: "3em",
+          }}
+        >
+          <Typography component="h1" variant="h1">
+            Almost there!
+          </Typography>
+          <Typography component="h2" variant="h2">
+            {currentUser?.displayName}, check your inbox and verify your
+            account.
+          </Typography>
+          <Box
+            sx={{
+              marginTop: "3em",
+              display: "grid",
+              placeItems: "center",
+              gap: "1em",
+            }}
+          >
+            <Typography>You can't find the message in your inbox?</Typography>
+            <Button
+              variant="contained"
+              onClick={async () => {
+                const success = await sendEmailVerification();
+                if (success) {
+                  alert("Sent email");
+                }
+              }}
+            >
+              Send Again
+            </Button>
+          </Box>
+          <Box sx={{ display: "grid", placeItems: "center", gap: "1em" }}>
+            <Typography>You have already verified your email?</Typography>
+            <Button
+              variant="contained"
+              onClick={() => window.location.reload()}
+            >
+              Take me to the dashboard
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+
       <SignOutBtn />
     </>
   );
