@@ -102,46 +102,117 @@ function AddNewKeyboxDialog({ open, toggleDialog, refreshKeyboxesData }) {
         </Dialog>
       ) : (
         <Dialog open={open} onClose={toggleDialog}>
-          <DialogTitle>Add new keybox</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Please, input the keybox id number <br />
-              and choose a name for your new Key Box.
-            </DialogContentText>
+          <DialogTitle
+            sx={{
+              fontSize: "2rem",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            Add new KeyBox
+            <
+          </DialogTitle>
+          <DialogContent
+            sx={{
+              marginX: { xs: "unset", sm: "4em" },
+            }}
+          >
             <Box
               component="form"
               noValidate
-              onSubmit={handleSubmit(handleAddNewKeybox)}
+              sx={{
+                display: "grid",
+                placeItems: "center",
+              }}
+              onSubmit={handleSubmit(handleEditCard)}
             >
               <TextField
                 autoFocus
                 margin="dense"
-                id="keyboxId"
-                name="keyboxId"
-                label="Keybox ID"
-                type="text"
+                id="cardId"
+                name="cardId"
+                label="Card Id"
+                defaultValue={cardData.id}
+                {...register("cardId")}
+                error={!!errors.cardId}
+                helperText={errors.cardId?.message}
                 fullWidth
-                {...register("keyboxId")}
-                error={!!errors.keyboxId}
-                helperText={errors.keyboxId?.message}
-                variant="standard"
+                variant="outlined"
+                sx={{ mt: 2, width: "100%" }}
+                disabled
               />
               <TextField
                 autoFocus
                 margin="dense"
-                id="keyboxName"
-                name="keyboxName"
-                label="Keybox Name"
-                type="text"
+                id="cardName"
+                name="cardName"
+                label="Card Name"
+                defaultValue={cardData.data().cardName}
+                {...register("cardName")}
+                error={!!errors.cardName}
+                helperText={errors.cardName?.message}
                 fullWidth
-                {...register("keyboxName")}
-                error={!!errors.keyboxName}
-                helperText={errors.keyboxName?.message}
-                variant="standard"
+                variant="outlined"
+                sx={{ mt: 2, width: "100%" }}
               />
-              <DialogActions>
-                <Button onClick={toggleDialog}>Cancel</Button>
-                <Button type="submit">Submit</Button>
+
+              <CustomFormSelect
+                selectedValue={cardData.data().group}
+                setSelectedGroup={setSelectedGroup}
+                selectedGroup={selectedGroup}
+              />
+
+              <TextField
+                id="authorizedSlots"
+                name="authorizedSlots"
+                label="Authorized Slots"
+                {...register("authorizedSlots")}
+                error={!!errors.authorizedSlots}
+                helperText={errors.authorizedSlots?.message}
+                variant="outlined"
+                sx={{ mt: 2 }}
+                fullWidth
+              />
+              <em>Comma seperated</em>
+
+              <DialogActions
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                  columnGap: ".5em",
+                }}
+                disableSpacing
+              >
+                <Button
+                  aria-label="delete"
+                  color="error"
+                  variant="contained"
+                  sx={{ width: "100%", marginY: "2em" }}
+                  onClick={() => handleDeleteCard(cardData.id)}
+                >
+                  <Delete />
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{ width: "100%", marginY: "2em" }}
+                  startIcon={<Add />}
+                  type="submit"
+                >
+                  Add Card
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  onClick={toggleDialog}
+                  sx={{
+                    gridColumn: { sm: "1/-1" },
+                    width: "100%",
+                  }}
+                >
+                  Close
+                </Button>
               </DialogActions>
             </Box>
           </DialogContent>
