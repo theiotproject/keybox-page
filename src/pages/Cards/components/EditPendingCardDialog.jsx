@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Add, AddCard, Close, Delete } from "@mui/icons-material";
+import { Add, AddCard, Close, Delete as DeleteIcon } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -10,6 +10,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   TextField,
 } from "@mui/material";
 
@@ -33,6 +34,7 @@ import { addUserEvent } from "src/util/services/addUserEvent";
 import { updateSlotsPrivilagesToGoliothState } from "src/util/services/updateSlotsPrivilagesToGoliothState";
 import { editCardValidationSchema } from "src/util/validation/editCardValidationSchema";
 
+import CustomFormMultipleSelect from "./CustomFormMultipleSelect";
 import CustomFormSelect from "./CustomFormSelect";
 
 function EditPendingCardDialog({
@@ -45,12 +47,14 @@ function EditPendingCardDialog({
   const [isLoading, setLoading] = useState();
   const [keyboxRef, setKeyboxRef] = useState();
 
-  const [selectedGroup, setSelectedGroup] = useState("");
+  // const [selectedGroup, setSelectedGroup] = useState("");
+  const [selectedSlots, setSelectedSlots] = useState([]);
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(editCardValidationSchema),
@@ -59,9 +63,16 @@ function EditPendingCardDialog({
   const handleEditCard = async (data) => {
     setLoading(true);
 
-    const authorizedSlotsToArray = data.authorizedSlots
-      .replaceAll(" ", "")
-      .split(",");
+    const slotsCollectionRef = collection(keyboxRef, "slots");
+    const selectedSlotsCollectionQuery = query(
+      slotsCollectionRef,
+      where("slotName", "in", selectedSlots)
+    );
+    const selectedSlotsSnapshot = await getDocs(selectedSlotsCollectionQuery);
+
+    const authorizedSlotsToArray = selectedSlotsSnapshot.docs.map(
+      (slot) => slot.id
+    );
 
     authorizedSlotsToArray.forEach(async (slotId) => {
       const editSlotData = {
@@ -72,6 +83,7 @@ function EditPendingCardDialog({
           showError(
             `Error while editing authorized slots, slot ${slotId} doesn't exist, but got authorized anyway, check console for more info`
           );
+          console.error(error);
         }
       );
     });
@@ -79,7 +91,7 @@ function EditPendingCardDialog({
     const editCardData = {
       cardName: data.cardName,
       isPending: false,
-      group: selectedGroup,
+      // group: selectedGroup,
     };
 
     await updateSlotsPrivilagesToGoliothState(keyboxRef);
@@ -168,6 +180,13 @@ function EditPendingCardDialog({
     setKeyboxRef(props.keyboxRef);
   }, [props.keyboxRef]);
 
+  useEffect(() => {
+    if (cardData) {
+      setValue("cardId", cardData.id);
+      setValue("cardName", cardData.data().cardName);
+    }
+  }, [cardData, selectedSlots]);
+
   return (
     <>
       {isLoading ? (
@@ -181,33 +200,29 @@ function EditPendingCardDialog({
         <Dialog open={open} onClose={toggleDialog}>
           <DialogTitle
             sx={{
-              fontSize: "2rem",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
+              fontSize: "30px",
+              lineHeight: "30px",
+              fontWeight: "bold",
               alignItems: "center",
+              color: "#121212",
+              marginY: "1em",
             }}
           >
-            Configure Pending Card
-            <AddCard sx={{ fontSize: "3em" }} />
+            Configure Card
           </DialogTitle>
-          <DialogContent
-            sx={{
-              marginX: { xs: "unset", sm: "4em" },
-            }}
-          >
+          <DialogContent>
             <Box
               component="form"
               noValidate
               sx={{
-                display: "grid",
-                placeItems: "center",
+                display: "flex",
+                justifyContent: "flex-start",
+                flexDirection: "column",
+                rowGap: "1em",
               }}
               onSubmit={handleSubmit(handleEditCard)}
             >
               <TextField
-                autoFocus
-                margin="dense"
                 id="cardId"
                 name="cardId"
                 label="Card Id"
@@ -215,14 +230,13 @@ function EditPendingCardDialog({
                 {...register("cardId")}
                 error={!!errors.cardId}
                 helperText={errors.cardId?.message}
-                fullWidth
-                variant="outlined"
-                sx={{ mt: 2, width: "100%" }}
+                variant="standard"
+                sx={{
+                  width: "50%",
+                }}
                 disabled
               />
               <TextField
-                autoFocus
-                margin="dense"
                 id="cardName"
                 name="cardName"
                 label="Card Name"
@@ -230,65 +244,42 @@ function EditPendingCardDialog({
                 {...register("cardName")}
                 error={!!errors.cardName}
                 helperText={errors.cardName?.message}
-                fullWidth
-                variant="outlined"
-                sx={{ mt: 2, width: "100%" }}
+                variant="standard"
+                sx={{ width: "50%" }}
               />
 
-              <CustomFormSelect
+              {/* <CustomFormSelect
                 selectedValue={cardData.data().group}
                 setSelectedGroup={setSelectedGroup}
                 selectedGroup={selectedGroup}
-              />
+              /> */}
 
-              <TextField
-                id="authorizedSlots"
-                name="authorizedSlots"
-                label="Authorized Slots"
-                {...register("authorizedSlots")}
-                error={!!errors.authorizedSlots}
-                helperText={errors.authorizedSlots?.message}
-                variant="outlined"
-                sx={{ mt: 2 }}
-                fullWidth
+              <CustomFormMultipleSelect
+                cardId={cardData.id}
+                keyboxRef={keyboxRef}
+                setSelectedSlots={setSelectedSlots}
+                selectedSlots={selectedSlots}
               />
-              <em>Comma seperated</em>
 
               <DialogActions
                 sx={{
                   display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                  columnGap: ".5em",
+                  gridTemplateColumns: "30px 150px 150px",
+                  columnGap: "1em",
                 }}
-                disableSpacing
               >
-                <Button
+                <IconButton
                   aria-label="delete"
-                  color="error"
                   variant="contained"
-                  sx={{ width: "100%", marginY: "2em" }}
                   onClick={() => handleDeleteCard(cardData.id)}
                 >
-                  <Delete />
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{ width: "100%", marginY: "2em" }}
-                  startIcon={<Add />}
-                  type="submit"
-                >
-                  Add Card
-                </Button>
-
-                <Button
-                  variant="outlined"
-                  onClick={toggleDialog}
-                  sx={{
-                    gridColumn: { sm: "1/-1" },
-                    width: "100%",
-                  }}
-                >
+                  <DeleteIcon />
+                </IconButton>
+                <Button variant="outlined" onClick={toggleDialog}>
                   Close
+                </Button>
+                <Button variant="contained" startIcon={<Add />} type="submit">
+                  Add Card
                 </Button>
               </DialogActions>
             </Box>

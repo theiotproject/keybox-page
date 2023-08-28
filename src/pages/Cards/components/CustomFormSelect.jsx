@@ -37,7 +37,7 @@ function CustomFormSelect({
   }, []);
 
   return (
-    <FormControl fullWidth sx={{ mt: 2, width: "100%" }}>
+    <FormControl>
       <InputLabel id="groupName-label">Group</InputLabel>
       <Select
         labelId="groupName"

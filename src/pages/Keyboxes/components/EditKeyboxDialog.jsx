@@ -139,12 +139,11 @@ function EditKeyboxDialog({
               fontSize: "30px",
               lineHeight: "30px",
               fontWeight: "bold",
-              fontFamily: "Poppins",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              color: "gray",
+              color: "#121212",
               marginY: "1em",
             }}
           >

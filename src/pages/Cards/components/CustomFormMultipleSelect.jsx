@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import FormControl from "@mui/material/FormControl";
@@ -87,13 +87,19 @@ export default function CustomFormMultipleSelect(props) {
   }, [keyboxRef, cardId]);
 
   return (
-    <div>
-      <FormControl fullWidth sx={{ mt: 2, minWidth: "306.33px" }}>
-        <InputLabel id="authorizedSlotsLabel">Chip</InputLabel>
+    <>
+      <FormControl fullWidth sx={{ marginBottom: "8rem" }}>
+        <Typography sx={{ marginBottom: ".25rem" }}>
+          Choose the KeySlots the Card can open
+        </Typography>
         <Select
+          sx={{
+            "& legend": { display: "none" },
+            "& fieldset": { top: 0 },
+          }}
           disabled={props.disabled}
-          labelId="authorizedSlots"
           id="authorizedSlots"
+          variant="outlined"
           multiple
           value={props.selectedSlots}
           onChange={handleChange}
@@ -119,6 +125,6 @@ export default function CustomFormMultipleSelect(props) {
             ))}
         </Select>
       </FormControl>
-    </div>
+    </>
   );
 }

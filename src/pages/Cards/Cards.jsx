@@ -17,7 +17,6 @@ import PendingCardsBox from "./components/PendingCardsBox";
 import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
-import { updateSlotsPrivilagesToGoliothState } from "src/util/services/updateSlotsPrivilagesToGoliothState";
 
 function Cards() {
   const { currentUser } = useAuthProvider();

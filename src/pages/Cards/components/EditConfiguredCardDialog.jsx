@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import {
-  Close,
-  CreditCard,
-  Delete as DeleteIcon,
-  Edit,
-} from "@mui/icons-material";
+import { Close, Delete as DeleteIcon, Edit } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -15,6 +10,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   TextField,
 } from "@mui/material";
 
@@ -38,7 +34,6 @@ import { updateSlotsPrivilagesToGoliothState } from "src/util/services/updateSlo
 import { editCardValidationSchema } from "src/util/validation/editCardValidationSchema";
 
 import CustomFormMultipleSelect from "./CustomFormMultipleSelect";
-import CustomFormSelect from "./CustomFormSelect";
 
 function EditConfiguredCardDialog({
   open,
@@ -52,13 +47,14 @@ function EditConfiguredCardDialog({
   const [isLoading, setLoading] = useState(false);
   const [isCardEditMode, setCardEditMode] = useState(false);
 
-  const [selectedGroup, setSelectedGroup] = useState("");
+  // const [selectedGroup, setSelectedGroup] = useState("");
   const [selectedSlots, setSelectedSlots] = useState([]);
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(editCardValidationSchema),
@@ -66,22 +62,30 @@ function EditConfiguredCardDialog({
 
   const toggleCardEditMode = () => {
     setCardEditMode(!isCardEditMode);
-    reset();
   };
 
   const handleEditCard = async (data) => {
     setLoading(true);
 
-    const authorizedSlotsToArray = selectedSlots.replaceAll(" ", "").split(",");
-
-    // firesotre slots data
     const slotsCollectionRef = collection(keyboxRef, "slots");
+    const selectedSlotsCollectionQuery = query(
+      slotsCollectionRef,
+      where("slotName", "in", selectedSlots)
+    );
+    const selectedSlotsSnapshot = await getDocs(selectedSlotsCollectionQuery);
+
+    const authorizedSlotsToArray = selectedSlotsSnapshot.docs.map(
+      (slot) => slot.id
+    );
+
+    // firestore slots data
     const slotsCollectionQuery = query(
       slotsCollectionRef,
       where("authorizedCards", "array-contains", Number(data.cardId))
     );
 
     const slotsSnapshot = await getDocs(slotsCollectionQuery);
+
     const availableSlots = slotsSnapshot.docs.map((slot) => slot.id);
 
     const slotsAccessToDelete = availableSlots.filter(
@@ -121,7 +125,7 @@ function EditConfiguredCardDialog({
     const editCardData = {
       cardName: data.cardName,
       isPending: false,
-      group: selectedGroup,
+      // group: selectedGroup,
     };
 
     const keyboxSnapshot = await getDoc(keyboxRef);
@@ -169,7 +173,6 @@ function EditConfiguredCardDialog({
 
     if (slotIdArray.length) {
       slotIdArray.forEach((slotId) => {
-        console.log(slotId);
         updateDoc(doc(keyboxRef, "slots", slotId), editSlotData).catch(
           (error) => {
             showError(
@@ -211,6 +214,13 @@ function EditConfiguredCardDialog({
     setKeyboxRef(props.keyboxRef);
   }, [props.keyboxRef]);
 
+  useEffect(() => {
+    if (cardData) {
+      setValue("cardId", cardData.id);
+      setValue("cardName", cardData.data().cardName);
+    }
+  }, [cardData, selectedSlots]);
+
   return (
     <>
       {isLoading ? (
@@ -224,33 +234,33 @@ function EditConfiguredCardDialog({
         <Dialog open={open} onClose={toggleDialog}>
           <DialogTitle
             sx={{
-              fontSize: "2rem",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
+              fontSize: "30px",
+              lineHeight: "30px",
+              fontWeight: "bold",
               alignItems: "center",
+              color: "#121212",
+              marginY: "1em",
             }}
           >
-            Card Profile
-            <CreditCard sx={{ fontSize: "3em" }} />
+            Configure Card
           </DialogTitle>
-          <DialogContent
-            sx={{
-              marginX: { xs: "unset", sm: "4em" },
-            }}
-          >
+          <DialogContent>
             <Box
               component="form"
               noValidate
               sx={{
-                display: "grid",
-                placeItems: "center",
+                display: "flex",
+                justifyContent: "flex-start",
+                flexDirection: "column",
+                rowGap: "1em",
               }}
               onSubmit={handleSubmit(handleEditCard)}
             >
               <TextField
-                autoFocus
-                margin="dense"
+                sx={{
+                  width: "50%",
+                }}
+                variant="standard"
                 id="cardId"
                 name="cardId"
                 label="Card Id"
@@ -258,14 +268,13 @@ function EditConfiguredCardDialog({
                 {...register("cardId")}
                 error={!!errors.cardId}
                 helperText={errors.cardId?.message}
-                fullWidth
-                variant="outlined"
-                sx={{ mt: 2, width: "100%" }}
                 disabled={!isCardEditMode}
               />
               <TextField
-                autoFocus
-                margin="dense"
+                sx={{
+                  width: "50%",
+                }}
+                variant="standard"
                 id="cardName"
                 name="cardName"
                 label="Card Name"
@@ -273,17 +282,16 @@ function EditConfiguredCardDialog({
                 {...register("cardName")}
                 error={!!errors.cardName}
                 helperText={errors.cardName?.message}
-                fullWidth
-                variant="outlined"
-                sx={{ mt: 2, width: "100%" }}
                 disabled={!isCardEditMode}
               />
-              <CustomFormSelect
+              {/* Group select */}
+              {/* <CustomFormSelect
                 disabled={!isCardEditMode}
                 selectedValue={cardData.data().group}
                 setSelectedGroup={setSelectedGroup}
                 selectedGroup={selectedGroup}
-              />
+              /> */}
+
               <CustomFormMultipleSelect
                 disabled={!isCardEditMode}
                 cardId={cardData.id}
@@ -291,44 +299,25 @@ function EditConfiguredCardDialog({
                 setSelectedSlots={setSelectedSlots}
                 selectedSlots={selectedSlots}
               />
-              {/* 
-              <TextField
-                id="authorizedSlots"
-                name="authorizedSlots"
-                label="Authorized Slots"
-                {...register("authorizedSlots")}
-                value={authorizedSlots || ""}
-                onChange={(e) => setAuthorizedSlots(e.target.value)}
-                error={!!errors.authorizedSlots}
-                helperText={errors.authorizedSlots?.message}
-                variant="outlined"
-                sx={{ mt: 2 }}
-                fullWidth
-                disabled={!isCardEditMode}
-              />
-              <em>Comma seperated</em> */}
 
               <DialogActions
+                disableSpacing
                 sx={{
                   display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-                  columnGap: ".5em",
+                  gridTemplateColumns: "30px 150px 150px",
+                  columnGap: "1em",
                 }}
-                disableSpacing
               >
-                <Button
+                <IconButton
                   aria-label="delete"
-                  color="error"
                   variant="contained"
-                  sx={{ width: "100%", marginY: "2em" }}
                   onClick={() => handleDeleteCard(cardData.id)}
                 >
                   <DeleteIcon />
-                </Button>
+                </IconButton>
                 {!isCardEditMode ? (
                   <Button
                     variant="contained"
-                    sx={{ width: "100%", marginY: "2em" }}
                     startIcon={<Edit />}
                     onClick={() => toggleCardEditMode()}
                   >
@@ -337,7 +326,6 @@ function EditConfiguredCardDialog({
                 ) : (
                   <Button
                     variant="contained"
-                    sx={{ width: "100%", marginY: "2em" }}
                     startIcon={<Close />}
                     onClick={() => toggleCardEditMode()}
                     color="error"
@@ -347,14 +335,7 @@ function EditConfiguredCardDialog({
                 )}
 
                 {isCardEditMode ? (
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    sx={{
-                      gridColumn: { sm: "1/-1" },
-                      width: "100%",
-                    }}
-                  >
+                  <Button variant="contained" type="submit">
                     Submit & Close
                   </Button>
                 ) : (
@@ -362,13 +343,10 @@ function EditConfiguredCardDialog({
                     variant="outlined"
                     onClick={() => {
                       toggleDialog();
-                    }}
-                    sx={{
-                      gridColumn: { sm: "1/-1" },
-                      width: "100%",
+                      reset();
                     }}
                   >
-                    Close
+                    Cancel
                   </Button>
                 )}
               </DialogActions>
