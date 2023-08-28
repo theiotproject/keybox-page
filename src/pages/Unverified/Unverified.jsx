@@ -1,8 +1,4 @@
-import { useEffect } from "react";
-import {
-  useAuthState,
-  useSendEmailVerification,
-} from "react-firebase-hooks/auth";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Box, Button, Typography } from "@mui/material";
@@ -10,13 +6,19 @@ import { Box, Button, Typography } from "@mui/material";
 import LeftSide from "src/components/LeftSide";
 import LeftSideMobile from "src/components/LeftSideMobile";
 import SignOutBtn from "src/components/SignOutBtn";
+import showError from "src/components/Toasts/ToastError";
+import showInfo from "src/components/Toasts/ToastInfo";
+import showSuccess from "src/components/Toasts/ToastSuccess";
 
+import { sendEmailVerification } from "firebase/auth";
 import { auth } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
 function Unverified() {
   const { currentUser } = useAuthProvider();
   const navigate = useNavigate();
+
+  const [isSending, setSending] = useState(false);
 
   // Once every 10 seconds site refreshes to check if user verified email
   useEffect(() => {
@@ -25,6 +27,7 @@ function Unverified() {
       currentUser?.emailVerified ||
       currentUser?.providerData[0].providerId === "google.com"
     ) {
+      showSuccess("You are now verified, you can go to the dashboard");
       navigate("/dashboard");
     }
 
@@ -33,30 +36,29 @@ function Unverified() {
         currentUser.emailVerified ||
         currentUser?.providerData[0].providerId === "google.com"
       ) {
+        showSuccess("You are now verified, you can go to the dashboard");
         navigate("/dashboard");
       } else {
         window.location.reload();
       }
     }, 20000);
 
-    // console.log(currentUser);
     return () => clearInterval(isUserVerifiedInterval);
   }, [currentUser]);
 
-  const [sendEmailVerification, sending, error] =
-    useSendEmailVerification(auth);
-
-  if (error) {
-    return (
-      <div>
-        <p>Error: {error.message}</p>
-      </div>
-    );
-  }
-
-  if (sending) {
-    return <p>Sending...</p>;
-  }
+  const sendUserVerificationEmail = async () => {
+    setSending(true);
+    showInfo("Sending verification email");
+    sendEmailVerification(currentUser)
+      .then(() => {
+        showSuccess("Verification email sent");
+      })
+      .catch((error) => {
+        showError("Error while sending email, check console for more info");
+        console.error(error);
+      });
+    setSending(false);
+  };
 
   return (
     <>
@@ -97,12 +99,8 @@ function Unverified() {
             <Typography>You can't find the message in your inbox?</Typography>
             <Button
               variant="contained"
-              onClick={async () => {
-                const success = await sendEmailVerification();
-                if (success) {
-                  alert("Sent email");
-                }
-              }}
+              disabled={isSending}
+              onClick={sendUserVerificationEmail}
             >
               Send Again
             </Button>
