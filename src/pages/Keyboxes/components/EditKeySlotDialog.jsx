@@ -143,11 +143,23 @@ function EditKeySlotDialog({
         </Dialog>
       ) : (
         <Dialog open={open} onClose={toggleDialog}>
-          <DialogTitle>Edit Key Slot</DialogTitle>
+          <DialogTitle
+            sx={{
+              fontSize: "30px",
+              lineHeight: "30px",
+              fontWeight: "bold",
+              fontFamily: "Poppins",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              color: "gray",
+              marginY: "1em",
+            }}
+          >
+            Edit KeySlot
+          </DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Here you can change the slot name!
-            </DialogContentText>
             <Box
               component="form"
               noValidate
@@ -166,15 +178,35 @@ function EditKeySlotDialog({
                 helperText={errors.slotName?.message}
                 variant="standard"
               />
-              <DialogActions>
+              <DialogActions
+                sx={{
+                  marginTop: "2rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "2rem",
+                }}
+              >
                 <IconButton
                   aria-label="delete slot"
-                  onClick={() => handleDeleteSlot()}
+                  disabled
+                  // onClick={() => handleDeleteSlot()}
                 >
                   <Delete />
                 </IconButton>
-                <Button onClick={toggleDialog}>Cancel</Button>
-                <Button type="submit">Submit</Button>
+                <Button
+                  onClick={toggleDialog}
+                  sx={{ padding: ".5em 2em" }}
+                  variant="outlined"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  sx={{ padding: ".5em 2em" }}
+                  variant="contained"
+                >
+                  Submit
+                </Button>
               </DialogActions>
             </Box>
           </DialogContent>

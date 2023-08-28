@@ -27,6 +27,7 @@ import {
 } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
+import { updateSlotsPrivilagesToGoliothState } from "src/util/services/updateSlotsPrivilagesToGoliothState";
 
 function Keyboxes() {
   const { currentUser } = useAuthProvider();
@@ -91,6 +92,9 @@ function Keyboxes() {
 
   const deleteSelectedKeybox = async (keyboxRef) => {
     deleteDoc(keyboxRef)
+      .then(() => {
+        updateSlotsPrivilagesToGoliothState(keyboxRef);
+      })
       .catch((error) => {
         showError(
           "Erorr while deleting selected keybox, check console for more info"

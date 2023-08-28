@@ -123,33 +123,6 @@ function EditKeyboxDialog({
     );
   };
 
-  const handleDeleteKeybox = async () => {
-    const keyboxRef = selectedKeyboxData.keyboxRef;
-
-    setLoading(true);
-    deleteDoc(keyboxRef)
-      .catch((error) => {
-        showError("Error while deleting keybox, check console for more info");
-        console.error(error);
-      })
-      .finally(() => {
-        refreshKeyboxesData();
-        toggleDialog();
-        setLoading(false);
-      });
-
-    const keyboxSnapshot = await getDoc(keyboxRef);
-
-    // send log to keybox Events
-    addUserEvent(
-      keyboxRef,
-      "keybox deleted",
-      keyboxSnapshot.data().keyboxId,
-      "-",
-      "-"
-    );
-  };
-
   return (
     <>
       {isLoading ? (
@@ -161,11 +134,23 @@ function EditKeyboxDialog({
         </Dialog>
       ) : (
         <Dialog open={open} onClose={toggleDialog}>
-          <DialogTitle>Edit keybox</DialogTitle>
+          <DialogTitle
+            sx={{
+              fontSize: "30px",
+              lineHeight: "30px",
+              fontWeight: "bold",
+              fontFamily: "Poppins",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              color: "gray",
+              marginY: "1em",
+            }}
+          >
+            Edit KeyBox
+          </DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Here you can change the device name
-            </DialogContentText>
             <Box
               component="form"
               noValidate
@@ -184,17 +169,25 @@ function EditKeyboxDialog({
                 variant="standard"
                 sx={{ mt: 2 }}
               />
-              <DialogActions>
-                <IconButton
-                  aria-label="delete keybox"
-                  onClick={() => handleDeleteKeybox()}
+              <DialogActions
+                sx={{
+                  marginTop: "2rem",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Button
+                  variant="outlined"
+                  onClick={toggleDialog}
+                  sx={{ padding: ".5em 2em" }}
                 >
-                  <Delete />
-                </IconButton>
-                <Button variant="outlined" onClick={toggleDialog}>
                   Cancel
                 </Button>
-                <Button variant="contained" type="submit">
+                <Button
+                  variant="contained"
+                  type="submit"
+                  sx={{ padding: ".5em 2em" }}
+                >
                   Submit
                 </Button>
               </DialogActions>
