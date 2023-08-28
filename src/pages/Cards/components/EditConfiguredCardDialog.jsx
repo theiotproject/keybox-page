@@ -37,6 +37,7 @@ import { addUserEvent } from "src/util/services/addUserEvent";
 import { updateSlotsPrivilagesToGoliothState } from "src/util/services/updateSlotsPrivilagesToGoliothState";
 import { editCardValidationSchema } from "src/util/validation/editCardValidationSchema";
 
+import CustomFormMultipleSelect from "./CustomFormMultipleSelect";
 import CustomFormSelect from "./CustomFormSelect";
 
 function EditConfiguredCardDialog({
@@ -52,7 +53,7 @@ function EditConfiguredCardDialog({
   const [isCardEditMode, setCardEditMode] = useState(false);
 
   const [selectedGroup, setSelectedGroup] = useState("");
-  const [authorizedSlots, setAuthorizedSlots] = useState();
+  const [selectedSlots, setSelectedSlots] = useState([]);
 
   const {
     register,
@@ -68,24 +69,10 @@ function EditConfiguredCardDialog({
     reset();
   };
 
-  // const getAuthorizedSlots = async (cardId) => {
-  //   const keyboxData = await getDoc(keyboxRef);
-  //   const authorizedSlotsArray = await getAuthorizedSlotsFromGolioth(
-  //     keyboxData.data().keyboxId,
-  //     cardId
-  //   );
-
-  //   if (authorizedSlotsArray.data.length > 0)
-  //     setAuthorizedSlots(authorizedSlotsArray.data.join(", "));
-  // };
-
   const handleEditCard = async (data) => {
     setLoading(true);
 
-    // user input
-    const authorizedSlotsToArray = data.authorizedSlots
-      .replaceAll(" ", "")
-      .split(",");
+    const authorizedSlotsToArray = selectedSlots.replaceAll(" ", "").split(",");
 
     // firesotre slots data
     const slotsCollectionRef = collection(keyboxRef, "slots");
@@ -205,7 +192,7 @@ function EditConfiguredCardDialog({
       cardData.id
     );
 
-    await await updateSlotsPrivilagesToGoliothState(keyboxRef);
+    await updateSlotsPrivilagesToGoliothState(keyboxRef);
 
     deleteDoc(doc(keyboxRef, "cards", cardId))
       .catch((error) => {
@@ -223,8 +210,6 @@ function EditConfiguredCardDialog({
   useEffect(() => {
     setKeyboxRef(props.keyboxRef);
   }, [props.keyboxRef]);
-
-  useEffect(() => {}, [cardData, keyboxRef]);
 
   return (
     <>
@@ -299,7 +284,14 @@ function EditConfiguredCardDialog({
                 setSelectedGroup={setSelectedGroup}
                 selectedGroup={selectedGroup}
               />
-
+              <CustomFormMultipleSelect
+                disabled={!isCardEditMode}
+                cardId={cardData.id}
+                keyboxRef={keyboxRef}
+                setSelectedSlots={setSelectedSlots}
+                selectedSlots={selectedSlots}
+              />
+              {/* 
               <TextField
                 id="authorizedSlots"
                 name="authorizedSlots"
@@ -314,7 +306,7 @@ function EditConfiguredCardDialog({
                 fullWidth
                 disabled={!isCardEditMode}
               />
-              <em>Comma seperated</em>
+              <em>Comma seperated</em> */}
 
               <DialogActions
                 sx={{
