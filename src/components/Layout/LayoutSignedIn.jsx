@@ -8,12 +8,16 @@ import Footer from "src/components/Layout/components/Footer";
 
 function Layout() {
   return (
-    <>
+    <div style={{ backgroundColor: "#F2F2F8" }}>
       <Header />
       <MiniDrawer />
       <Container
         maxWidth="xl"
-        sx={{ pl: { xs: "64px", sm: "88px" }, pr: { xs: "0px", sm: "24px" } }}
+        sx={{
+          pl: { xs: "64px", sm: "88px" },
+          pr: { xs: "0px", sm: "24px" },
+          pb: "1em",
+        }}
         disableGutters={true}
       >
         <main>
@@ -22,7 +26,7 @@ function Layout() {
       </Container>
 
       <Footer />
-    </>
+    </div>
   );
 }
 

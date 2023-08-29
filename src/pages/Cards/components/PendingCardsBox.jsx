@@ -137,6 +137,7 @@ function PendingCardsBox({ refreshCards, ...props }) {
     <Box
       sx={{
         border: "3px solid gray",
+        bgcolor: "white",
         borderRadius: "4px",
         paddingY: "1em",
         paddingX: "1.5em",
@@ -159,6 +160,7 @@ function PendingCardsBox({ refreshCards, ...props }) {
             setCheckNewCardsLoading(false);
           }}
           loading={checkNewCardsLoading}
+          variant="outlined"
         >
           Check for new cards
         </LoadingButton>

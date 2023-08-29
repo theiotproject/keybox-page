@@ -17,7 +17,7 @@ import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 
-function Events({ setLoading }) {
+function Events() {
   const { currentUser } = useAuthProvider();
 
   const [keyboxesData, setKeyboxesData] = useState();
@@ -85,7 +85,14 @@ function Events({ setLoading }) {
   }, [keyboxesData, selectedKeyboxName]);
 
   return (
-    <>
+    <Box
+      sx={{
+        bgcolor: "white",
+        padding: ".25em 2em",
+        border: "1px solid #B4B4B4",
+        borderRadius: "12px",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -95,7 +102,7 @@ function Events({ setLoading }) {
         }}
       >
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-          <Typography component="h1" variant="h1" sx={{ fontSize: 44, my: 2 }}>
+          <Typography component="h1" variant="h1" sx={{ fontSize: 32 }}>
             Events
           </Typography>
           {selectedKeyboxData ? (
@@ -155,7 +162,7 @@ function Events({ setLoading }) {
           compact
         />
       )}
-    </>
+    </Box>
   );
 }
 

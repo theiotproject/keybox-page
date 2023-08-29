@@ -11,14 +11,15 @@ export const addNewKeyboxValidationSchema = yup
     keySlotName2: yup
       .string()
       .test("unique", "Slot names must be unique", function (value) {
-        return value !== this.parent.keySlotName1;
+        return value === "" || value !== this.parent.keySlotName1;
       }),
     keySlotName3: yup
       .string()
       .test("unique", "Slot names must be unique", function (value) {
         return (
-          value !== this.parent.keySlotName1 &&
-          value !== this.parent.keySlotName2
+          value === "" ||
+          (value !== this.parent.keySlotName1 &&
+            value !== this.parent.keySlotName2)
         );
       }),
   })

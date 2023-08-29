@@ -64,9 +64,10 @@ function KeyboxCard({ ...props }) {
     <>
       <Card
         sx={{
-          minWidth: "275px",
+          minWidth: "216px",
+          maxWidth: "216px",
           backgroundColor: "#FFF",
-          height: "18rem",
+          minHeight: "15.5rem",
           border: "1px solid #B6B6BB",
           alignContent: "center",
           m: 2,
@@ -83,11 +84,11 @@ function KeyboxCard({ ...props }) {
           <Typography
             variant="h1"
             sx={{
-              fontSize: 32,
+              fontSize: "30px",
               textOverflow: "ellipsis",
               overflow: "hidden",
               whiteSpace: "nowrap",
-              marginBottom: 4,
+              marginY: 2,
             }}
           >
             {props.keyboxName}
@@ -106,7 +107,7 @@ function KeyboxCard({ ...props }) {
                 width: "100%",
               }}
             >
-              <Typography sx={{ fontSize: 18 }}>
+              <Typography sx={{ fontSize: "14px" }}>
                 active slots: {slotsData ? slotsData.length : <Skeleton />}
               </Typography>
               <Divider sx={{ border: "1px solid gray", marginY: 1.5 }} />
@@ -117,7 +118,7 @@ function KeyboxCard({ ...props }) {
                   display: "-webkit-box",
                   WebkitLineClamp: "2",
                   WebkitBoxOrient: "vertical",
-                  fontSize: 18,
+                  fontSize: "14px",
                 }}
               >
                 {isLoading && <Skeleton />}
@@ -136,20 +137,17 @@ function KeyboxCard({ ...props }) {
           <Box
             sx={{
               display: "flex",
+              justifyContent: "center",
+              alignItems: "flex-end",
+              flexGrow: "1",
             }}
           >
             <Button
               variant="outlined"
-              sx={{
-                position: "absolute",
-                bottom: "1.5em",
-                left: "50%",
-                translate: "-50%",
-                width: "55%",
-              }}
               href={`/keyboxes/${props.keyboxName}`}
+              sx={{ mt: "1.5em" }}
             >
-              Manage Keybox
+              Manage
             </Button>
           </Box>
         </CardContent>

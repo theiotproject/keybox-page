@@ -44,6 +44,8 @@ function ConfiguredCardsBox({ refreshCards, cardData, ...props }) {
     <Box
       sx={{
         border: "3px solid gray",
+        bgcolor: "white",
+
         borderRadius: "4px",
         paddingY: "1em",
         paddingX: "1.5em",
