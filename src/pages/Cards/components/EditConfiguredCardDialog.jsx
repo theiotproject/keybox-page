@@ -311,6 +311,7 @@ function EditConfiguredCardDialog({
                 <IconButton
                   aria-label="delete"
                   variant="contained"
+                  sx={{ aspectRatio: "1/1" }}
                   onClick={() => handleDeleteCard(cardData.id)}
                 >
                   <DeleteIcon />

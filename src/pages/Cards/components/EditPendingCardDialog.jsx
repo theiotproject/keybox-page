@@ -62,6 +62,7 @@ function EditPendingCardDialog({
 
   const handleEditCard = async (data) => {
     setLoading(true);
+    console.log(data);
 
     const slotsCollectionRef = collection(keyboxRef, "slots");
     const selectedSlotsCollectionQuery = query(
@@ -271,6 +272,7 @@ function EditPendingCardDialog({
                 <IconButton
                   aria-label="delete"
                   variant="contained"
+                  sx={{ aspectRatio: "1/1" }}
                   onClick={() => handleDeleteCard(cardData.id)}
                 >
                   <DeleteIcon />

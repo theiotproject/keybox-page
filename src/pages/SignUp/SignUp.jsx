@@ -98,9 +98,18 @@ export default function SignUp() {
       data.email,
       data.password
     ).catch((error) => {
-      showError("Error while creating a user, check console for more info");
-      console.error(error);
-      return;
+      if (error.message === "Firebase: Error (auth/email-already-in-use).") {
+        showError(
+          "Sorry, this email address is already in use, try using different email."
+        );
+      } else {
+        showError(
+          "An error with sign in has occured, check console for more info"
+        );
+        console.error(error);
+      }
+      reset();
+      setLoading(false);
     });
 
     if (user && auth.currentUser) {
