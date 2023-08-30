@@ -27,13 +27,13 @@ import {
 } from "firebase/firestore";
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
+import { deleteKeyboxInGolioth } from "src/util/services/deleteKeyboxInGolioth";
 import { updateSlotsPrivilagesToGoliothState } from "src/util/services/updateSlotsPrivilagesToGoliothState";
 
 function Keyboxes() {
   const { currentUser } = useAuthProvider();
 
   const { keyboxParam } = useParams();
-  const navigate = useNavigate();
 
   const [keyboxesData, setKeyboxesData] = useState();
   const [selectedKeyboxData, setSelectedKeyboxData] = useState();
@@ -91,9 +91,9 @@ function Keyboxes() {
   };
 
   const deleteSelectedKeybox = async (keyboxRef) => {
-    deleteDoc(keyboxRef)
-      .then(() => {
-        updateSlotsPrivilagesToGoliothState(keyboxRef);
+    await deleteDoc(keyboxRef)
+      .then(async () => {
+        await deleteKeyboxInGolioth(selectedKeyboxData.keyboxId);
       })
       .catch((error) => {
         showError(
@@ -101,8 +101,13 @@ function Keyboxes() {
         );
         console.error(error);
       })
-      .finally(() => {
-        getKeyboxesData();
+      .finally(async () => {
+        if (keyboxesData.length != 1) {
+          setSelectedKeyboxName(keyboxesData[1].data().keyboxName);
+        } else {
+          setSelectedKeyboxName("");
+        }
+        await getKeyboxesData();
       });
   };
 
@@ -139,7 +144,9 @@ function Keyboxes() {
         <Grid item>
           <IconButton
             aria-label="delete selected keybox"
-            onClick={() => deleteSelectedKeybox(selectedKeyboxData.keyboxRef)}
+            onClick={() => {
+              deleteSelectedKeybox(selectedKeyboxData.keyboxRef);
+            }}
             disabled={keyboxesData && !keyboxesData.length > 0}
           >
             <Delete />

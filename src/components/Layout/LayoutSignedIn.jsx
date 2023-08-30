@@ -17,6 +17,7 @@ function Layout() {
           pl: { xs: "64px", sm: "88px" },
           pr: { xs: "0px", sm: "24px" },
           pb: "1em",
+          minHeight: "80dvh",
         }}
         disableGutters={true}
       >
