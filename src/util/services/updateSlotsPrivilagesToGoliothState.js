@@ -14,7 +14,7 @@ const getFormattedPrivilagesToSlots = async (keyboxRef) => {
     for (const slotCard of slotsCollectionSnapshot.data().authorizedCards) {
       // Make sure that cardId length is 10 characters
       let hexCardId = slotCard.toString(16).split("");
-      while (hexCardId.length != 10) {
+      while (hexCardId.length < 10) {
         hexCardId.unshift("0");
       }
 
