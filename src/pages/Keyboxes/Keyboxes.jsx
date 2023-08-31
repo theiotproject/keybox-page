@@ -28,7 +28,6 @@ import {
 import { db } from "src/backend/db_config";
 import { useAuthProvider } from "src/contexts/AuthContext";
 import { deleteKeyboxInGolioth } from "src/util/services/deleteKeyboxInGolioth";
-import { updateSlotsPrivilagesToGoliothState } from "src/util/services/updateSlotsPrivilagesToGoliothState";
 
 function Keyboxes() {
   const { currentUser } = useAuthProvider();
@@ -159,6 +158,10 @@ function Keyboxes() {
               id="selectKeybox"
               value={selectedKeyboxData.keyboxName}
               label="Select your keybox"
+              sx={{
+                "& legend": { display: "none" },
+                "& fieldset": { top: 0 },
+              }}
               onChange={handleChangeKeybox}
             >
               {keyboxesData.map((keybox, index) => (
@@ -172,6 +175,10 @@ function Keyboxes() {
               labelId="selectKeyboxLabel"
               id="selectKeybox"
               value=""
+              sx={{
+                "& legend": { display: "none" },
+                "& fieldset": { top: 0 },
+              }}
               displayEmpty
               label="Select your keybox"
             >
@@ -214,6 +221,7 @@ function Keyboxes() {
         open={newKeyboxDialogOpen}
         toggleDialog={toggleAddNewKeyboxDialog}
         refreshKeyboxesData={getKeyboxesData}
+        setSelectedKeyboxName={setSelectedKeyboxName}
       />
 
       <EditKeyboxDialog
@@ -221,6 +229,8 @@ function Keyboxes() {
         toggleDialog={toggleEditKeyboxDialog}
         refreshKeyboxesData={getKeyboxesData}
         selectedKeyboxData={selectedKeyboxData}
+        setSelectedKeyboxName={setSelectedKeyboxName}
+        getKeyboxData={getKeyboxData}
       />
     </>
   );

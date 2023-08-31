@@ -40,6 +40,7 @@ function EditKeyboxDialog({
   toggleDialog,
   refreshKeyboxesData,
   selectedKeyboxData,
+  setSelectedKeyboxName,
 }) {
   const { currentUser } = useAuthProvider();
   const [isLoading, setLoading] = useState(false);
@@ -96,8 +97,9 @@ function EditKeyboxDialog({
         showSuccess(`
           Keybox name updated successfully
         `);
-        reset();
+        setSelectedKeyboxName(data.keyboxName);
         refreshKeyboxesData();
+        reset();
         setLoading(false);
         toggleDialog();
       })

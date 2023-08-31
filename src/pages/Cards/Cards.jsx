@@ -91,6 +91,10 @@ function Cards() {
               id="selectKeybox"
               value={selectedKeyboxData.keyboxName}
               label="Select your keybox"
+              sx={{
+                "& legend": { display: "none" },
+                "& fieldset": { top: 0 },
+              }}
               onChange={handleChangeKeybox}
             >
               {keyboxesData.map((keybox, index) => (
@@ -105,6 +109,10 @@ function Cards() {
               id="selectKeybox"
               value=""
               displayEmpty
+              sx={{
+                "& legend": { display: "none" },
+                "& fieldset": { top: 0 },
+              }}
               label="Select your keybox"
             >
               <MenuItem value="">

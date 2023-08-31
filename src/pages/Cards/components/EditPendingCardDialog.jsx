@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Add, AddCard, Close, Delete as DeleteIcon } from "@mui/icons-material";
+import {
+  Add,
+  AddCard,
+  Clear,
+  Close,
+  Delete as DeleteIcon,
+} from "@mui/icons-material";
 import {
   Box,
   Button,

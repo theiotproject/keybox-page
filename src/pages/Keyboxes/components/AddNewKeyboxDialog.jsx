@@ -34,7 +34,12 @@ import { useAuthProvider } from "src/contexts/AuthContext";
 import { addUserEvent } from "src/util/services/addUserEvent";
 import { addNewKeyboxValidationSchema } from "src/util/validation/addNewKeyboxValidationSchema";
 
-function AddNewKeyboxDialog({ open, toggleDialog, refreshKeyboxesData }) {
+function AddNewKeyboxDialog({
+  open,
+  toggleDialog,
+  refreshKeyboxesData,
+  setSelectedKeyboxName,
+}) {
   const { currentUser } = useAuthProvider();
 
   const [isLoading, setLoading] = useState(false);
@@ -110,6 +115,7 @@ function AddNewKeyboxDialog({ open, toggleDialog, refreshKeyboxesData }) {
     addUserEvent(keyboxRef, "new key slot", data.keyboxId, 1, "-");
     addUserEvent(keyboxRef, "new key slot", data.keyboxId, 2, "-");
     addUserEvent(keyboxRef, "new key slot", data.keyboxId, 3, "-");
+    setSelectedKeyboxName(data.keyboxName);
   };
 
   return (

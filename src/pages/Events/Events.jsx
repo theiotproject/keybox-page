@@ -92,6 +92,10 @@ function Events() {
               id="selectKeybox"
               value={selectedKeyboxData.keyboxName}
               label="Select your keybox"
+              sx={{
+                "& legend": { display: "none" },
+                "& fieldset": { top: 0 },
+              }}
               onChange={handleChangeKeybox}
             >
               {keyboxesData.map((keybox, index) => (
@@ -104,6 +108,10 @@ function Events() {
             <Select
               labelId="selectKeyboxLabel"
               id="selectKeybox"
+              sx={{
+                "& legend": { display: "none" },
+                "& fieldset": { top: 0 },
+              }}
               value=""
               displayEmpty
               label="Select your keybox"
