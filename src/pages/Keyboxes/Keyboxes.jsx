@@ -100,13 +100,9 @@ function Keyboxes() {
         );
         console.error(error);
       })
-      .finally(async () => {
-        if (keyboxesData.length != 1) {
-          setSelectedKeyboxName(keyboxesData[1].data().keyboxName);
-        } else {
-          setSelectedKeyboxName("");
-        }
-        await getKeyboxesData();
+      .finally(() => {
+        setSelectedKeyboxName("");
+        getKeyboxesData();
       });
   };
 
