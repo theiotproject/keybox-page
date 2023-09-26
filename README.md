@@ -1,6 +1,6 @@
 # How to run project in dev mode
 
-1. Change name of .env.example to .env
+1. Change name of .env.example to .env.development
 2. Fill all fields with values from firebase project
 3. Install node packages with `npm i` command in terminal while beeing inside of project directory
 
